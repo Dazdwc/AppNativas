@@ -71,4 +71,11 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
+
+    // Corutinas -> Manejo de la asincronía y la recurrencia
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+
+    // SQLite Helper -> Manejo de la base de datos
+    implementation("androidx.sqlite:sqlite-ktx:2.4.0")
 }

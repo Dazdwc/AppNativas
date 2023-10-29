@@ -11,8 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import org.helios.mythicdoors.navigation.AppNavigation
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
+import org.helios.mythicdoors.utils.Connection
 
 class MainActivity : ComponentActivity() {
+    private val dbHelper: Connection = Connection(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
