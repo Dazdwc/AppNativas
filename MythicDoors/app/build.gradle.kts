@@ -73,7 +73,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
 
     // Corutinas -> Manejo de la asincronía y la recurrencia
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     // SQLite Helper -> Manejo de la base de datos
