@@ -11,6 +11,6 @@ data class Enemy(
     fun getId(): Long? { return id }
     fun getName(): String { return name }
     fun getLevel(): Int { return level }
-    fun getCoinReward(): Int { return coins }
+    fun getCoinReward(): Int { return coinReward }
     fun getImage(): String { return image }
 }

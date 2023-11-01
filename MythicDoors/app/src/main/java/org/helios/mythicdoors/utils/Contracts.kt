@@ -50,12 +50,12 @@ class Contracts: BaseColumns {
 
 
         const val SQL_CREATE_ENTRIES =
-                "CREATE TABLE ${UserTableContract.TABLE_NAME} (" +
-                        "${UserTableContract.COLUMN_NAME_ID} INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "${UserTableContract.COLUMN_NAME_NAME} TEXT NOT NULL," +
-                        "${UserTableContract.COLUMN_NAME_LEVEL} INTEGER NOT NULL," +
-                        "${UserTableContract.COLUMN_NAME_COINREWARD} INTEGER NOT NULL," +
-                        "${UserTableContract.COLUMN_NAME_IMAGE} TEXT NOT NULL," +
+                "CREATE TABLE $TABLE_NAME(" +
+                        "$COLUMN_NAME_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "$COLUMN_NAME_NAME TEXT NOT NULL," +
+                        "$COLUMN_NAME_LEVEL NOT NULL," +
+                        "$COLUMN_NAME_COINREWARD} INTEGER NOT NULL," +
+                        "$COLUMN_NAME_IMAGE} TEXT NOT NULL," +
                         ");"
 
         const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TABLE_NAME"
