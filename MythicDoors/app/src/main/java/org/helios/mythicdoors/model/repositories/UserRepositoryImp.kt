@@ -40,12 +40,16 @@ class UserRepositoryImp(dbHelper: Connection):
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
-        TODO("Not yet implemented")
+        return@withContext emptyList<User>()
     }
 
     override suspend fun getOne(id: Long): User {
+        dbRead.use { db ->
+            try {
+                db.query()
+            }
+        }
         TODO("Not yet implemented")
     }
 
