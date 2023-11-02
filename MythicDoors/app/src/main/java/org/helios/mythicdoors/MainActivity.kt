@@ -18,6 +18,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             MythicDoorsTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -25,6 +26,36 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        dbHelper.close()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dbHelper.close()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // dbHelper.open()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        dbHelper.close()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // dbHelper.open()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        // dbHelper.open()
     }
 }
 

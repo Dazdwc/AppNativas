@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "org.helios.mythicdoors"
-        minSdk = 25
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -74,7 +74,7 @@ dependencies {
 
     // Corutinas -> Manejo de la asincronía y la recurrencia
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
     // SQLite Helper -> Manejo de la base de datos
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
