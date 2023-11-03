@@ -14,7 +14,10 @@ suspend fun defaultDataLoader(dbHelper: Connection): Boolean = withContext(Dispa
     try {
         val flag = false
 
-        flag.apply { insertAdminUserInDatabase(userService) }
+        flag.apply {
+            insertAdminUserInDatabase(userService)
+            // insertDoorsInDatabase()
+        }
 
         // TODO -> Crear enemigos y puertas por defecto
 
@@ -29,3 +32,5 @@ suspend fun defaultDataLoader(dbHelper: Connection): Boolean = withContext(Dispa
 private fun createAdminUser(): User { return User.create("admin", "admin@admin.com", "47m1N") }
 
 private suspend fun insertAdminUserInDatabase(userService: IUserService): Boolean = withContext(Dispatchers.IO) { return@withContext userService.saveUser(createAdminUser()) }
+
+// TODO -> Crear 3 puertas por defecto
