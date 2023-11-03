@@ -6,15 +6,28 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
 import org.helios.mythicdoors.navigation.AppNavigation
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
 import org.helios.mythicdoors.utils.Connection
+import org.helios.mythicdoors.viewmodel.*
 
 class MainActivity : ComponentActivity() {
     private val dbHelper: Connection = Connection(this)
+    private val viewModels = mutableListOf<Any>().apply {
+        add(MainActivityViewModel(dbHelper))
+        add(OverviewScreenViewModel())
+        add(ActionResultScreenViewModel())
+        add(GameActionScreenViewModel())
+        add(GameOptsScreenViewModel())
+        add(LoginScreenViewModel())
+        add(RegisterScreenViewModel())
+        add(ScoresScreenViewModel())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,31 +44,6 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         dbHelper.close()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        dbHelper.close()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // dbHelper.open()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        dbHelper.close()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // dbHelper.open()
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        // dbHelper.open()
     }
 }
 
