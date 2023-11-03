@@ -5,10 +5,11 @@ import org.helios.mythicdoors.services.EnemyServiceImp
 import org.helios.mythicdoors.services.UserServiceImp
 import org.helios.mythicdoors.services.interfaces.IEnemyService
 import org.helios.mythicdoors.services.interfaces.IUserService
-import java.sql.Connection
+import org.helios.mythicdoors.utils.Connection
+import org.helios.mythicdoors.utils.defaultDataLoader
 
 class DataController(
-    dbHelper: org.helios.mythicdoors.utils.Connection
+    private val dbHelper: Connection
 ) {
     private val userService: IUserService = UserServiceImp(dbHelper)
     /*
@@ -16,7 +17,7 @@ class DataController(
      */
     companion object {
         private var instance: DataController? = null
-        fun getInstance(dbHelper: org.helios.mythicdoors.utils.Connection): DataController {
+        fun getInstance(dbHelper: Connection): DataController {
             if (instance == null) {
                 instance = DataController(dbHelper)
             }
@@ -27,6 +28,8 @@ class DataController(
     fun getUserService(): IUserService {
         return userService
     }
+
+    suspend fun initDataLoader(): Boolean { return defaultDataLoader(dbHelper) }
 
     suspend fun getAllUsers(): List<User>? { return userService.getUsers() }
 
