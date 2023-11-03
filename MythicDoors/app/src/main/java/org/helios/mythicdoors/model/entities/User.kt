@@ -24,6 +24,8 @@ data class User(
     fun getExperience(): Int { return experience }
     fun getCoins(): Int { return coins }
     fun getGoldCoins(): Int { return goldCoins }
+    fun getIsActive(): Boolean { return isActive }
+    fun getCreatedAt(): LocalDate { return createdAt }
 
     fun setScore(score: Int) { this.score = score }
     fun setLevel(level: Int) { this.level = level }
@@ -31,4 +33,43 @@ data class User(
     fun setCoins(coins: Int) { this.coins = coins }
     fun setGoldCoins(goldCoins: Int) { this.goldCoins = goldCoins }
     fun setIsActive(isActive: Boolean) { this.isActive = isActive }
+
+    /* Implementación del patrón Fabric */
+    companion object {
+        fun createEmptyUser(): User {
+            return User(
+                null,
+                "",
+                "",
+                "",
+                0,
+                0,
+                0,
+                0,
+                0,
+                true,
+                createdAt = LocalDate.now())
+        }
+
+        fun create(
+            name: String,
+            email: String,
+            password: String,
+        ): User {
+            return User(
+                null,
+                name,
+                email,
+                password,
+                0,
+                0,
+                0,
+                0,
+                0,
+                true,
+                createdAt = LocalDate.now())
+        }
+    }
+
+    fun isEmpty(): Boolean { return this.id == null }
 }

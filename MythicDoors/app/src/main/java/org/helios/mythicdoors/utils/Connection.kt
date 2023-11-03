@@ -3,6 +3,9 @@ package org.helios.mythicdoors.utils
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.utils.Contracts.*
 
 class Connection(context: Context?):

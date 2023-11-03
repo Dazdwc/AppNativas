@@ -1,4 +1,14 @@
 package org.helios.mythicdoors.viewmodel
 
-class MainActivityViewModel {
+import org.helios.mythicdoors.utils.Connection
+
+class MainActivityViewModel(
+    dbHelper: Connection,
+    ) {
+
+
+
+    fun loadDefaultData(dbHelper: Connection) {
+
+    }
 }
