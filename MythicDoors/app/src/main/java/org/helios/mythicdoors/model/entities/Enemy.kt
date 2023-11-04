@@ -24,7 +24,7 @@ data class Enemy(
             name: String,
             level: Int,
             coinReward: Int,
-            ): Enemy {
+        ): Enemy {
             return Enemy(null, name, level, coinReward, null)
         }
     }
