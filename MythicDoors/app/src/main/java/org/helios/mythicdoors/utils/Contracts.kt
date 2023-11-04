@@ -74,15 +74,22 @@ class Contracts: BaseColumns {
         const val TABLE_NAME = "game"
         const val COLUMN_NAME_ID_PARTIDA = "idPartida"
         const val COLUMN_NAME_ID_USER = "idUser"
+        const val COLUMN_NAME_COIN = "coin"
+        const val COLUMN_NAME_LEVEL = "level"
         const val COLUMN_NAME_SCORE = "score"
         const val COLUMN_NAME_MAX_ENEMY = "maxEnemy"
+        const val COLUMN_NAME_DATE_TIME = "dateTime"
 
         const val SQL_CREATE_ENTRIES =
             "CREATE TABLE $TABLE_NAME(" +
                     "$COLUMN_NAME_ID_PARTIDA INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "$COLUMN_NAME_ID_USER INTEGER NOT NULL," +
+                    "$COLUMN_NAME_COIN INTEGER NOT NULL," +
+                    "$COLUMN_NAME_LEVEL INTEGER NOT NULL," +
                     "$COLUMN_NAME_SCORE INTEGER NOT NULL," +
                     "$COLUMN_NAME_MAX_ENEMY INTEGER NOT NULL," +
+                    "$COLUMN_NAME_DATE_TIME TEXT NOT NULL," +
+                    "FOREIGN KEY ($COLUMN_NAME_ID_USER) REFERENCES user(id)" +
                     ");"
 
         const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TABLE_NAME"

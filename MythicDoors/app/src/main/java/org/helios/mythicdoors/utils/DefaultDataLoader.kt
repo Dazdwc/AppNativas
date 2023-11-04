@@ -9,7 +9,7 @@ import org.helios.mythicdoors.services.interfaces.IUserService
 suspend fun defaultDataLoader(dbHelper: Connection): Boolean = withContext(Dispatchers.IO) {
     val userService: IUserService = UserServiceImp(dbHelper)
 
-    if (dbHelper.checkIfDatabaseIsEmpty()) return@withContext true
+    if (checkIfDatabaseIsEmpty(userService)) return@withContext true
 
     try {
         val flag = false
@@ -33,4 +33,11 @@ private fun createAdminUser(): User { return User.create("admin", "admin@admin.c
 
 private suspend fun insertAdminUserInDatabase(userService: IUserService): Boolean = withContext(Dispatchers.IO) { return@withContext userService.saveUser(createAdminUser()) }
 
-// TODO -> Crear 3 puertas por defecto
+suspend fun checkIfDatabaseIsEmpty(userService: IUserService): Boolean = withContext(Dispatchers.IO) {
+    try {
+        userService.countUsers() > 0
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return@withContext false
+    }
+}

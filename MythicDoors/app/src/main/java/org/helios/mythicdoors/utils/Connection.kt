@@ -16,8 +16,6 @@ class Connection(context: Context?):
         DatabaseContract.DATABASE_VERSION),
     AutoCloseable
 {
-    private val redeableDatabase: SQLiteDatabase = readableDatabase
-
     override fun onCreate(db: SQLiteDatabase?) {
         try {
             if (db != null) createTables(db)
@@ -29,6 +27,10 @@ class Connection(context: Context?):
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         TODO("Not yet implemented")
+    }
+
+    override fun onConfigure(db: SQLiteDatabase) {
+        db.setForeignKeyConstraintsEnabled(true)
     }
 
     override fun close() {
@@ -43,28 +45,5 @@ class Connection(context: Context?):
                 print("Error creating tables")
                 e.printStackTrace()
         }
-    }
-
-   suspend fun checkIfDatabaseIsEmpty(): Boolean = withContext(Dispatchers.IO) {
-        redeableDatabase.use { db->
-            try {
-                db.query(
-                    UserTableContract.TABLE_NAME,
-                    arrayOf(UserTableContract.COLUMN_NAME_ID),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ).use { cursor ->
-                    if (cursor.moveToFirst()) {
-                        return@withContext false
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-       return@withContext true
     }
 }
