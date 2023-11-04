@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.helios.mythicdoors.ui.screens.OverviewScreen
+import org.helios.mythicdoors.ui.screens.*
 
 @Composable
 fun AppNavigation() {
@@ -18,12 +18,12 @@ fun AppNavigation() {
         startDestination = AppDestination.Overview.route
     ) {
         composable(AppDestination.Overview.route)  { OverviewScreen(navController = navController) }
-        composable(AppDestination.Login.route)  {}
-        composable(AppDestination.Register.route)  {}
-        composable(AppDestination.GameOpts.route)  {}
-        composable(AppDestination.GameAction.route)  {}
-        composable(AppDestination.ActionResult.route) {}
-        composable(AppDestination.Scores.route) {}
+        composable(AppDestination.Login.route)  { LoginScreen(navController = navController) }
+        composable(AppDestination.Register.route)  { ResgisterScreen(navController = navController) }
+        composable(AppDestination.GameOpts.route)  { GameOptsScreen(navController = navController) }
+        composable(AppDestination.GameAction.route)  { GameActionScreen(navController = navController) }
+        composable(AppDestination.ActionResult.route) { ActionResultScreen(navController = navController) }
+        composable(AppDestination.Scores.route) { ScoresScreen(navController = navController) }
     }
 }
 
