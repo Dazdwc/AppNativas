@@ -1,9 +1,7 @@
 package org.helios.mythicdoors.model
 
 import org.helios.mythicdoors.model.entities.User
-import org.helios.mythicdoors.services.EnemyServiceImp
 import org.helios.mythicdoors.services.UserServiceImp
-import org.helios.mythicdoors.services.interfaces.IEnemyService
 import org.helios.mythicdoors.services.interfaces.IUserService
 import org.helios.mythicdoors.utils.Connection
 import org.helios.mythicdoors.utils.defaultDataLoader
@@ -25,11 +23,9 @@ class DataController(
         }
     }
 
-    fun getUserService(): IUserService {
-        return userService
-    }
+    fun getUserService(): IUserService { return userService }
 
-    suspend fun initDataLoader(): Boolean { return defaultDataLoader(dbHelper) }
+    // suspend fun initDataLoader(): Boolean { return defaultDataLoader(dbHelper) }
 
     suspend fun getAllUsers(): List<User>? { return userService.getUsers() }
 
@@ -42,6 +38,4 @@ class DataController(
     suspend fun deleteUser(id: Long): Boolean { return userService.deleteUser(id) }
 
     suspend fun countUsers(): Int { return userService.countUsers() }
-
-
 }

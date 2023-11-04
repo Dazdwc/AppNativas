@@ -1,13 +1,11 @@
 package org.helios.mythicdoors.model.entities
 
 data class Enemy(
-
     private val id: Long?,
     private val name: String,
     private val level: Int,
     private val coinReward: Int,
     private var image: String?
-
     // TODO: Add fields
 ) {
     fun getId(): Long? { return id }
@@ -26,7 +24,7 @@ data class Enemy(
             name: String,
             level: Int,
             coinReward: Int,
-            ): Enemy {
+        ): Enemy {
             return Enemy(null, name, level, coinReward, null)
         }
     }
