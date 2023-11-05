@@ -1,5 +1,8 @@
 package org.helios.mythicdoors
 
+import android.app.Application
+import android.content.Context
+import android.database.sqlite.SQLiteOpenHelper
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,26 +16,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.navigation.AppNavigation
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
 import org.helios.mythicdoors.utils.Connection
 import org.helios.mythicdoors.viewmodel.*
 
 class MainActivity : ComponentActivity() {
-    private val dbHelper: Connection = Connection(this)
-    private val viewModelsMap: Map<String, Any> = hashMapOf(
-            "MainActivityViewModel" to MainActivityViewModel(dbHelper),
-            "OverviewScreenViewModel" to OverviewScreenViewModel(),
-            "ActionResultScreenViewModel" to ActionResultScreenViewModel(),
-            "GameActionScreenViewModel" to GameActionScreenViewModel(),
-            "GameOptsScreenViewModel" to GameOptsScreenViewModel(),
-            "LoginScreenViewModel" to LoginScreenViewModel(),
-            "RegisterScreenViewModel" to RegisterScreenViewModel(),
-            "ScoresScreenViewModel" to ScoresScreenViewModel()
-    )
+
+    companion object {
+        private lateinit var appContext: Context
+
+        private val dbHelper: Connection by lazy {
+            Connection(appContext)
+        }
+
+        private val dataController: DataController by lazy {
+            DataController(dbHelper)
+        }
+
+        val viewModelsMap: Map<String, Any> by lazy {
+            mapOf(
+                "mainactivity-screen-viewmodel" to MainActivityViewModel(dataController),
+                "overview-screen-viewmodel" to OverviewScreenViewModel(dataController),
+                "action-result-screen-viewmodel" to ActionResultScreenViewModel(dataController),
+                "game-action-screen-viewmodel" to GameActionScreenViewModel(dataController),
+                "game-opts-screen-viewmodel" to GameOptsScreenViewModel(dataController),
+                "login-screen-viewmodel" to LoginScreenViewModel(dataController),
+                "register-screen-viewmodel" to RegisterScreenViewModel(dataController),
+                "scores-screen-viewmodel" to ScoresScreenViewModel(dataController)
+            )
+        }
+
+        fun setContext(context: Context) { appContext = context }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setContext(applicationContext)
 
         setContent {
             MythicDoorsTheme {
@@ -44,9 +66,6 @@ class MainActivity : ComponentActivity() {
                         // TODO: Add bottom bar
                     }
                 ) { innerPadding ->
-//                    SurfaceWithbackground(innerPadding) {
-//                        AppNavigation()
-//                    }
                     Surface(
                         modifier = Modifier.fillMaxSize()
                             .padding(innerPadding),
@@ -63,24 +82,6 @@ class MainActivity : ComponentActivity() {
         dbHelper.close()
     }
 }
-
-//@Composable
-//fun SurfaceWithbackground(
-//    innerPadding: PaddingValues,
-//    modifier: Modifier = Modifier,
-//    contentColor: Color = MaterialTheme.colorScheme.onBackground,
-//    content: @Composable (PaddingValues) -> Unit
-//) {
-//    Surface(
-//        modifier = Modifier
-//            .padding(innerPadding)
-//            .then(modifier),
-//        color = MaterialTheme.colorScheme.background,
-//        contentColor = contentColor,
-//    ) {
-//        content(PaddingValues(10.dp))
-//    }
-//}
 
 @Preview(showBackground = true, showSystemUi = true)
 @Preview(showBackground = true, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)

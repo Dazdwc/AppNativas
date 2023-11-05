@@ -14,13 +14,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.launch
+import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
-import org.helios.mythicdoors.navigation.navigateSingleTopTo
+import org.helios.mythicdoors.viewmodel.OverviewScreenViewModel
 
 
 @Composable
 fun OverviewScreen(navController: NavController) {
+    val controller: OverviewScreenViewModel = MainActivity.viewModelsMap["overview-screen-viewmodel"] as OverviewScreenViewModel
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -57,14 +58,7 @@ fun OverviewScreen(navController: NavController) {
                 Row {
                     Button(
                         onClick = {
-                            try {
-                                navController.navigateSingleTopTo("login_screen")
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                                scope.launch {
-                                    snackbarHostState.showSnackbar("Error: Impossible to navigate to Login Screen")
-                                }
-                            }
+                            controller.navigateToLoginScreen(navController, scope, snackbarHostState)
                         },
                         modifier = Modifier.padding(top = 30.dp, start = 30.dp, end = 30.dp)
                     ) {

@@ -1,14 +1,7 @@
 package org.helios.mythicdoors.viewmodel
 
-import org.helios.mythicdoors.utils.Connection
+import org.helios.mythicdoors.model.DataController
 
 class MainActivityViewModel(
-    dbHelper: Connection,
-    ) {
-
-
-
-    fun loadDefaultData(dbHelper: Connection) {
-
-    }
-}
+    private val dataController: DataController,
+    ) {}
