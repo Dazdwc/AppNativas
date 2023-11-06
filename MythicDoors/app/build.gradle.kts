@@ -78,4 +78,6 @@ dependencies {
 
     // SQLite Helper -> Manejo de la base de datos
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
+    // LottieFiles -> Manejo de animaciones por Json
+    //implementation("com.airbnb-android:lottie:6.1.0")
 }

@@ -14,10 +14,7 @@ suspend fun defaultDataLoader(dbHelper: Connection): Boolean = withContext(Dispa
     try {
         val flag = false
 
-        flag.apply {
-            insertAdminUserInDatabase(userService)
-            // insertDoorsInDatabase()
-        }
+        flag.apply { insertAdminUserInDatabase(userService) }
 
         // TODO -> Crear enemigos y puertas por defecto
 
@@ -40,4 +37,6 @@ suspend fun checkIfDatabaseIsEmpty(userService: IUserService): Boolean = withCon
         e.printStackTrace()
         return@withContext false
     }
+
 }
+

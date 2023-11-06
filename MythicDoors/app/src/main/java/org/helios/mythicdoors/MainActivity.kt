@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.navigation.AppNavigation
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
@@ -46,6 +47,7 @@ class MainActivity : ComponentActivity() {
 
         fun setContext(context: Context) { appContext = context }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

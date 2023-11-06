@@ -24,7 +24,11 @@ class GameLogicViewModelDBoj(
     private val combatConfrontationResult: Boolean by lazy { generateCombat() }
 
 
+
     //fun getActualUser(): User { return user }
+
+
+  //  fun getUser(): User { return user }
 
 
     fun getNewUserStadistics(): User {
