@@ -47,6 +47,7 @@ class MainActivity : ComponentActivity() {
         fun setContext(context: Context) { appContext = context }
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
