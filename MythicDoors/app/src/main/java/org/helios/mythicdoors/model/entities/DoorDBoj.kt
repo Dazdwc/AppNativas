@@ -23,9 +23,9 @@ data class DoorDBoj(
             id: String,
         ): DoorDBoj {
             return when(id) {
-                EASY_DOOR -> DoorDBoj(id, -3, 1, 1.5, R.drawable.easy_door)
-                AVERAGE_DOOR -> DoorDBoj(id, 3, 5, 1.5, R.drawable.average_door)
-                HARD_DOOR -> DoorDBoj(id, 5, 7, 2.0, R.drawable.hard_door)
+                EASY_DOOR -> DoorDBoj(id, -3, 1, 1.0, R.drawable.easy_door)
+                AVERAGE_DOOR -> DoorDBoj(id, -2, 2, 1.5, R.drawable.average_door)
+                HARD_DOOR -> DoorDBoj(id, -1, 3, 2.0, R.drawable.hard_door)
                 else -> throw Exception("Invalid door id")
             }
         }
