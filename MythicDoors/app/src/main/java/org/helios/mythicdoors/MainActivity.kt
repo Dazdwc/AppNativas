@@ -27,8 +27,9 @@ class MainActivity : ComponentActivity() {
             Connection(appContext)
         }
 
+        /* DataController se inicia con el patrón Singleton */
         private val dataController: DataController by lazy {
-            DataController(dbHelper)
+            DataController.getInstance(dbHelper)
         }
 
         val viewModelsMap: Map<String, Any> by lazy {
