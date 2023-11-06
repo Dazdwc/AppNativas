@@ -1,4 +1,7 @@
 package org.helios.mythicdoors.viewmodel
 
-class GameOptsScreenViewModel {
-}
+import org.helios.mythicdoors.model.DataController
+
+class GameOptsScreenViewModel(
+    private val dataController: DataController
+) { }
