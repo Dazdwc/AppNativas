@@ -23,7 +23,7 @@ class GameLogicViewModelDBoj(
     private lateinit var combatResults: CombatResultsStore
     private val combatConfrontationResult: Boolean by lazy { generateCombat() }
 
-    fun getUser(): User { return user }
+    //fun getActualUser(): User { return user }
 
     fun getNewUserStadistics(): User {
         if (combatConfrontationResult) {
@@ -51,11 +51,7 @@ class GameLogicViewModelDBoj(
 
     private fun generateCombat(): Boolean { return user.getLevel() >= generateEnemy().getLevel() }
 
-    private fun generateEnemy(): EnemyDBoj {
-        return EnemyDBoj.create(
-            generateEnemyLevel(door)
-        )
-    }
+    private fun generateEnemy(): EnemyDBoj { return EnemyDBoj.create(generateEnemyLevel(door)) }
 
     private fun generateEnemyLevel(door: DoorDBoj): Int {
         val rangeValues = generateRangeValues()
@@ -66,7 +62,7 @@ class GameLogicViewModelDBoj(
         val minimumEnemyRage = if (user.getLevel().plus(door.getMinEnemyRangeSetter()) < 0) 0 else user.getLevel().plus(door.getMinEnemyRangeSetter())
         val maximumEnemyRage = if (user.getLevel().plus(door.getMaxEnemyRangeSetter()) > 10) 10 else user.getLevel().plus(door.getMaxEnemyRangeSetter())
 
-        if(maximumEnemyRage < minimumEnemyRage) Pair(0, 1)
+        if(maximumEnemyRage < minimumEnemyRage) Pair(0, 2)
 
         return Pair(minimumEnemyRage, maximumEnemyRage)
     }
