@@ -1,4 +1,7 @@
 package org.helios.mythicdoors.viewmodel
 
-class ScoresScreenViewModel {
-}
+import org.helios.mythicdoors.model.DataController
+
+class ScoresScreenViewModel(
+    private val dataController: DataController
+) { }

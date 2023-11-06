@@ -1,4 +1,7 @@
 package org.helios.mythicdoors.viewmodel
 
-class LoginScreenViewModel {
-}
+import org.helios.mythicdoors.model.DataController
+
+class LoginScreenViewModel(
+    private val dataController: DataController
+) { }
