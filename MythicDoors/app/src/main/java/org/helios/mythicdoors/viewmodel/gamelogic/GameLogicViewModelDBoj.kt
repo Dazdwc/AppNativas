@@ -23,7 +23,7 @@ class GameLogicViewModelDBoj(
     private lateinit var combatResults: CombatResultsStore
     private val combatConfrontationResult: Boolean by lazy { generateCombat() }
 
-    fun getUser(): User { return user }
+  //  fun getUser(): User { return user }
 
     fun getNewUserStadistics(): User {
         if (combatConfrontationResult) {
