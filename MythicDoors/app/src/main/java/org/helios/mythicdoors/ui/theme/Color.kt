@@ -13,5 +13,5 @@ val Pink40 = Color(0xFF7D5260)
 // App colors palette
 val LightBlue = Color(0xFFD9E4EC)
 val MediumBlue = Color(0xFFB7CFDC)
-val DarkBlue = Color(0xFF38E572)
+val DarkBlue = Color(0xFF385E72)
 val SoftOrange = Color(0xFFEDD050)
