@@ -14,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 import org.helios.mythicdoors.model.DataController
+import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.AppNavigation
+import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
 import org.helios.mythicdoors.utils.Connection
 import org.helios.mythicdoors.viewmodel.*
@@ -28,24 +30,41 @@ class MainActivity : ComponentActivity() {
             Connection(appContext)
         }
 
-        private val dataController: DataController by lazy {
-            DataController(dbHelper)
-        }
+        /* DataController se iniciará con el patrón Singleton */
+//        private val dataController: DataController by lazy {
+//            DataController.getInstance(dbHelper)
+//        }
+        private var dataController: DataController? = null
 
+        /* Hay que asegurarse que no se inicialice hasta que no se haya inicializado dataController */
         val viewModelsMap: Map<String, Any> by lazy {
-            mapOf(
-                "mainactivity-screen-viewmodel" to MainActivityViewModel(dataController),
-                "overview-screen-viewmodel" to OverviewScreenViewModel(dataController),
-                "action-result-screen-viewmodel" to ActionResultScreenViewModel(dataController),
-                "game-action-screen-viewmodel" to GameActionScreenViewModel(dataController),
-                "game-opts-screen-viewmodel" to GameOptsScreenViewModel(dataController),
-                "login-screen-viewmodel" to LoginScreenViewModel(dataController),
-                "register-screen-viewmodel" to RegisterScreenViewModel(dataController),
-                "scores-screen-viewmodel" to ScoresScreenViewModel(dataController)
-            )
+            val map = mutableMapOf<String, Any>()
+            dataController?.let {
+                map["mainactivity-screen-viewmodel"] = MainActivityViewModel(it)
+                map["overview-screen-viewmodel"] = OverviewScreenViewModel(it)
+                map["action-result-screen-viewmodel"] = ActionResultScreenViewModel(it)
+                map["game-action-screen-viewmodel"] = GameActionScreenViewModel(it)
+                map["game-opts-screen-viewmodel"] = GameOptsScreenViewModel(it)
+                map["login-screen-viewmodel"] = LoginScreenViewModel(it)
+                map["register-screen-viewmodel"] = RegisterScreenViewModel(it)
+                map["scores-screen-viewmodel"] = ScoresScreenViewModel(it)
+                // ...otros view models que dependen de dataController
+            }
+            map.toMap()
         }
 
-        fun setContext(context: Context) { appContext = context }
+        fun setContext(context: Context) {
+            appContext = context
+            dataController = DataController.getInstance(dbHelper)
+        }
+    }
+
+    private val mainActivityViewModel: MainActivityViewModel by lazy {
+        viewModelsMap["mainactivity-screen-viewmodel"] as MainActivityViewModel
+    }
+
+    private val storeManager: StoreManager by lazy {
+        StoreManager.getInstance()
     }
 
 
@@ -53,6 +72,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContext(applicationContext)
+        storeManager.updateActualUser(User.createEmptyUser())
 
         setContent {
             MythicDoorsTheme {

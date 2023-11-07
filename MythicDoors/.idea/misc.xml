@@ -1,13 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />
   </component>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" languageLevel="JDK_19" project-jdk-name="21" project-jdk-type="JavaSDK">
 =======
   <component name="ProjectRootManager" version="2" languageLevel="JDK_21" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
 >>>>>>> b05b7fe8b165456a33df169b8b788b5c60dd71ae
+=======
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+>>>>>>> 164608f28d257970309b8d86d98838bf3efa70ce
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

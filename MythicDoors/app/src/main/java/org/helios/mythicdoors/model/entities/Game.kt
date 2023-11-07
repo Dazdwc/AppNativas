@@ -25,10 +25,10 @@ data class Game(
             return Game(
                 null,
                 User.createEmptyUser(),
-                0,
-                0,
-                0,
-                0,
+                -1,
+                -1,
+                -1,
+                -1,
                 gameDateTime = LocalDateTime.now())
         }
 
@@ -51,4 +51,7 @@ data class Game(
     }
 
     fun isEmpty(): Boolean { return this.id == null }
+    fun isValid(): Boolean {
+        return !this.user.isEmpty() && this.coin >= 0 && this.level >= 0 && this.score >= 0 && this.maxEnemyLevel >= 0
+    }
 }
