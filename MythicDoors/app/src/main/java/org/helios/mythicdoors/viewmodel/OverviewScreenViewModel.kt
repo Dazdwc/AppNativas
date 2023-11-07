@@ -10,7 +10,7 @@ import org.helios.mythicdoors.navigation.navigateSingleTopTo
 class OverviewScreenViewModel(
     private val dataController: DataController,
 ) {
-    fun navigateToLoginScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+   /*fun navigateToLoginScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         try {
             navController.navigateSingleTopTo("login_screen")
         } catch (e: Exception) {
@@ -19,5 +19,5 @@ class OverviewScreenViewModel(
                 snackbarHostState.showSnackbar("Error: Impossible to navigate to Login Screen")
             }
         }
-    }
+    }*/
 }

@@ -6,13 +6,16 @@ import org.helios.mythicdoors.utils.AppConstants.AVERAGE_DOOR
 import org.helios.mythicdoors.utils.AppConstants.HARD_DOOR
 
 data class DoorDBoj(
-    private val id: String,
+    private var id: String,
     private val minEnemyRangeSetter: Int,
     private val maxEnemyRangeSetter: Int,
     private val bonusRatio: Double,
     private val imageResourceId: Int?
+
+
 ) {
     fun getId(): String { return id }
+    fun setId(s: String): String{return id}
     fun getMinEnemyRangeSetter(): Int { return minEnemyRangeSetter }
     fun getMaxEnemyRangeSetter(): Int { return maxEnemyRangeSetter }
     fun getBonusRatio(): Double { return bonusRatio }

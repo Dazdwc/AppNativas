@@ -20,9 +20,9 @@ import org.helios.mythicdoors.viewmodel.OverviewScreenViewModel
 
 @Composable
 fun OverviewScreen(navController: NavController) {
-    val controller: OverviewScreenViewModel = MainActivity.viewModelsMap["overview-screen-viewmodel"] as OverviewScreenViewModel
+    //val controller: OverviewScreenViewModel = MainActivity.viewModelsMap["overview-screen-viewmodel"] as OverviewScreenViewModel
     val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
+    //val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         topBar = {
@@ -32,7 +32,7 @@ fun OverviewScreen(navController: NavController) {
             // TODO: Add bottom bar
         },
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+           // SnackbarHost(hostState = snackbarHostState)
         }
     ) {contentPadding ->
         Surface(
@@ -57,7 +57,7 @@ fun OverviewScreen(navController: NavController) {
                 Row {
                     Button(
                         onClick = {
-                            controller.navigateToLoginScreen(navController, scope, snackbarHostState)
+                         //   controller.navigateToLoginScreen(navController, scope, snackbarHostState)
                         },
                         modifier = Modifier.padding(top = 30.dp, start = 30.dp, end = 30.dp)
                     ) {
