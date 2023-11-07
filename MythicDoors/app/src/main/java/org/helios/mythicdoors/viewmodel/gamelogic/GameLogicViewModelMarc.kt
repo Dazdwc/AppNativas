@@ -9,13 +9,18 @@ class GameLogicViewModelMarc {
     var lvlRandom: Int? = null
     val bet = 200 //Con click
     var win: Int? = null
+
     enum class Level {
         LOW,
         MEDIUM,
         HIGH
     }
 
-    fun doorLevel(user: User, enemy: Enemy, level: Level): Int? {//Con click le damos el valor a level según la puerta
+    fun doorLevel(
+        user: User,
+        enemy: Enemy,
+        level: Level
+    ): Int? {//Con click le damos el valor a level según la puerta
         //level = Level.HIGH
         val lvlRandom = when (level) {
             Level.LOW -> Random.nextInt(-3, 2)
@@ -36,6 +41,8 @@ class GameLogicViewModelMarc {
 
         return win
     }
+
+}
     /*fun doorLow(user: User, enemy: Enemy): Int? {
         val lvlRandom = Random.nextInt(-3, 2)
         val lvlEnemy = user.getLevel() + lvlRandom
@@ -87,4 +94,3 @@ class GameLogicViewModelMarc {
         return win
     }*/
 
-}
