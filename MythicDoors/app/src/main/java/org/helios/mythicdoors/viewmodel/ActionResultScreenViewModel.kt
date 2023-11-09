@@ -6,36 +6,19 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
+import org.helios.mythicdoors.navigation.goToActionScreen
+import org.helios.mythicdoors.navigation.goToOptsScreen
 
 class ActionResultScreenViewModel(
     private val dataController: DataController
     ): ViewModel() {
-    fun navigateToGameOptsScreen(navController: NavController,
-                                 scope: CoroutineScope,
-                                 snackbarHostState: SnackbarHostState
-    ) {
-        try {
-            navController.navigate("game_opts_screen")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Game Option")
-            }
-        }
+
+    fun navigateToOptsScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+        goToOptsScreen(navController, scope, snackbarHostState)
     }
 
-    fun navigateToGameActionScreen(navController: NavController,
-                                   scope: CoroutineScope,
-                                   snackbarHostState: SnackbarHostState
-    ) {
-        try {
-            navController.navigate("game_action_screen")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Game Action")
-            }
-        }
+    fun navigateToGameActionScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+        goToActionScreen(navController, scope, snackbarHostState)
     }
 
     }
