@@ -70,4 +70,8 @@ class LoginScreenViewModel(
     fun validateEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
+
+    fun navigateToGameOptsScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+
+    }
 }
