@@ -6,6 +6,8 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
+import org.helios.mythicdoors.navigation.goToScoreScreen
+import org.helios.mythicdoors.navigation.goToActionScreen
 
 class GameOptsScreenViewModel(
     private val dataController: DataController
@@ -16,7 +18,7 @@ class GameOptsScreenViewModel(
                                  snackbarHostState: SnackbarHostState
     ) {
         try {
-            navController.navigate("scores_screen")
+            goToScoreScreen(navController, scope,snackbarHostState)
         } catch (e: Exception) {
             e.printStackTrace()
             scope.launch {
@@ -29,7 +31,7 @@ class GameOptsScreenViewModel(
                                     snackbarHostState: SnackbarHostState
     ) {
         try {
-            navController.navigate("game_action_screen")
+            goToActionScreen(navController,scope,snackbarHostState)
         } catch (e: Exception) {
             e.printStackTrace()
             scope.launch {
