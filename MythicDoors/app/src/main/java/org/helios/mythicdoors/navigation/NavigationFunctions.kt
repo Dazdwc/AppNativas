@@ -1,14 +1,15 @@
 package org.helios.mythicdoors.navigation
 
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.navigation.navigateSingleTopTo
 
-//Login Screen
 
-fun navigateToLoginScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+//Login Screen
+fun goToLoginScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
     try {
         navController.navigateSingleTopTo("login_screen")
     } catch (e: Exception) {
@@ -20,7 +21,7 @@ fun navigateToLoginScreen(navController: NavController, scope: CoroutineScope, s
 }
 
 //Register Screen
-fun navigateRegisterScreen(navController: NavController,
+fun goToRegisterScreen(navController: NavController,
                            scope: CoroutineScope,
                            snackbarHostState: SnackbarHostState
 ) {
@@ -36,7 +37,7 @@ fun navigateRegisterScreen(navController: NavController,
 
 //Overview Screen
 
-fun navigateToOverviewScreen(navController: NavController,
+fun goToOverviewScreen(navController: NavController,
                              scope: CoroutineScope,
                              snackbarHostState: SnackbarHostState
 ) {
@@ -52,7 +53,7 @@ fun navigateToOverviewScreen(navController: NavController,
 
 //Scores Screen
 
-fun navigateToScoreScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+fun goToScoreScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
     try {
         navController.navigateSingleTopTo("scores_screen")
     } catch (e: Exception) {
@@ -66,7 +67,7 @@ fun navigateToScoreScreen(navController: NavController, scope: CoroutineScope, s
 
 //Action Result Screen
 
-fun navigateToResultScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+fun goToResultScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
     try {
         navController.navigateSingleTopTo("action_result_screen")
     } catch (e: Exception) {
@@ -80,7 +81,7 @@ fun navigateToResultScreen(navController: NavController, scope: CoroutineScope, 
 
 //Game Action Screen
 
-fun navigateToActionScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+fun goToActionScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
     try {
         navController.navigateSingleTopTo("game_action_screen")
     } catch (e: Exception) {
@@ -94,7 +95,7 @@ fun navigateToActionScreen(navController: NavController, scope: CoroutineScope, 
 
 //Game Opts Screen
 
-fun navigateToOptsScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+fun goToOptsScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
     try {
         navController.navigateSingleTopTo("game_opts_screen")
     } catch (e: Exception) {
