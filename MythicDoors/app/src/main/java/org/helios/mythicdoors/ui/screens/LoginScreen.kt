@@ -91,6 +91,7 @@ fun LoginScreen(navController: NavController) {
                         sizeIn(minWidth = 70.dp, minHeight = 50.dp),
                         onClick = {
                             LoginSend(username,password)
+
                             }
                     ) {
                         Text(text = "Enviar")
