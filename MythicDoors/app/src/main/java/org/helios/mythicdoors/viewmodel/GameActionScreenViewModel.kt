@@ -16,13 +16,6 @@ class GameActionScreenViewModel (
                                             scope: CoroutineScope,
                                             snackbarHostState: SnackbarHostState
 ) {
-    try {
         goToResultScreen(navController, scope,snackbarHostState)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        scope.launch {
-            snackbarHostState.showSnackbar("Error: Impossible to navigate to Game Score Screen")
-        }
-    }
 } }
 
