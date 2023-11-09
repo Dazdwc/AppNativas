@@ -4,119 +4,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-<<<<<<< HEAD
-//import androidx.compose.foundation.layout.ColumnScopeInstance.align
-import androidx.compose.material3.Button
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-=======
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
->>>>>>> 8f905743e3619fe54242fc9cd75c58bce63f4c55
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-<<<<<<< HEAD
-import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
-=======
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
->>>>>>> 8f905743e3619fe54242fc9cd75c58bce63f4c55
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
-<<<<<<< HEAD
-import org.helios.mythicdoors.viewmodel.OverviewScreenViewModel
-
-@Composable
-fun LoginScreen(navController: NavController) {
-
-
-    var username by remember { mutableStateOf("Username") }
-    var password by remember { mutableStateOf("Password") }
-
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Text(
-            text = "Mythic Doors",
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier
-                .padding(top = 30.dp, bottom = 30.dp)
-                .fillMaxWidth()
-                .wrapContentWidth(Alignment.CenterHorizontally),
-        )
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(top = 30.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Login",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 30.dp)
-                )
-                Text(
-                    text = "Username",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 10.dp)
-                )
-                TextField(
-                    value = username,
-                    onValueChange = { username = it }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Password",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 10.dp)
-                )
-                TextField(
-                    value = password,
-                    onValueChange = { password = it }
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 15.dp, end = 16.dp),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    FloatingActionButton(
-                        modifier = Modifier.
-                        sizeIn(minWidth = 70.dp, minHeight = 50.dp),
-                        onClick = {
-                            LoginSend(username,password)
-
-                            }
-                    ) {
-                        Text(text = "Enviar")
-
-                    }
-                }
-            }
-=======
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.viewmodel.LoginScreenViewModel
 import androidx.compose.runtime.livedata.observeAsState
@@ -148,184 +49,183 @@ fun LoginScreen(navController: NavController) {
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
->>>>>>> 8f905743e3619fe54242fc9cd75c58bce63f4c55
         }
-        ) { contentPadding ->
-            Surface(
+    ) { contentPadding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Text(
+                text = "Mythic Doors",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
-                color = MaterialTheme.colorScheme.background
+                    .padding(top = 30.dp, bottom = 30.dp)
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally),
+            )
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Mythic Doors",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
+                val maxWidth = this.maxWidth
+                Column(
                     modifier = Modifier
-                        .padding(top = 30.dp, bottom = 30.dp)
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally),
-                )
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                        .width(maxWidth.minus(maxWidth * 0.20f))
+                        .padding(top = 30.dp, bottom = 10.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val maxWidth = this.maxWidth
-                    Column(
+                    Text(
+                        text = "Login",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(bottom = 50.dp)
+                    )
+                    Row(
                         modifier = Modifier
-                            .width(maxWidth.minus(maxWidth * 0.20f))
-                            .padding(top = 30.dp, bottom = 10.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .fillMaxWidth()
+                            .padding(bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Login",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.padding(bottom = 50.dp)
+                        Icon(
+                            modifier = Modifier
+                                .padding(end = 10.dp)
+                                .size(40.dp, 40.dp),
+                            imageVector = ImageVector.vectorResource(id = R.drawable.user_check_500),
+                            contentDescription = "User account icon",
+                            tint = MaterialTheme.colorScheme.secondary,
                         )
-                        Row(
+                        TextField(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .padding(end = 10.dp)
-                                    .size(40.dp, 40.dp),
-                                imageVector = ImageVector.vectorResource(id = R.drawable.user_check_500),
-                                contentDescription = "User account icon",
-                                tint = MaterialTheme.colorScheme.secondary,
-                            )
-                            TextField(
-                                modifier = Modifier
-                                    .padding(end = 48.dp)
-                                    .background(MaterialTheme.colorScheme.primary)
-                                    .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
-                                    .weight(1f),
-                                value = userEmail,
-                                onValueChange = {
-                                    userEmail = it
-                                    isEmailValid = controller.validateEmail(userEmail)
-                                },
-                                label = { Text("Email") },
-                                placeholder = {
-                                    Text(
-                                        "Your Email",
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                },
-                                isError = !isEmailValid,
-                            )
-                        }
-                        isEmailValid.takeIf { !it }?.run { Text(
-                            text = "Please enter a valid email address",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(bottom = 10.dp)
-                        ) }
-                        Row(
+                                .padding(end = 48.dp)
+                                .background(MaterialTheme.colorScheme.primary)
+                                .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                .weight(1f),
+                            value = userEmail,
+                            onValueChange = {
+                                userEmail = it
+                                isEmailValid = controller.validateEmail(userEmail)
+                            },
+                            label = { Text("Email") },
+                            placeholder = {
+                                Text(
+                                    "Your Email",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            },
+                            isError = !isEmailValid,
+                        )
+                    }
+                    isEmailValid.takeIf { !it }?.run { Text(
+                        text = "Please enter a valid email address",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    ) }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 20.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .padding(end = 10.dp)
+                                .size(40.dp, 40.dp),
+                            imageVector = ImageVector.vectorResource(id = R.drawable.key_500),
+                            contentDescription = "Key icon",
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.primary)
+                                .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                .weight(1f),
+                            value = password,
+                            onValueChange = { password = it },
+                            label = { Text("Password") },
+                            visualTransformation = passwordVisibilityOption.takeIf { it }
+                                ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
+                        )
+                        Icon(
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .size(40.dp, 40.dp)
+                                .clickable { passwordVisibilityOption = !passwordVisibilityOption },
+                            imageVector = passwordVisibilityIcon,
+                            contentDescription = "Eye icon",
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp, bottom = 30.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .padding(end = 10.dp)
+                                .size(40.dp, 40.dp)
+                                .clickable { controller.navigateRegisterScreen(navController, scope, snackbarHostState) },
+                            imageVector = ImageVector.vectorResource(id = R.drawable.user_add_500),
+                            contentDescription = "Add user account icon",
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                        Text(
+                            text = "New User",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .clickable { controller.navigateRegisterScreen(navController, scope, snackbarHostState) }
                                 .padding(bottom = 20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .padding(end = 10.dp)
-                                    .size(40.dp, 40.dp),
-                                imageVector = ImageVector.vectorResource(id = R.drawable.key_500),
-                                contentDescription = "Key icon",
-                                tint = MaterialTheme.colorScheme.secondary,
-                            )
-                            TextField(
-                                modifier = Modifier
-                                    .background(MaterialTheme.colorScheme.primary)
-                                    .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
-                                    .weight(1f),
-                                value = password,
-                                onValueChange = { password = it },
-                                label = { Text("Password") },
-                                visualTransformation = passwordVisibilityOption.takeIf { it }
-                                    ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
-                            )
-                            Icon(
-                                modifier = Modifier
-                                    .padding(start = 10.dp)
-                                    .size(40.dp, 40.dp)
-                                    .clickable { passwordVisibilityOption = !passwordVisibilityOption },
-                                imageVector = passwordVisibilityIcon,
-                                contentDescription = "Eye icon",
-                                tint = MaterialTheme.colorScheme.secondary,
-                            )
-                        }
-                        Row(
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(30.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Button(
+                            onClick = {
+                                controller.login(userEmail, password, scope, snackbarHostState)
+                                if (loginSuccessful) controller.navigateToGameOptsScreen(navController, scope, snackbarHostState)
+                            },
+                            enabled = userEmail.isNotEmpty() && password.length >= 6,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 10.dp, bottom = 30.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                                .padding(end = 20.dp)
+                                .weight(1f)
                         ) {
-                            Icon(
-                                modifier = Modifier
-                                    .padding(end = 10.dp)
-                                    .size(40.dp, 40.dp)
-                                    .clickable { controller.navigateRegisterScreen(navController, scope, snackbarHostState) },
-                                imageVector = ImageVector.vectorResource(id = R.drawable.user_add_500),
-                                contentDescription = "Add user account icon",
-                                tint = MaterialTheme.colorScheme.secondary,
-                            )
                             Text(
-                                text = "New User",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .clickable { controller.navigateRegisterScreen(navController, scope, snackbarHostState) }
-                                    .padding(bottom = 20.dp),
+                                text = "LOGIN",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
-                        Row(
+                        Button(
+                            onClick = { controller.navigateToOverviewScreen(navController, scope, snackbarHostState) },
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(30.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                                .padding(start = 20.dp)
+                                .weight(1f)
                         ) {
-                            Button(
-                                onClick = {
-                                    controller.login(userEmail, password, scope, snackbarHostState)
-                                    if (loginSuccessful) controller.navigateToGameOptsScreen(navController, scope, snackbarHostState)
-                                },
-                                enabled = userEmail.isNotEmpty() && password.length >= 6,
-                                modifier = Modifier
-                                    .padding(end = 20.dp)
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = "LOGIN",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onBackground
-                                )
-                            }
-                            Button(
-                                onClick = { controller.navigateToOverviewScreen(navController, scope, snackbarHostState) },
-                                modifier = Modifier
-                                    .padding(start = 20.dp)
-                                    .weight(1f)
-                            ) {
-                                Text(
-                                    text = "CANCEL",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onBackground
-                                )
-                            }
+                            Text(
+                                text = "CANCEL",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
                         }
                     }
                 }
             }
+        }
     }
 }
 
@@ -334,10 +234,4 @@ fun LoginScreen(navController: NavController) {
 @Composable
 fun LoginScreenPreview() {
     LoginScreen(navController = NavController(LocalContext.current))
-}
-
-fun LoginSend(username: String, password: String){
-
-    print(username + password)
-
 }
