@@ -62,7 +62,8 @@ class LoginScreenViewModel(
 
     fun navigateToGameOptsScreen(navController: NavController,
                                  scope: CoroutineScope,
-                                 snackbarHostState: SnackbarHostState) {
+                                 snackbarHostState: SnackbarHostState
+    ) {
         goToOptsScreen(navController, scope, snackbarHostState)
 
     }

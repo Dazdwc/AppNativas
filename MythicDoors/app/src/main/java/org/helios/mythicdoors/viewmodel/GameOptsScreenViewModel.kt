@@ -8,12 +8,13 @@ import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.navigation.goToScoreScreen
 import org.helios.mythicdoors.navigation.goToActionScreen
+import org.helios.mythicdoors.navigation.goToLoginScreen
 
 class GameOptsScreenViewModel(
     private val dataController: DataController
 ): ViewModel() {
 
-    fun navigateToGameScoresScreens(navController: NavController,
+    fun navigateToGameScoresScreen(navController: NavController,
                                  scope: CoroutineScope,
                                  snackbarHostState: SnackbarHostState
     ) {
@@ -24,6 +25,12 @@ class GameOptsScreenViewModel(
                                     snackbarHostState: SnackbarHostState
     ) {
         goToActionScreen(navController,scope,snackbarHostState)
+    }
+    fun navigateToLoginScreen(navController: NavController,
+                                   scope: CoroutineScope,
+                                   snackbarHostState: SnackbarHostState
+    ) {
+        goToLoginScreen(navController,scope,snackbarHostState)
     }
 }
 
