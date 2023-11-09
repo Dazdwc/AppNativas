@@ -11,7 +11,6 @@ class OverviewScreenViewModel(
     private val dataController: DataController,
 ) {
 
-
     fun navigateToLoginScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         goToLoginScreen(navController, scope, snackbarHostState)
     }

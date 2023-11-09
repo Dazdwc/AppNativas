@@ -8,6 +8,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.store.StoreManager
+import org.helios.mythicdoors.navigation.goToOverviewScreen
+import org.helios.mythicdoors.navigation.goToRegisterScreen
+import org.helios.mythicdoors.navigation.goToOptsScreen
 
 class LoginScreenViewModel(
     private val dataController: DataController
@@ -41,7 +44,7 @@ class LoginScreenViewModel(
                                  snackbarHostState: SnackbarHostState
     ) {
         try {
-            navController.navigate("overview_screen")
+            goToOverviewScreen(navController,scope,snackbarHostState)
         } catch (e: Exception) {
             e.printStackTrace()
             scope.launch {
@@ -55,7 +58,7 @@ class LoginScreenViewModel(
                                snackbarHostState: SnackbarHostState
     ) {
         try {
-            navController.navigate("register_screen")
+            goToRegisterScreen(navController, scope, snackbarHostState)
         } catch (e: Exception) {
             e.printStackTrace()
             scope.launch {
@@ -71,7 +74,17 @@ class LoginScreenViewModel(
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    fun navigateToGameOptsScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+    fun navigateToGameOptsScreen(navController: NavController,
+                                 scope: CoroutineScope,
+                                 snackbarHostState: SnackbarHostState) {
+        try {
+            goToOptsScreen(navController, scope, snackbarHostState)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            scope.launch {
+                snackbarHostState.showSnackbar("Error: Impossible to navigate to Game options Screen")
+            }
+        }
 
     }
 }
