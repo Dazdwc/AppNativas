@@ -17,27 +17,13 @@ class GameOptsScreenViewModel(
                                  scope: CoroutineScope,
                                  snackbarHostState: SnackbarHostState
     ) {
-        try {
-            goToScoreScreen(navController, scope,snackbarHostState)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Game Score Screen")
-            }
-        }
+        goToScoreScreen(navController, scope,snackbarHostState)
     }
     fun navigateToGameActionScreen(navController: NavController,
                                     scope: CoroutineScope,
                                     snackbarHostState: SnackbarHostState
     ) {
-        try {
-            goToActionScreen(navController,scope,snackbarHostState)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Action Screen")
-            }
-        }
+        goToActionScreen(navController,scope,snackbarHostState)
     }
 }
 

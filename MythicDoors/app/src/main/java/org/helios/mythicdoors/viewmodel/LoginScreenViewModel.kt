@@ -43,28 +43,14 @@ class LoginScreenViewModel(
                                  scope: CoroutineScope,
                                  snackbarHostState: SnackbarHostState
     ) {
-        try {
-            goToOverviewScreen(navController,scope,snackbarHostState)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Overview Screen")
-            }
-        }
+        goToOverviewScreen(navController,scope,snackbarHostState)
     }
 
     fun navigateRegisterScreen(navController: NavController,
                                scope: CoroutineScope,
                                snackbarHostState: SnackbarHostState
     ) {
-        try {
-            goToRegisterScreen(navController, scope, snackbarHostState)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Register Screen")
-            }
-        }
+        goToRegisterScreen(navController, scope, snackbarHostState)
     }
 
 
@@ -77,14 +63,7 @@ class LoginScreenViewModel(
     fun navigateToGameOptsScreen(navController: NavController,
                                  scope: CoroutineScope,
                                  snackbarHostState: SnackbarHostState) {
-        try {
-            goToOptsScreen(navController, scope, snackbarHostState)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Game options Screen")
-            }
-        }
+        goToOptsScreen(navController, scope, snackbarHostState)
 
     }
 }
