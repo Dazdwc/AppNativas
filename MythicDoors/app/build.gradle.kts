@@ -68,9 +68,9 @@ dependencies {
     implementation("androidx.compose.compiler:compiler:1.5.3")
 
     // Navegación mediante compose
-    implementation("androidx.navigation:navigation-compose:2.7.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.4")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
 
     // Corutinas -> Manejo de la asincronía y la recurrencia
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
@@ -80,4 +80,10 @@ dependencies {
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
     // LottieFiles -> Manejo de animaciones por Json
     //implementation("com.airbnb-android:lottie:6.1.0")
+
+    // Google Material Icons
+    implementation("com.google.android.material:material:1.10.0")
+
+    // Uso de ObserveAsState
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0-alpha08")
 }
