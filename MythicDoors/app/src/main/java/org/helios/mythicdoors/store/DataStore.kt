@@ -2,10 +2,12 @@ package org.helios.mythicdoors.store
 
 import org.helios.mythicdoors.model.entities.EnemyDBoj
 import org.helios.mythicdoors.model.entities.User
+import org.helios.mythicdoors.utils.AppConstants.GameMode
 
 data class AppStore(
     val combatResults: CombatResults = CombatResults(),
-    var actualUser: User? = null
+    var actualUser: User? = null,
+    var gameMode: GameMode = GameMode.SINGLE_PLAYER
     )
 
 data class CombatResults(
@@ -34,9 +36,7 @@ class StoreManager {
         }
     }
 
-    fun getAppStore(): AppStore {
-        return appStore
-    }
+    fun getAppStore(): AppStore { return appStore }
 
     fun updateCombatResults(
         isPlayerWinner: Boolean,
@@ -50,32 +50,7 @@ class StoreManager {
         appStore.combatResults.resultXpAmount = resultXpAmount
     }
 
-    fun updateActualUser(user: User) {
-        appStore.actualUser = user
-    }
+    fun updateActualUser(user: User) { appStore.actualUser = user }
 
+    fun updateGameMode(gameMode: String) { (gameMode == GameMode.MULTI_PLAYER.toString()).let { if(it) appStore.gameMode = GameMode.MULTI_PLAYER else GameMode.SINGLE_PLAYER } }
 }
-
-//class CombatResultsStore {
-//    var currentResults: CombatResults = CombatResults()
-//        private set
-//
-//    fun updateResults(
-//        isPlayerWinner: Boolean,
-//        enemy: EnemyDBoj?,
-//        resultCoinAmount: Double,
-//        resultXpAmount: Int
-//    ) {
-//        currentResults.isPlayerWinner = isPlayerWinner
-//        currentResults.enemy = enemy
-//        currentResults.resultCoinAmount = resultCoinAmount
-//        currentResults.resultXpAmount = resultXpAmount
-//    }
-//}
-
-//data ob CombatResultsStore {
-//    var isPlayerWinner: Boolean = false
-//    var enemy: EnemyDBoj? = null
-//    var resultCoinAmount: Double = 0.0
-//    var resultXpAmount: Double = 0.0
-//}

@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.services
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.model.entities.User
@@ -17,7 +18,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         try {
             return@withContext repository.getAll().takeIf { it.isNotEmpty() }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error getting all users: ${e.message}")
             return@withContext null
         }
     }
@@ -26,7 +27,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         try {
             return@withContext repository.getOne(id).takeIf { !it.isEmpty() }
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error getting user: ${e.message}")
             return@withContext null
         }
     }
@@ -36,7 +37,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
             return@withContext repository.getLast().takeIf { !it.isEmpty() }
 //            if(repository.getAll().any()) return@withContext repository.getLast() else null
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error getting last user: ${e.message}")
             return@withContext null
         }
     }
@@ -49,7 +50,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
                 else repository.updateOne(this) > 0
             } ?: return@withContext false
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error saving user: ${e.message}")
         }
         return@withContext false
     }
@@ -58,7 +59,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         try {
             if (id > 0) return@withContext getUser(id).takeIf { it != null }?.let { repository.deleteOne(id) > 0 } ?: false
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error deleting user: ${e.message}")
         }
         return@withContext false
     }
@@ -67,7 +68,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         try {
             return@withContext getUsers()?.size ?: 0
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error counting users: ${e.message}")
             return@withContext 0
         }
     }
@@ -76,7 +77,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         try {
             return@withContext repository.getAll().any { it.getEmail() == user.getEmail() }
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error checking if user exists: ${e.message}")
         }
         return@withContext false
     }

@@ -1,84 +1,86 @@
 package org.helios.mythicdoors.viewmodel
 
+import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
+import org.helios.mythicdoors.navigation.INavFunctions
+import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.store.StoreManager
 
 class LoginScreenViewModel(
     private val dataController: DataController
-) {
-    val loginSuccessful: MutableLiveData<Boolean> = MutableLiveData(false)
+): ViewModel() {
+    private val navController: NavController
+        get() { return _navController }
+    private val navFunctions: INavFunctions by lazy { NavFunctionsImp.getInstance(navController) }
+
+    private lateinit var _navController: NavController
+    fun setNavController(navController: NavController) {
+        _navController = navController
+    }
+
     private val store: StoreManager by lazy { StoreManager.getInstance() }
+    val loginSuccessful: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    fun login(userEmail: String,
-              userPassword: String,
-              scope: CoroutineScope,
-              snackbarHostState: SnackbarHostState
+    // El password debe contener al menos un número, una mayúscula y un carácter especial
+    private val passwordPattern: Regex = Regex("^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{6,}$")
+
+    suspend fun login(userEmail: String,
+                      userPassword: String,
+                      scope: CoroutineScope,
+                      snackbarHostState: SnackbarHostState
     ) {
         try {
-            scope.launch { dataController.getAllUsers()?.find { it.getEmail() == userEmail && it.getPassword() == userPassword }?.let {
-                loginSuccessful.postValue(true)
-                store.updateActualUser(it)
-            } ?: loginSuccessful.postValue(false)  }
-
-        } catch (e: Exception) {
-            e.printStackTrace().also { loginSuccessful.postValue(false) }
-        } finally {
             scope.launch {
-                loginSuccessful.value?.takeIf { it }?.let { snackbarHostState.showSnackbar("Login successful!") }
-                    ?: snackbarHostState.showSnackbar("Login failed: User not found!")
-            }
+                dataController.getAllUsers()
+                    ?.find { it.getEmail() == userEmail && it.getPassword() == userPassword }
+                    ?.let {
+                        loginSuccessful.value = true
+                        store.updateActualUser(it)
+                }
+            }.join()
+        } catch (e: Exception) {
+            Log.e("LoginScreenViewModel", "Error logging in: ${e.message}").also { loginSuccessful.value = false }
+        }
+        scope.launch {
+            loginSuccessful.value?.takeIf { it }?.let { snackbarHostState.showSnackbar("Login successful!") }
+                ?: snackbarHostState.showSnackbar("Login failed: User not found!")
         }
     }
 
-    fun navigateToOverviewScreen(navController: NavController,
-                                 scope: CoroutineScope,
-                                 snackbarHostState: SnackbarHostState
+    fun navigateToOverviewScreen(
+        scope: CoroutineScope,
+        snackbarHostState: SnackbarHostState
     ) {
-        try {
-            navController.navigate("overview_screen")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Overview Screen")
-            }
-        }
+        navFunctions.navigateToOverviewScreen(scope, snackbarHostState)
     }
 
-    fun navigateRegisterScreen(navController: NavController,
-                               scope: CoroutineScope,
-                               snackbarHostState: SnackbarHostState
+    fun navigateRegisterScreen(
+        scope: CoroutineScope,
+        snackbarHostState: SnackbarHostState
     ) {
-        try {
-            navController.navigate("register_screen")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Register Screen")
-            }
-        }
+        navFunctions.navigateRegisterScreen(scope, snackbarHostState)
     }
 
-    fun navigateToGameOptsScreen(navController: NavController,
-                                 scope: CoroutineScope,
-                                 snackbarHostState: SnackbarHostState
+    fun navigateToGameOptsScreen(
+        scope: CoroutineScope,
+        snackbarHostState: SnackbarHostState
     ) {
-        try {
-            navController.navigate("game_opts_screen")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Game Options Screen")
-            }
-        }
+        navFunctions.navigateGameOptsScreen(scope, snackbarHostState)
     }
 
     fun validateEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    fun validatePassword(password: String): Boolean {
+        return password.length >= 6 && password.contains(passwordPattern)
     }
 }
