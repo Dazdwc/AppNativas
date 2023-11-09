@@ -64,19 +64,8 @@ class LoginScreenViewModel(
         }
     }
 
-    fun navigateToGameOptsScreen(navController: NavController,
-                                 scope: CoroutineScope,
-                                 snackbarHostState: SnackbarHostState
-    ) {
-        try {
-            navController.navigate("game_opts_screen")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Game Options Screen")
-            }
-        }
-    }
+
+
 
     fun validateEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
