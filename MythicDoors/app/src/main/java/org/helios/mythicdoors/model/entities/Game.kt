@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.model.entities
 
+
 import java.time.LocalDateTime
 
 data class Game(

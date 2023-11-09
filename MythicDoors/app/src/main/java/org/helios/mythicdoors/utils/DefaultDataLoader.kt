@@ -37,4 +37,6 @@ suspend fun checkIfDatabaseIsEmpty(userService: IUserService): Boolean = withCon
         e.printStackTrace()
         return@withContext false
     }
+
 }
+

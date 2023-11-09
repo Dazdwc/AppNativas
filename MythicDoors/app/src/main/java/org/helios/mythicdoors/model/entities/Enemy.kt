@@ -1,5 +1,3 @@
-package org.helios.mythicdoors.model.entities
-
 data class Enemy(
     private val id: Long?,
     private val name: String,
@@ -17,8 +15,8 @@ data class Enemy(
     fun setImage(image: String) { this.image = image }
 
     /*
-    * Implementación del patrón Fabric
-    */
+
+Implementación del patrón Fabric*/
     companion object {
         fun create(
             name: String,
@@ -28,6 +26,7 @@ data class Enemy(
             return Enemy(null, name, level, coinReward, null)
         }
     }
+
 
     fun isEmpty(): Boolean {
         return id == null
