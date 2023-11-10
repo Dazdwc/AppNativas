@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.viewmodel.gamelogic
 
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.DoorDBoj
@@ -11,7 +12,7 @@ class GameLogicViewModelDBoj(
     private val dataController: DataController,
     private val chosenDoor: String,
     private val bet: Int
-) {
+): ViewModel() {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val storeManager: StoreManager by lazy { StoreManager.getInstance() }
     /* En esta ocasión no podemos continuar con la lógica hasta tener al usuario, así que la captura de usuario se genera en una coroutine que bloquea el resto de lógica */
@@ -65,7 +66,7 @@ class GameLogicViewModelDBoj(
             calculateScore(),
             increaseCurrentLevelIfNeeded(),
             storeManager.getAppStore().combatResults.resultXpAmount,
-            storeManager.getAppStore().combatResults.resultCoinAmount.toInt(),
+            storeManager.getAppStore().combatResults.resultCoinAmount,
             user.getGoldCoins(),
             user.getIsActive(),
             user.getCreatedAt()
@@ -105,7 +106,7 @@ class GameLogicViewModelDBoj(
                 false,
                 enemy,
                 user.getCoins().takeIf { it >= bet }?.minus(bet) ?: -1,
-                0
+                user.getExperience().coerceAtLeast(0)
             )
             return true
         } catch (e: Exception) {
@@ -117,7 +118,7 @@ class GameLogicViewModelDBoj(
 
     private fun getXpReward(): Int { return enemy.getLevel().minus(user.getLevel()).times(door.getBonusRatio()).toInt() }
 
-    private fun calculateScore(): Int { return if (storeManager.getAppStore().combatResults.resultCoinAmount > user.getScore()) storeManager.getAppStore().combatResults.resultCoinAmount.toInt() else user.getScore() }
+    private fun calculateScore(): Int { return if (storeManager.getAppStore().combatResults.resultCoinAmount > user.getScore()) storeManager.getAppStore().combatResults.resultCoinAmount else user.getScore() }
 
     private fun increaseCurrentLevelIfNeeded(): Int {
         val experienceIncrement = 100

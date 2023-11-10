@@ -19,7 +19,7 @@ fun AppNavigation() {
     ) {
         composable(AppDestination.Overview.route)  { OverviewScreen(navController = navController) }
         composable(AppDestination.Login.route)  { LoginScreen(navController = navController) }
-        composable(AppDestination.Register.route)  { ResgisterScreen(navController = navController) }
+        composable(AppDestination.Register.route)  { RegisterScreen(navController = navController) }
         composable(AppDestination.GameOpts.route)  { GameOptsScreen(navController = navController) }
         composable(AppDestination.GameAction.route)  { GameActionScreen(navController = navController) }
         composable(AppDestination.ActionResult.route) { ActionResultScreen(navController = navController) }

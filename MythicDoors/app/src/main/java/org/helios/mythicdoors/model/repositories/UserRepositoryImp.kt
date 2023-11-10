@@ -3,6 +3,7 @@ package org.helios.mythicdoors.model.repositories
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.model.entities.User
@@ -28,68 +29,62 @@ class UserRepositoryImp(dbHelper: Connection):
 
     override suspend fun getAll(): List<User> = withContext(Dispatchers.IO) {
         val usersList: MutableList<User> = mutableListOf()
-
-        dbRead.use {db ->
-            try {
-                db.query(
-                    Contracts.UserTableContract.TABLE_NAME,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ).use {cursor ->
-                    if (!cursor.moveToFirst()) return@withContext emptyList<User>()
-                    with(cursor) {
-                        do { usersList.add(mapUser(cursor))} while (moveToNext())
-                    }
-                    return@withContext usersList
+        try {
+            dbRead.query(
+                Contracts.UserTableContract.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ).use {cursor ->
+                if (!cursor.moveToFirst()) return@withContext emptyList<User>()
+                with(cursor) {
+                    do { usersList.add(mapUser(cursor))} while (moveToNext())
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            Log.e("UserRepositoryImp", "Error getting all users: ${e.message}")
         }
-        return@withContext emptyList<User>()
+        return@withContext usersList
     }
 
     override suspend fun getOne(id: Long): User = withContext(Dispatchers.IO) {
-        dbRead.use { db ->
-            try {
-                db.query(
-                    Contracts.UserTableContract.TABLE_NAME,
-                    null,
-                    "${Contracts.UserTableContract.COLUMN_NAME_ID} = ?",
-                    arrayOf(id.toString()),
-                    null,
-                    null,
-                    null,
-                    null,
-                ).use { cursor ->
-                    if (cursor.moveToFirst()) return@withContext mapUser(cursor)
-                }
-            } catch(e: Exception) {
-                e.printStackTrace()
+        try {
+            dbRead.query(
+                Contracts.UserTableContract.TABLE_NAME,
+                null,
+                "${Contracts.UserTableContract.COLUMN_NAME_ID} = ?",
+                arrayOf(id.toString()),
+                null,
+                null,
+                null,
+                null,
+            ).use { cursor ->
+                if (cursor.moveToFirst()) return@withContext mapUser(cursor)
             }
+        } catch(e: Exception) {
+            Log.e("UserRepositoryImp", "Error getting user: ${e.message}")
         }
         return@withContext User.createEmptyUser()
     }
 
     override suspend fun insertOne(item: User): Long = withContext(Dispatchers.IO) {
-        dbWrite.use { db ->
-            try{
+        try {
+            dbWrite.use { db ->
                 contentValues= buildUser(item)
                 return@withContext db.insert(Contracts.UserTableContract.TABLE_NAME, null, contentValues)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return@withContext  -1
             }
+        } catch (e: Exception) {
+            Log.e("UserRepositoryImp", "Error inserting user: ${e.message}")
+            return@withContext  -1
         }
     }
 
     override suspend fun updateOne(item: User): Long = withContext(Dispatchers.IO) {
-        dbWrite.use { db ->
-            try {
+        try {
+dbWrite.use { db ->
                 contentValues = buildUser(item)
                 return@withContext db.update(
                     Contracts.UserTableContract.TABLE_NAME,
@@ -97,71 +92,65 @@ class UserRepositoryImp(dbHelper: Connection):
                     "${Contracts.UserTableContract.COLUMN_NAME_ID} = ?",
                     arrayOf(item.getId().toString())
                 ).toLong()
-            } catch(e: Exception) {
-                e.printStackTrace()
-                return@withContext -1
             }
+        } catch(e: Exception) {
+            Log.e("UserRepositoryImp", "Error updating user: ${e.message}")
+            return@withContext -1
         }
     }
 
     override suspend fun deleteOne(id: Long): Long = withContext(Dispatchers.IO) {
-        dbWrite.use { db ->
-            try {
+        try {
+            dbWrite.use { db ->
                 return@withContext db.delete(
                     Contracts.UserTableContract.TABLE_NAME,
                     "${Contracts.UserTableContract.COLUMN_NAME_ID} = ?",
                     arrayOf(id.toString())
-                ).toLong(
-                )
-            } catch(e: Exception) {
-                e.printStackTrace()
-                return@withContext -1
+                ).toLong()
             }
+        } catch(e: Exception) {
+            Log.e("UserRepositoryImp", "Error deleting user: ${e.message}")
+            return@withContext -1
         }
     }
 
     override suspend fun getLast(): User = withContext(Dispatchers.IO) {
-        dbRead.use { db ->
-            try {
-                db.query(
-                    Contracts.UserTableContract.TABLE_NAME,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    "${Contracts.UserTableContract.COLUMN_NAME_ID} DESC",
-                    "1"
-                ).use { cursor ->
-                    if (cursor.moveToFirst()) return@withContext mapUser(cursor)
-                }
-            } catch(e: Exception) {
-                e.printStackTrace()
+        try {
+            dbRead.query(
+                Contracts.UserTableContract.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "${Contracts.UserTableContract.COLUMN_NAME_ID} DESC",
+                "1"
+            ).use { cursor ->
+                if (cursor.moveToFirst()) return@withContext mapUser(cursor)
             }
+        } catch(e: Exception) {
+            Log.e("UserRepositoryImp", "Error getting last user: ${e.message}")
         }
         return@withContext User.createEmptyUser()
     }
 
     override suspend fun count(): Int = withContext(Dispatchers.IO) {
-        dbRead.use { db ->
-            try {
-                db.query(
-                    Contracts.UserTableContract.TABLE_NAME,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                ).use { cursor ->
-                    if (cursor.moveToFirst()) return@withContext cursor.count
-                }
+        try {
+            dbRead.query(
+                Contracts.UserTableContract.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+            ).use { cursor ->
+                if (cursor.moveToFirst()) return@withContext cursor.count
             }
-            catch(e: Exception) {
-                e.printStackTrace()
-                return@withContext -1
-            }
+        } catch(e: Exception) {
+            Log.e("UserRepositoryImp", "Error counting users: ${e.message}")
+            return@withContext -1
         }
         return@withContext 0
     }

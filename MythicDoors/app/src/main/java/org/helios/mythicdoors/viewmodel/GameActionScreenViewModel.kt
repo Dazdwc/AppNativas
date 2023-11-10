@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.viewmodel
 
+<<<<<<< HEAD
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,98 +35,20 @@ import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.DoorDBoj
 
+
 class GameActionScreenViewModel (
     private val dataController: DataController
+): ViewModel() {
+    private val navController: NavController
+        get() { return _navController }
+    private val navFunctions: INavFunctions by lazy { NavFunctionsImp.getInstance(navController) }
 
-
-) {
-
-
-}
-@Composable
-fun ClickableImage(door: DoorDBoj, modifier: Modifier = Modifier) {
-
-    Row {
-        Image(
-            painter = painterResource(id = R.drawable.easy_door), // Reemplaza 'tu_imagen' con el nombre de tu imagen
-            contentDescription = null, // Puedes proporcionar una descripción adecuada
-            modifier = modifier
-                .padding(16.dp)
-                .size(115.dp)
-                .offset(y = (-250).dp)
-                .clickable { door.setId("EASY_DOOR") }
-        )
-
-        Image(
-            painter = painterResource(id = R.drawable.average_door), // Reemplaza 'tu_imagen' con el nombre de tu imagen
-            contentDescription = null, // Puedes proporcionar una descripción adecuada
-            modifier = modifier
-                .padding(16.dp)
-                .size(115.dp)
-                .offset(y = (-250).dp)
-                .clickable { door.setId("AVERAGE_DOOR") }
-        )
-
-        Image(
-            painter = painterResource(id = R.drawable.hard_door), // Reemplaza 'tu_imagen' con el nombre de tu imagen
-            contentDescription = null, // Puedes proporcionar una descripción adecuada
-            modifier = modifier
-                .padding(16.dp)
-                .size(115.dp)
-                .offset(y = (-250).dp)
-                .clickable { door.setId("HARD_DOOR")}
-        )
-    }
-}
-
-@Composable
-fun BetButton(){
-    var textValue by remember { mutableStateOf("Texto de ejemplo") }
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        BasicTextField(
-            value = textValue,
-            onValueChange = { textValue = it },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-            keyboardActions = KeyboardActions.Default,
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp))
+    private lateinit var _navController: NavController
+    fun setNavController(navController: NavController) {
+        _navController = navController
     }
 
-    Spacer(modifier = Modifier.height(16.dp))
+    private val store: StoreManager by lazy { StoreManager.getInstance() }
 
-
-    Button(
-        onClick = {
-            // Agrega aquí las acciones que desees al hacer clic en el botón
-        },
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-            .offset(y = (300).dp)
-    ) {
-        Text("BET")
-    }
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun GameActionPreviewPreview() {
-    // En esta función de previsualización, puedes mostrar cómo se verá la vista de previsualización
-    Column {
-
-        BetButton()
-        // Agrega el botón a la vista de previsualización
-        val myDoorObject = DoorDBoj("EASY_DOOR", -3, 1, 1.0, R.drawable.easy_door)
-        ClickableImage(myDoorObject,Modifier.fillMaxHeight().weight(1f))
-
-    }
-}
+    fun getPlayerLevel(): Int { return store.getAppStore().actualUser?.getLevel() ?: 0 }
 

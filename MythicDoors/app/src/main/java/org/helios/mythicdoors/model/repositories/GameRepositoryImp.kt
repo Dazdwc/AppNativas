@@ -2,6 +2,7 @@ package org.helios.mythicdoors.model.repositories
 
 import android.content.ContentValues
 import android.database.Cursor
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.model.entities.Game
@@ -27,68 +28,63 @@ class GameRepositoryImp(dbHelper: Connection):
     override suspend fun getAll(): List<Game> = withContext(Dispatchers.IO) {
         val gamesList: MutableList<Game> = mutableListOf()
 
-        dbRead.use {db ->
-            try {
-                db.query(
-                    Contracts.GameTableContract.TABLE_NAME,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ).use {cursor ->
-                    if (!cursor.moveToFirst()) return@withContext emptyList<Game>()
-                    with(cursor) {
-                        do { gamesList.add(mapGame(cursor))} while (moveToNext())
-                    }
-                    return@withContext gamesList
+        try {
+            dbRead.query(
+                Contracts.GameTableContract.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ).use {cursor ->
+                if (!cursor.moveToFirst()) return@withContext emptyList<Game>()
+                with(cursor) {
+                    do { gamesList.add(mapGame(cursor))} while (moveToNext())
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            Log.e("GameRepositoryImp", "Error getting all games: ${e.message}")
         }
         return@withContext emptyList<Game>()
     }
 
     override suspend fun getOne(id: Long): Game = withContext(Dispatchers.IO) {
-        dbRead.use { db ->
-            try {
-                db.query(
-                    Contracts.GameTableContract.TABLE_NAME,
-                    null,
-                    "${Contracts.GameTableContract.COLUMN_NAME_ID} = ?",
-                    arrayOf(id.toString()),
-                    null,
-                    null,
-                    null,
-                    null,
-                ).use { cursor ->
-                    if (cursor.moveToFirst()) return@withContext mapGame(cursor)
-                }
-            } catch(e: Exception) {
-                e.printStackTrace()
+        try {
+            dbRead.query(
+                Contracts.GameTableContract.TABLE_NAME,
+                null,
+                "${Contracts.GameTableContract.COLUMN_NAME_ID} = ?",
+                arrayOf(id.toString()),
+                null,
+                null,
+                null,
+                null,
+            ).use { cursor ->
+                if (cursor.moveToFirst()) return@withContext mapGame(cursor)
             }
+        } catch(e: Exception) {
+            Log.e("GameRepositoryImp", "Error getting game: ${e.message}")
         }
         return@withContext Game.createEmptyGame()
     }
 
     override suspend fun insertOne(item: Game): Long = withContext(Dispatchers.IO) {
-        dbWrite.use { db ->
-            try{
+        try {
+            dbWrite.use {db ->
                 contentValues.clear()
                 contentValues.putAll(buildGame(item))
                 return@withContext db.insert(Contracts.GameTableContract.TABLE_NAME, null, contentValues)
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            Log.e("GameRepositoryImp", "Error inserting game: ${e.message}")
         }
         return@withContext -1
     }
 
     override suspend fun updateOne(item: Game): Long = withContext(Dispatchers.IO) {
-        dbWrite.use { db ->
-            try {
+        try {
+            dbWrite.use { db ->
                 contentValues.clear()
                 contentValues.putAll(buildGame(item))
                 return@withContext db.update(
@@ -97,70 +93,64 @@ class GameRepositoryImp(dbHelper: Connection):
                     "${Contracts.GameTableContract.COLUMN_NAME_ID} = ?",
                     arrayOf(item.getId().toString())
                 ).toLong()
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            Log.e("GameRepositoryImp", "Error updating game: ${e.message}")
         }
         return@withContext -1
     }
 
     override suspend fun deleteOne(id: Long): Long = withContext(Dispatchers.IO) {
-        dbWrite.use { db ->
-            try {
+        try {
+            dbWrite.use { db ->
                 return@withContext db.delete(
                     Contracts.GameTableContract.TABLE_NAME,
                     "${Contracts.GameTableContract.COLUMN_NAME_ID} = ?",
                     arrayOf(id.toString())
                 ).toLong()
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch(e: Exception) {
+            Log.e("GameRepositoryImp", "Error deleting game: ${e.message}")
         }
         return@withContext -1
     }
 
     override suspend fun getLast(): Game = withContext(Dispatchers.IO) {
-        dbRead.use { db ->
-            try {
-                db.query(
-                    Contracts.GameTableContract.TABLE_NAME,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    "${Contracts.GameTableContract.COLUMN_NAME_ID} DESC",
-                    "1"
-                ).use { cursor ->
-                    if (cursor.moveToFirst()) return@withContext mapGame(cursor)
-                }
-            } catch(e: Exception) {
-                e.printStackTrace()
+        try {
+            dbRead.query(
+                Contracts.GameTableContract.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "${Contracts.GameTableContract.COLUMN_NAME_ID} DESC",
+                "1"
+            ).use { cursor ->
+                if (cursor.moveToFirst()) return@withContext mapGame(cursor)
             }
+        } catch(e: Exception) {
+            Log.e("GameRepositoryImp", "Error getting last game: ${e.message}")
         }
         return@withContext Game.createEmptyGame()
     }
 
-    override suspend fun count(): Int = withContext(Dispatchers.IO)
-    {
-        dbRead.use { db ->
-            try {
-                db.query(
-                    Contracts.GameTableContract.TABLE_NAME,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ).use { cursor ->
-                    if (cursor.moveToFirst()) return@withContext cursor.count
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return@withContext -1
+    override suspend fun count(): Int = withContext(Dispatchers.IO) {
+        try {
+            dbRead.query(
+                Contracts.GameTableContract.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ).use { cursor ->
+                if (cursor.moveToFirst()) return@withContext cursor.count
             }
+        } catch(e: Exception) {
+            Log.e("GameRepositoryImp", "Error counting games: ${e.message}")
         }
         return@withContext 0
     }

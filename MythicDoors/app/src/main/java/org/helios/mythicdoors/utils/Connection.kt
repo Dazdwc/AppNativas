@@ -3,6 +3,7 @@ package org.helios.mythicdoors.utils
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import org.helios.mythicdoors.utils.Contracts.*
 
 class Connection(context: Context?):
@@ -13,10 +14,27 @@ class Connection(context: Context?):
         DatabaseContract.DATABASE_VERSION),
     AutoCloseable
 {
+    init {
+        appContext = context
+    }
+
+    companion object {
+        private var appContext: Context? = null
+
+        fun setContext(context: Context) {
+            appContext = context
+        }
+
+        fun getContext(): Context? {
+            return appContext
+        }
+    }
+
+
     override fun onCreate(db: SQLiteDatabase?) {
         try {
             if (db != null) createTables(db)
-            print("DB and tables created. Welcome to the Matrix, Neo!")
+            Log.w("Connection", "DB and tables created. Welcome to the Matrix, Neo!")
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -31,7 +49,7 @@ class Connection(context: Context?):
     }
 
     override fun close() {
-        print("Closing connection... Back to reality, Neo!")
+        Log.w("Connection", "Closing connection... Back to reality, Neo!")
         super.close()
     }
 
@@ -39,8 +57,7 @@ class Connection(context: Context?):
         try {
                 DatabaseTablesCreator.dbTablesList.forEach { db?.execSQL(it) }
             } catch (e: android.database.SQLException) {
-                print("Error creating tables")
-                e.printStackTrace()
+                Log.e("Connection", "Error creating tables: ${e.message}")
         }
     }
 }
