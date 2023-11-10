@@ -14,6 +14,7 @@ class Connection(context: Context?):
         DatabaseContract.DATABASE_VERSION),
     AutoCloseable
 {
+    /* Este código permite tanto trabajar con Singleton como, en un futuro, implementar DI con Dagger */
     init {
         appContext = context
     }
@@ -36,7 +37,7 @@ class Connection(context: Context?):
             if (db != null) createTables(db)
             Log.w("Connection", "DB and tables created. Welcome to the Matrix, Neo!")
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("Connection", "Error creating DB: ${e.message}")
         }
     }
 
@@ -44,9 +45,7 @@ class Connection(context: Context?):
         TODO("Not yet implemented")
     }
 
-    override fun onConfigure(db: SQLiteDatabase) {
-        db.setForeignKeyConstraintsEnabled(true)
-    }
+    override fun onConfigure(db: SQLiteDatabase) { db.setForeignKeyConstraintsEnabled(true) }
 
     override fun close() {
         Log.w("Connection", "Closing connection... Back to reality, Neo!")

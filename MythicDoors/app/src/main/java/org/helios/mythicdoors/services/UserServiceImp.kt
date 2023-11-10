@@ -10,7 +10,7 @@ import org.helios.mythicdoors.services.interfaces.IUserService
 import org.helios.mythicdoors.utils.Connection
 
 class UserServiceImp(dbHelper: Connection): IUserService {
-    private var repository: IRepository<User>
+    private val repository: IRepository<User>
 
     init { repository = UserRepositoryImp(dbHelper) }
 
@@ -35,7 +35,6 @@ class UserServiceImp(dbHelper: Connection): IUserService {
     override suspend fun getLastUser(): User? = withContext(Dispatchers.IO) {
         try {
             return@withContext repository.getLast().takeIf { !it.isEmpty() }
-//            if(repository.getAll().any()) return@withContext repository.getLast() else null
         } catch(e: Exception) {
             Log.e("UserServiceImp", "Error getting last user: ${e.message}")
             return@withContext null
@@ -46,8 +45,8 @@ class UserServiceImp(dbHelper: Connection): IUserService {
     override suspend fun saveUser(user: User): Boolean = withContext(Dispatchers.IO) {
         try {
             user.takeIf { it.isValid() }?.run {
-                return@withContext if (isEmpty()) checkIfUserExists(this).takeIf { !it }?.let { repository.insertOne(this) > 0 } ?: false
-                else repository.updateOne(this) > 0
+                return@withContext if (isEmpty()) checkIfUserExists(this).takeIf { !it }?.let { repository.insertOne(this) > 0L } ?: false
+                else repository.updateOne(this) > 0L
             } ?: return@withContext false
         } catch(e: Exception) {
             Log.e("UserServiceImp", "Error saving user: ${e.message}")
@@ -57,7 +56,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
 
     override suspend fun deleteUser(id: Long): Boolean = withContext(Dispatchers.IO) {
         try {
-            if (id > 0) return@withContext getUser(id).takeIf { it != null }?.let { repository.deleteOne(id) > 0 } ?: false
+            if (id > 0L) return@withContext getUser(id).takeIf { it != null }?.let { repository.deleteOne(id) > 0L } ?: false
         } catch(e: Exception) {
             Log.e("UserServiceImp", "Error deleting user: ${e.message}")
         }

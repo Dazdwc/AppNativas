@@ -15,6 +15,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
+
         //startDestination = AppDestination.Overview.route
         startDestination = AppDestination.Scores.route
     ) {

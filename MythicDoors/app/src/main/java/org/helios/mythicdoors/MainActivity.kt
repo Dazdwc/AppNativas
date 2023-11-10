@@ -33,9 +33,7 @@ class MainActivity : ComponentActivity() {
     companion object {
         private lateinit var appContext: Context
 
-        private val dbHelper: Connection by lazy {
-            Connection(appContext)
-        }
+        private val dbHelper: Connection by lazy { Connection(appContext) }
 
         lateinit var dataController: DataController
 
