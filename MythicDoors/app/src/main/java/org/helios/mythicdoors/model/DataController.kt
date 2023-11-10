@@ -16,8 +16,9 @@ class DataController @Inject constructor(
 ) {
     private val userService: IUserService = UserServiceImp(dbHelper)
     private val gameService: IGameService = GameServiceImp(dbHelper)
+
     /*
-     * Aplicamos un patrón Singgleton para crear el controlador de datos.
+     * Aplicamos un patrón Singleton para crear el controlador de datos.
      */
     companion object {
         @Volatile

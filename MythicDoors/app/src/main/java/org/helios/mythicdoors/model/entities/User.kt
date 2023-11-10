@@ -72,6 +72,7 @@ data class User(
     }
 
     fun isEmpty(): Boolean { return this.id == null }
+
     fun isValid(): Boolean {
         return this.name.isNotEmpty() && this.email.isNotEmpty() && this.password.isNotEmpty() && this.score >= 0 && this.level >= 0 && this.experience >= 0 && this.coins >= 0 && this.goldCoins >= 0
     }

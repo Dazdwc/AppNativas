@@ -10,8 +10,18 @@ class NavFunctionsImp(
     private val navController: NavController,
 ): INavFunctions {
 
+    /* Aplicamos el patrón Singleton */
     companion object {
+        @Volatile
+        private var instance : NavFunctionsImp? = null
+
         fun getInstance(navController: NavController): NavFunctionsImp {
+            return instance ?: synchronized(this) {
+                instance ?: buildNavFunctionsImp(navController).also { instance = it }
+            }
+        }
+
+        private fun buildNavFunctionsImp(navController: NavController): NavFunctionsImp {
             return NavFunctionsImp(navController)
         }
     }
