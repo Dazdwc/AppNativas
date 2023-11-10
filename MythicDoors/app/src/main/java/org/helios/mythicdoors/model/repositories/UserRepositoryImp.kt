@@ -157,7 +157,7 @@ dbWrite.use { db ->
 
     private fun buildUser(user: User): ContentValues {
         return ContentValues().apply {
-            //if (user.getId() != null) put(Contracts.UserTableContract.COLUMN_NAME_ID, user.getId())
+            if (user.getId() != null) put(Contracts.UserTableContract.COLUMN_NAME_ID, user.getId())
             put(Contracts.UserTableContract.COLUMN_NAME_NAME, user.getName())
             put(Contracts.UserTableContract.COLUMN_NAME_EMAIL, user.getEmail())
             put(Contracts.UserTableContract.COLUMN_NAME_PASSWORD, user.getPassword())
@@ -169,8 +169,6 @@ dbWrite.use { db ->
             put(Contracts.UserTableContract.COLUMN_NAME_IS_ACTIVE, if (user.getIsActive()) 1 else 0)
             put(Contracts.UserTableContract.COLUMN_NAME_CREATED_AT, user.getCreatedAt().toString())
         }
-
-
     }
 
     private fun mapUser(cursor: Cursor): User {

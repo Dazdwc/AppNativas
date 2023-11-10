@@ -40,36 +40,6 @@ class Contracts: BaseColumns {
         const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TABLE_NAME"
     }
 
-    object EnemyTableContract {
-        const val TABLE_NAME = "enemy"
-        const val COLUMN_NAME_ID = "id"
-        const val COLUMN_NAME_NAME = "name"
-        const val COLUMN_NAME_LEVEL = "level"
-        const val COLUMN_NAME_COINREWARD = "coin_reward"
-        const val COLUMN_NAME_IMAGE = "image"
-
-
-        const val SQL_CREATE_ENTRIES =
-                "CREATE TABLE $TABLE_NAME(" +
-                        "$COLUMN_NAME_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "$COLUMN_NAME_NAME TEXT NOT NULL," +
-                        "$COLUMN_NAME_LEVEL NOT NULL," +
-                        "$COLUMN_NAME_COINREWARD} INTEGER NOT NULL," +
-                        "$COLUMN_NAME_IMAGE} TEXT NOT NULL," +
-                        ");"
-
-        const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TABLE_NAME"
-    }
-
-    object DoorTableContract {
-        const val TABLE_NAME = "door"
-
-        const val SQL_CREATE_ENTRIES =
-            ""
-
-        const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TABLE_NAME"
-    }
-
     object GameTableContract {
         const val TABLE_NAME = "game"
         const val COLUMN_NAME_ID = "id"
@@ -98,8 +68,6 @@ class Contracts: BaseColumns {
     companion object DatabaseTablesCreator {
         val dbTablesList: List<String> = listOf(
             UserTableContract.SQL_CREATE_ENTRIES,
-            EnemyTableContract.SQL_CREATE_ENTRIES,
-            DoorTableContract.SQL_CREATE_ENTRIES,
             GameTableContract.SQL_CREATE_ENTRIES
         )
     }
