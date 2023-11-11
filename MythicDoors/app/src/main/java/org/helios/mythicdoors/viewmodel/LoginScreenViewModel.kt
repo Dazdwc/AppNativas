@@ -1,3 +1,4 @@
+
 package org.helios.mythicdoors.viewmodel
 
 import android.util.Log
@@ -6,22 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import org.helios.mythicdoors.model.DataController
-import org.helios.mythicdoors.navigation.INavFunctions
-import org.helios.mythicdoors.navigation.NavFunctionsImp
-import org.helios.mythicdoors.store.StoreManager
-package org.helios.mythicdoors.viewmodel
 
-import android.util.Log
-import androidx.compose.material3.SnackbarHostState
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
