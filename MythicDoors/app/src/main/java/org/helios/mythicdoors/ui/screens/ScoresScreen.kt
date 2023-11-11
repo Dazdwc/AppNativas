@@ -1,70 +1,77 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.model.entities.Game
+import org.helios.mythicdoors.utils.AppConstants
+import org.helios.mythicdoors.viewmodel.LoginScreenViewModel
 import org.helios.mythicdoors.viewmodel.ScoresScreenViewModel
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.graphics.Color
-
-
 
 @Composable
 fun ScoresScreen(navController: NavController) {
- //   val controller: ScoresScreenViewModel =
- //       MainActivity.viewModelsMap["scores-screen-viewmodel"] as ScoresScreenViewModel
- //   val scope = rememberCoroutineScope()
- //   val snackbarHostState = remember { SnackbarHostState() }
+    val controller: ScoresScreenViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SCORES_SCREEN_VIEWMODEL] as ScoresScreenViewModel).apply { setNavController(navController) }
+    var games by remember { mutableStateOf(emptyList<Game>())}
 
-    Surface(
-        modifier = Modifier,
+    Scaffold() { contentPadding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column {
+                Button(onClick = {
+                    controller.createSerGames()
+                    games = controller.game.value.orEmpty()
+                    Log.w("Games","$games")
+                }) {
+                    Text(text = "Actualizar Ladder")
+                }
+                Text(text = "User        ||        Score ||      Lvl Enemy ||      Coins")
+                LazyColumn {
+                    items(games) { game ->
+                        Row(){
 
-        color = Color.DarkGray
-    ){ Column(
-        modifier = Modifier
-            .size(300.dp)
-            .padding(30.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {Box(
-        modifier = Modifier
-            .background(Color.White)
-            .width(300.dp)
-            .height(500.dp)
-        ){Text(
-        text = "Aquí va el Score")
+                            Text(text = " ${game.getUser().getName()}                 ${game.getScore()}                      ${game.getMaxEnemyLevel()}             ${game.getCoin()}")
+                        }
+
+                    }
+                }
             }
-        Spacer(modifier = Modifier.height(35.dp))
-        Button(onClick = {
-         //   controller.navigateToOptsScreen(navController, scope, snackbarHostState)
-        }) {Text(text = "Main Menu")
         }
-
     }
 }
 
 
-}
-
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
-fun PreviewScoresScreen(){
+fun ScoresScreenPreview() {
     ScoresScreen(navController = NavController(LocalContext.current))
-
 }

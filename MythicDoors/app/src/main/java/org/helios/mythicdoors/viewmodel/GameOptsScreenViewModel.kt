@@ -30,4 +30,11 @@ class GameOptsScreenViewModel(
     fun navigateToGameActionScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         navFunctions.navigateGameActionScreen(scope, snackbarHostState)
     }
+    fun navigateToLogin(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+        navFunctions.navigateToLoginScreen(scope, snackbarHostState)
+    }
+
+    fun navigateToScores(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+        navFunctions.navigateScoresScreen(scope, snackbarHostState)
+    }
 }
