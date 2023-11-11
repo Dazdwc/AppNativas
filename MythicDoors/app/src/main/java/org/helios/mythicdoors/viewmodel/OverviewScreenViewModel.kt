@@ -15,20 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OverviewScreenViewModel @Inject constructor(
     private val dataController: DataController,
-<<<<<<< HEAD
-) {
-   /*fun navigateToLoginScreen(navController: NavController, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
-        try {
-            navController.navigateSingleTopTo("login_screen")
-        } catch (e: Exception) {
-            e.printStackTrace()
-            scope.launch {
-                snackbarHostState.showSnackbar("Error: Impossible to navigate to Login Screen")
-            }
-        }
-    }*/
-=======
-): ViewModel() {
+) : ViewModel() {
     private val navController: NavController
         get() { return _navController }
     private val navFunctions: INavFunctions by lazy { NavFunctionsImp.getInstance(navController) }
@@ -41,5 +28,5 @@ class OverviewScreenViewModel @Inject constructor(
     fun navigateToLoginScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         navFunctions.navigateToLoginScreen(scope, snackbarHostState)
     }
->>>>>>> e57e8c0de5598045c94dd99176ffb7ccaeaa9a4b
+
 }
