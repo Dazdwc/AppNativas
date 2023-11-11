@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.services
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.model.entities.User
@@ -9,7 +10,7 @@ import org.helios.mythicdoors.services.interfaces.IUserService
 import org.helios.mythicdoors.utils.Connection
 
 class UserServiceImp(dbHelper: Connection): IUserService {
-    private var repository: IRepository<User>
+    private val repository: IRepository<User>
 
     init { repository = UserRepositoryImp(dbHelper) }
 
@@ -17,7 +18,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         try {
             return@withContext repository.getAll().takeIf { it.isNotEmpty() }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error getting all users: ${e.message}")
             return@withContext null
         }
     }
@@ -26,7 +27,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         try {
             return@withContext repository.getOne(id).takeIf { !it.isEmpty() }
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error getting user: ${e.message}")
             return@withContext null
         }
     }
@@ -34,9 +35,8 @@ class UserServiceImp(dbHelper: Connection): IUserService {
     override suspend fun getLastUser(): User? = withContext(Dispatchers.IO) {
         try {
             return@withContext repository.getLast().takeIf { !it.isEmpty() }
-//            if(repository.getAll().any()) return@withContext repository.getLast() else null
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error getting last user: ${e.message}")
             return@withContext null
         }
     }
@@ -45,20 +45,20 @@ class UserServiceImp(dbHelper: Connection): IUserService {
     override suspend fun saveUser(user: User): Boolean = withContext(Dispatchers.IO) {
         try {
             user.takeIf { it.isValid() }?.run {
-                return@withContext if (isEmpty()) checkIfUserExists(this).takeIf { !it }?.let { repository.insertOne(this) > 0 } ?: false
-                else repository.updateOne(this) > 0
+                return@withContext if (isEmpty()) checkIfUserExists(this).takeIf { !it }?.let { repository.insertOne(this) > 0L } ?: false
+                else repository.updateOne(this) > 0L
             } ?: return@withContext false
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error saving user: ${e.message}")
         }
         return@withContext false
     }
 
     override suspend fun deleteUser(id: Long): Boolean = withContext(Dispatchers.IO) {
         try {
-            if (id > 0) return@withContext getUser(id).takeIf { it != null }?.let { repository.deleteOne(id) > 0 } ?: false
+            if (id > 0L) return@withContext getUser(id).takeIf { it != null }?.let { repository.deleteOne(id) > 0L } ?: false
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error deleting user: ${e.message}")
         }
         return@withContext false
     }
@@ -67,7 +67,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         try {
             return@withContext getUsers()?.size ?: 0
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error counting users: ${e.message}")
             return@withContext 0
         }
     }
@@ -76,7 +76,7 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         try {
             return@withContext repository.getAll().any { it.getEmail() == user.getEmail() }
         } catch(e: Exception) {
-            e.printStackTrace()
+            Log.e("UserServiceImp", "Error checking if user exists: ${e.message}")
         }
         return@withContext false
     }

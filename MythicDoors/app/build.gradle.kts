@@ -42,6 +42,7 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/gradle/incremental.annotation.processors"
         }
     }
 }
@@ -86,4 +87,8 @@ dependencies {
 
     // Uso de ObserveAsState
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0-alpha08")
+
+    // Inyección de dependencias
+    implementation("com.google.dagger:hilt-android:2.46.1")
+    implementation("com.google.dagger:hilt-android-compiler:2.45")
 }

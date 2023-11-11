@@ -1,7 +1,6 @@
 package org.helios.mythicdoors.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -16,12 +15,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.OVERVIEW_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.OverviewScreenViewModel
 
 
 @Composable
 fun OverviewScreen(navController: NavController) {
-    val controller: OverviewScreenViewModel = MainActivity.viewModelsMap["overview-screen-viewmodel"] as OverviewScreenViewModel
+    val controller: OverviewScreenViewModel = (MainActivity.viewModelsMap[OVERVIEW_SCREEN_VIEWMODEL] as OverviewScreenViewModel).apply { setNavController(navController) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -58,9 +58,9 @@ fun OverviewScreen(navController: NavController) {
                 Row {
                     Button(
                         onClick = {
-                            controller.navigateToLoginScreen(navController, scope, snackbarHostState)
+                            controller.navigateToLoginScreen(scope, snackbarHostState)
                         },
-                        modifier = Modifier.padding(top = 30.dp, start = 30.dp, end = 30.dp)
+                        modifier = Modifier.padding(top = 30.dp, start = 30.dp, end = 30.dp),
                     ) {
                         Text(text = "Play",
                             style = MaterialTheme.typography.labelMedium,

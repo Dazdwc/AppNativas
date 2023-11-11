@@ -7,14 +7,18 @@ import org.helios.mythicdoors.services.UserServiceImp
 import org.helios.mythicdoors.services.interfaces.IGameService
 import org.helios.mythicdoors.services.interfaces.IUserService
 import org.helios.mythicdoors.utils.Connection
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DataController(
+@Singleton
+class DataController @Inject constructor(
     dbHelper: Connection
 ) {
     private val userService: IUserService = UserServiceImp(dbHelper)
     private val gameService: IGameService = GameServiceImp(dbHelper)
+
     /*
-     * Aplicamos un patrón Singgleton para crear el controlador de datos.
+     * Aplicamos un patrón Singleton para crear el controlador de datos.
      */
     companion object {
         @Volatile
