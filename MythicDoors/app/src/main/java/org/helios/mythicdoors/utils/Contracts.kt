@@ -40,29 +40,27 @@ class Contracts: BaseColumns {
         const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TABLE_NAME"
     }
 
-    object EnemyTableContract {
-        const val TABLE_NAME = "enemy"
-
-        const val SQL_CREATE_ENTRIES =
-            ""
-
-        const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TABLE_NAME"
-    }
-
-    object DoorTableContract {
-        const val TABLE_NAME = "door"
-
-        const val SQL_CREATE_ENTRIES =
-            ""
-
-        const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TABLE_NAME"
-    }
-
     object GameTableContract {
         const val TABLE_NAME = "game"
+        const val COLUMN_NAME_ID = "id"
+        const val COLUMN_NAME_ID_USER = "id_user"
+        const val COLUMN_NAME_COIN = "coin"
+        const val COLUMN_NAME_LEVEL = "level"
+        const val COLUMN_NAME_SCORE = "score"
+        const val COLUMN_NAME_MAX_ENEMY_LEVEL = "max_enemy_level"
+        const val COLUMN_NAME_GAME_DATE_TIME = "game_date_time"
 
         const val SQL_CREATE_ENTRIES =
-            ""
+            "CREATE TABLE $TABLE_NAME(" +
+                    "$COLUMN_NAME_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "$COLUMN_NAME_ID_USER INTEGER NOT NULL," +
+                    "$COLUMN_NAME_COIN INTEGER NOT NULL," +
+                    "$COLUMN_NAME_LEVEL INTEGER NOT NULL," +
+                    "$COLUMN_NAME_SCORE INTEGER NOT NULL," +
+                    "$COLUMN_NAME_MAX_ENEMY_LEVEL INTEGER NOT NULL," +
+                    "$COLUMN_NAME_GAME_DATE_TIME TEXT NOT NULL," +
+                    "FOREIGN KEY ($COLUMN_NAME_ID_USER) REFERENCES user(id)" +
+                    ");"
 
         const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TABLE_NAME"
     }
@@ -70,8 +68,6 @@ class Contracts: BaseColumns {
     companion object DatabaseTablesCreator {
         val dbTablesList: List<String> = listOf(
             UserTableContract.SQL_CREATE_ENTRIES,
-            EnemyTableContract.SQL_CREATE_ENTRIES,
-            DoorTableContract.SQL_CREATE_ENTRIES,
             GameTableContract.SQL_CREATE_ENTRIES
         )
     }

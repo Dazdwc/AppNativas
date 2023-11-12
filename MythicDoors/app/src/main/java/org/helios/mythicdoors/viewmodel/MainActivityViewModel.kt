@@ -1,14 +1,10 @@
 package org.helios.mythicdoors.viewmodel
 
-import org.helios.mythicdoors.utils.Connection
+import androidx.lifecycle.ViewModel
+import org.helios.mythicdoors.model.DataController
 
 class MainActivityViewModel(
-    dbHelper: Connection,
-    ) {
 
+    private val dataController: DataController
+): ViewModel() {}
 
-
-    fun loadDefaultData(dbHelper: Connection) {
-
-    }
-}

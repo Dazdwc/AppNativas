@@ -1,4 +1,4 @@
 package org.helios.mythicdoors.services.interfaces
 
-interface IEnemyService {
+interface IDataService {
 }
