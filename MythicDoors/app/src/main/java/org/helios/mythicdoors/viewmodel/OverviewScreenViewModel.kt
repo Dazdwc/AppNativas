@@ -12,6 +12,7 @@ import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.navigation.navigateSingleTopTo
 import javax.inject.Inject
 
+
 @HiltViewModel
 class OverviewScreenViewModel @Inject constructor(
     private val dataController: DataController,

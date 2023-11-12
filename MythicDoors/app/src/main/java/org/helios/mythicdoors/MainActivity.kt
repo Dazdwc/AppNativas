@@ -28,6 +28,8 @@ import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels
 import org.helios.mythicdoors.utils.Connection
 import org.helios.mythicdoors.viewmodel.*
 
+
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     companion object {
