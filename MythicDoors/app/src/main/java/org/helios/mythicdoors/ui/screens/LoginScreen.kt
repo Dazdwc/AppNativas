@@ -21,6 +21,8 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.ui.fragments.MenuBar
+import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.LOGIN_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.LoginScreenViewModel
 
@@ -43,17 +45,17 @@ fun LoginScreen(navController: NavController) {
     }
 
     val loginSuccessful by controller.loginSuccessful.observeAsState(false)
-    LaunchedEffect(loginSuccessful) {
-        if (loginSuccessful) controller.navigateToGameOptsScreen(scope, snackbarHostState)
+    LaunchedEffect(loginSuccessful, snackbarHostState) {
+        if (loginSuccessful) {
+            snackbarHostState.currentSnackbarData?.dismiss().run { controller.navigateToGameOptsScreen(scope, snackbarHostState) }
+            controller.resetLoginSuccessful()
+        }
     }
 
 
     Scaffold(
-        topBar = {
-            // TODO: Add top bar
-        },
         bottomBar = {
-            // TODO: Add bottom bar
+            MenuBar(navController)
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -70,7 +72,9 @@ fun LoginScreen(navController: NavController) {
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
-                        .padding(top = 30.dp, bottom = 30.dp)
+                        .padding(
+                            top = ScreenConstants.DOUBLE_PADDING.dp,
+                            bottom = ScreenConstants.DOUBLE_PADDING.dp)
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally),
                 )
@@ -83,7 +87,9 @@ fun LoginScreen(navController: NavController) {
                     Column(
                         modifier = Modifier
                             .width(maxWidth.minus(maxWidth * 0.20f))
-                            .padding(top = 30.dp, bottom = 10.dp),
+                            .padding(
+                                top = ScreenConstants.DOUBLE_PADDING.dp,
+                                bottom = ScreenConstants.AVERAGE_PADDING.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -96,12 +102,12 @@ fun LoginScreen(navController: NavController) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 10.dp),
+                                .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
                                 modifier = Modifier
-                                    .padding(end = 10.dp)
+                                    .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                                     .size(40.dp, 40.dp),
                                 imageVector = ImageVector.vectorResource(id = R.drawable.user_check_500),
                                 contentDescription = "User account icon",
@@ -137,12 +143,12 @@ fun LoginScreen(navController: NavController) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 20.dp),
+                                .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
                                 modifier = Modifier
-                                    .padding(end = 10.dp)
+                                    .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                                     .size(40.dp, 40.dp),
                                 imageVector = ImageVector.vectorResource(id = R.drawable.key_500),
                                 contentDescription = "Key icon",
@@ -165,7 +171,7 @@ fun LoginScreen(navController: NavController) {
                             )
                             Icon(
                                 modifier = Modifier
-                                    .padding(start = 10.dp)
+                                    .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
                                     .size(40.dp, 40.dp)
                                     .clickable { passwordVisibilityOption = !passwordVisibilityOption },
                                 imageVector = passwordVisibilityIcon,
@@ -182,18 +188,20 @@ fun LoginScreen(navController: NavController) {
                                 """.trimMargin(),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(bottom = 10.dp)
+                            modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
                         ) }
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 10.dp, bottom = 30.dp),
+                                .padding(
+                                    top = ScreenConstants.AVERAGE_PADDING.dp,
+                                    bottom = ScreenConstants.DOUBLE_PADDING.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Icon(
                                 modifier = Modifier
-                                    .padding(end = 10.dp)
+                                    .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                                     .size(40.dp, 40.dp)
                                     .clickable {
                                         controller.navigateRegisterScreen(scope, snackbarHostState)
@@ -211,13 +219,13 @@ fun LoginScreen(navController: NavController) {
                                     .clickable {
                                         controller.navigateRegisterScreen(scope, snackbarHostState)
                                     }
-                                    .padding(bottom = 20.dp),
+                                    .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                             )
                         }
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(30.dp),
+                                .padding(ScreenConstants.DOUBLE_PADDING.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
@@ -228,7 +236,7 @@ fun LoginScreen(navController: NavController) {
                                 enabled = isEmailValid && isPasswordValid,
                                 elevation = ButtonDefaults.buttonElevation(2.dp),
                                 modifier = Modifier
-                                    .padding(end = 20.dp)
+                                    .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                                     .weight(1f)
                             ) {
                                 Text(
@@ -241,7 +249,7 @@ fun LoginScreen(navController: NavController) {
                                 onClick = { controller.navigateToOverviewScreen(scope, snackbarHostState) },
                                 elevation = ButtonDefaults.buttonElevation(2.dp),
                                 modifier = Modifier
-                                    .padding(start = 20.dp)
+                                    .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
                                     .weight(1f)
                             ) {
                                 Text(

@@ -15,7 +15,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = /*AppDestination.Overview.route*/ AppDestination.GameAction.route
+        startDestination = AppDestination.Overview.route
     ) {
         composable(AppDestination.Overview.route)  { OverviewScreen(navController = navController) }
         composable(AppDestination.Login.route)  { LoginScreen(navController = navController) }

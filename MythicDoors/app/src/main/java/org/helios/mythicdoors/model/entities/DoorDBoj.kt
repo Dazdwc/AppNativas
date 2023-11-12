@@ -29,5 +29,9 @@ data class DoorDBoj(
                 else -> throw Exception("Invalid door id")
             }
         }
+
+        fun createEmptyDoor(): DoorDBoj {
+            return DoorDBoj("", 0, 0, 0.0, null)
+        }
     }
 }

@@ -11,7 +11,7 @@ import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.utils.Connection
 import javax.inject.Singleton
 
-/* Esta clase permitiría usar la DI en la app en una futura refactorización. */
+/* Esta clase permitiría usar la DI en la app en una futura factorization. */
 
 @Module
 @InstallIn(App::class)

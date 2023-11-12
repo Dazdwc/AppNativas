@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.OVERVIEW_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.OverviewScreenViewModel
 
@@ -26,11 +27,8 @@ fun OverviewScreen(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
-        topBar = {
-            // TODO: Add top bar
-        },
         bottomBar = {
-            // TODO: Add bottom bar
+            MenuBar(navController)
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)

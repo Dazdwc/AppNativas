@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.ui.fragments.MenuBar
+import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.REGISTER_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.RegisterScreenViewModel
 
@@ -45,11 +47,8 @@ fun RegisterScreen(navController: NavController) {
     val registerSuccessful by controller.registerSuccessful.observeAsState(false)
 
     Scaffold(
-        topBar = {
-            // TODO: Add top bar
-        },
         bottomBar = {
-            // TODO: Add bottom bar
+            MenuBar(navController)
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -66,7 +65,9 @@ fun RegisterScreen(navController: NavController) {
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
-                    .padding(top = 30.dp, bottom = 30.dp)
+                    .padding(
+                        top = ScreenConstants.DOUBLE_PADDING.dp,
+                        bottom = ScreenConstants.DOUBLE_PADDING.dp)
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.CenterHorizontally),
             )
@@ -79,7 +80,10 @@ fun RegisterScreen(navController: NavController) {
                 Column(
                     modifier = Modifier
                         .width(maxWidth.minus(maxWidth * 0.20f))
-                        .padding(top = 30.dp, bottom = 10.dp),
+                        .padding(
+                            top = ScreenConstants.DOUBLE_PADDING.dp,
+                            bottom = ScreenConstants.AVERAGE_PADDING.dp
+                        ),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -92,12 +96,12 @@ fun RegisterScreen(navController: NavController) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 10.dp),
+                            .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             modifier = Modifier
-                                .padding(end = 10.dp)
+                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                                 .size(40.dp, 40.dp),
                             imageVector = ImageVector.vectorResource(id = R.drawable.user_add_500),
                             contentDescription = "User add icon",
@@ -124,12 +128,12 @@ fun RegisterScreen(navController: NavController) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 10.dp),
+                            .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             modifier = Modifier
-                                .padding(end = 10.dp)
+                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                                 .size(40.dp, 40.dp),
                             imageVector = ImageVector.vectorResource(id = R.drawable.user_add_500),
                             contentDescription = "User add icon",
@@ -160,17 +164,17 @@ fun RegisterScreen(navController: NavController) {
                         text = "Please enter a valid email address",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(bottom = 10.dp)
+                        modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
                     ) }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 20.dp),
+                            .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             modifier = Modifier
-                                .padding(end = 10.dp)
+                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                                 .size(40.dp, 40.dp),
                             imageVector = ImageVector.vectorResource(id = R.drawable.key_500),
                             contentDescription = "Key icon",
@@ -193,7 +197,7 @@ fun RegisterScreen(navController: NavController) {
                         )
                         Icon(
                             modifier = Modifier
-                                .padding(start = 10.dp)
+                                .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
                                 .size(40.dp, 40.dp)
                                 .clickable { passwordVisibilityOption = !passwordVisibilityOption },
                             imageVector = passwordVisibilityIcon,
@@ -210,17 +214,17 @@ fun RegisterScreen(navController: NavController) {
                                 """.trimMargin(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(bottom = 10.dp)
+                        modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
                     ) }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 20.dp),
+                            .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             modifier = Modifier
-                                .padding(end = 10.dp)
+                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                                 .size(40.dp, 40.dp),
                             imageVector = ImageVector.vectorResource(id = R.drawable.key_500),
                             contentDescription = "Key icon",
@@ -240,7 +244,7 @@ fun RegisterScreen(navController: NavController) {
                         )
                         Icon(
                             modifier = Modifier
-                                .padding(start = 10.dp)
+                                .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
                                 .size(40.dp, 40.dp)
                                 .clickable { passwordVisibilityOption = !passwordVisibilityOption },
                             imageVector = passwordVisibilityIcon,
@@ -252,12 +256,12 @@ fun RegisterScreen(navController: NavController) {
                         text = """The password and the retyped password are different.""".trimMargin(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(bottom = 10.dp)
+                        modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
                     ) }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(30.dp),
+                            .padding(ScreenConstants.DOUBLE_PADDING.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
@@ -269,7 +273,7 @@ fun RegisterScreen(navController: NavController) {
                             enabled = isEmailValid && isPasswordValid && password == retypedPassword,
                             elevation = ButtonDefaults.buttonElevation(2.dp),
                             modifier = Modifier
-                                .padding(end = 20.dp)
+                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                                 .weight(1f)
                         ) {
                             Text(
@@ -282,7 +286,7 @@ fun RegisterScreen(navController: NavController) {
                             onClick = { controller.navigateLoginScreen(scope, snackbarHostState) },
                             elevation = ButtonDefaults.buttonElevation(2.dp),
                             modifier = Modifier
-                                .padding(start = 20.dp)
+                                .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
                                 .weight(1f)
                         ) {
                             Text(

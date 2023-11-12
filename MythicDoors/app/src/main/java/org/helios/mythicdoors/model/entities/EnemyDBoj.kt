@@ -13,7 +13,6 @@ data class EnemyDBoj(
     private val level: Int,
     private val coinReward: Int,
     private var imageResourceId: Int?
-    // TODO: Add fields
 ) {
     // fun getId(): Long? { return id }
     fun getName(): String { return name }
@@ -39,9 +38,18 @@ data class EnemyDBoj(
                 else -> throw Exception("Invalid enemy level")
             }
         }
+
+        fun createEmptyEnemy(): EnemyDBoj {
+            return EnemyDBoj(
+                "",
+                0,
+                0,
+                null
+            )
+        }
     }
 
-//    fun isEmpty(): Boolean {
-//        return id == null
-//    }
+    fun isEmpty(): Boolean {
+        return name.isBlank()
+    }
 }

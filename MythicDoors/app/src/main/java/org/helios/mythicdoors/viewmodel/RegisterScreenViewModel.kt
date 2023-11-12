@@ -25,10 +25,12 @@ class RegisterScreenViewModel(
     }
 
     private val store: StoreManager by lazy { StoreManager.getInstance() }
-    val registerSuccessful: MutableLiveData<Boolean> = MutableLiveData(false)
 
     // El password debe contener al menos un número, una mayúscula y un carácter especial
     private val passwordPattern: Regex = Regex("^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{6,}$")
+
+    val registerSuccessful: MutableLiveData<Boolean> = MutableLiveData(false)
+    fun resetRegisterSuccessful() { registerSuccessful.value = false }
 
     fun register(
         name: String,
