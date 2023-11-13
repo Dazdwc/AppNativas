@@ -18,6 +18,8 @@ object AppConstants {
     const val ENEMY_REAPY = "The Reaper"
     const val ENEY_WOLFIE = "Wolfie"
 
+    const val INITIAL_COINS_AMOUNT = 100
+
     object Screens {
         const val OVERVIEW_SCREEN = "overview_screen"
         const val LOGIN_SCREEN = "login_screen"
@@ -37,10 +39,21 @@ object AppConstants {
         const val GAME_ACTION_SCREEN_VIEWMODEL = "game-action-screen-viewmodel"
         const val ACTION_RESULT_SCREEN_VIEWMODEL = "action-result-screen-viewmodel"
         const val SCORES_SCREEN_VIEWMODEL = "scores-screen-viewmodel"
+        const val MENU_BAR_SCREEN_VIEWMODEL = "menu-bar-screen-viewmodel"
     }
 
     enum class GameMode {
         SINGLE_PLAYER,
         MULTI_PLAYER
+    }
+
+    object ScreenConstants {
+        const val IMAGE_HEIGHT = 90
+        const val SMALL_IMAGE_HEIGHT = 90
+        const val BET_BLOCK_WIDTH_REDUCER = 100
+        const val AVERAGE_PADDING = 15
+        const val DOUBLE_PADDING = 30
+        const val BUTTON_WIDTH = 200
+        const val MENU_HEIGHT = 100
     }
 }

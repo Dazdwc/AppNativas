@@ -28,7 +28,9 @@ class LoginScreenViewModel(
     }
 
     private val store: StoreManager by lazy { StoreManager.getInstance() }
+
     val loginSuccessful: MutableLiveData<Boolean> = MutableLiveData(false)
+    fun resetLoginSuccessful() { loginSuccessful.value = false }
 
     // El password debe contener al menos un número, una mayúscula y un carácter especial
     private val passwordPattern: Regex = Regex("^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{6,}$")

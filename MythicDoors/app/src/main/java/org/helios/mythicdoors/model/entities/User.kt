@@ -62,12 +62,29 @@ data class User(
                 email,
                 password,
                 0,
+                1,
                 0,
-                0,
-                0,
+                200,
                 0,
                 true,
                 createdAt = LocalDate.now())
+        }
+
+        /* Testing function */
+        fun createDummyUser(): User {
+            return User(
+                null,
+                "Jane Doe",
+                "janedoe@dummy.com",
+                "1234",
+                0,
+                1,
+                0,
+                200,
+                0,
+                true,
+                createdAt = LocalDate.now()
+            )
         }
     }
 

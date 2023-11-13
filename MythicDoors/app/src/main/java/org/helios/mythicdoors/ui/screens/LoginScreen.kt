@@ -21,6 +21,8 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.ui.fragments.MenuBar
+import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.LOGIN_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.LoginScreenViewModel
 
@@ -43,17 +45,17 @@ fun LoginScreen(navController: NavController) {
     }
 
     val loginSuccessful by controller.loginSuccessful.observeAsState(false)
-    LaunchedEffect(loginSuccessful) {
-        if (loginSuccessful) controller.navigateToGameOptsScreen(scope, snackbarHostState)
+    LaunchedEffect(loginSuccessful, snackbarHostState) {
+        if (loginSuccessful) {
+            snackbarHostState.currentSnackbarData?.dismiss().run { controller.navigateToGameOptsScreen(scope, snackbarHostState) }
+            controller.resetLoginSuccessful()
+        }
     }
 
 
     Scaffold(
-        topBar = {
-            // TODO: Add top bar
-        },
         bottomBar = {
-            // TODO: Add bottom bar
+            MenuBar(navController)
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -82,10 +84,23 @@ fun LoginScreen(navController: NavController) {
                 val maxWidth = this.maxWidth
                 Column(
                     modifier = Modifier
+<<<<<<< HEAD
                         .width(maxWidth.minus(maxWidth * 0.20f))
                         .padding(top = 30.dp, bottom = 10.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
+=======
+                        .padding(
+                            top = ScreenConstants.DOUBLE_PADDING.dp,
+                            bottom = ScreenConstants.DOUBLE_PADDING.dp)
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally),
+                )
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+>>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                 ) {
                     Text(
                         text = "Login",
@@ -95,9 +110,18 @@ fun LoginScreen(navController: NavController) {
                     )
                     Row(
                         modifier = Modifier
+<<<<<<< HEAD
                             .fillMaxWidth()
                             .padding(bottom = 10.dp),
                         verticalAlignment = Alignment.CenterVertically
+=======
+                            .width(maxWidth.minus(maxWidth * 0.20f))
+                            .padding(
+                                top = ScreenConstants.DOUBLE_PADDING.dp,
+                                bottom = ScreenConstants.AVERAGE_PADDING.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+>>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                     ) {
                         Icon(
                             modifier = Modifier
@@ -109,6 +133,7 @@ fun LoginScreen(navController: NavController) {
                         )
                         TextField(
                             modifier = Modifier
+<<<<<<< HEAD
                                 .padding(end = 48.dp)
                                 .background(MaterialTheme.colorScheme.primary)
                                 .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
@@ -175,11 +200,94 @@ fun LoginScreen(navController: NavController) {
                     }
                     isPasswordValid.takeIf { !it }?.run { Text(
                         text = """Please enter a valid password:
+=======
+                                .fillMaxWidth()
+                                .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                                    .size(40.dp, 40.dp),
+                                imageVector = ImageVector.vectorResource(id = R.drawable.user_check_500),
+                                contentDescription = "User account icon",
+                                tint = MaterialTheme.colorScheme.secondary,
+                            )
+                            TextField(
+                                modifier = Modifier
+                                    .padding(end = 48.dp)
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                    .weight(1f),
+                                value = userEmail,
+                                onValueChange = {
+                                    userEmail = it
+                                    isEmailValid = controller.validateEmail(userEmail)
+                                },
+                                label = { Text("Email") },
+                                placeholder = {
+                                    Text(
+                                        "Your Email",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                },
+                                isError = !isEmailValid,
+                            )
+                        }
+                        isEmailValid.takeIf { !it }?.run { Text(
+                            text = "Please enter a valid email address",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(bottom = 10.dp)
+                        ) }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                                    .size(40.dp, 40.dp),
+                                imageVector = ImageVector.vectorResource(id = R.drawable.key_500),
+                                contentDescription = "Key icon",
+                                tint = MaterialTheme.colorScheme.secondary,
+                            )
+                            TextField(
+                                modifier = Modifier
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                    .weight(1f),
+                                value = password,
+                                onValueChange = {
+                                    password = it
+                                    isPasswordValid = controller.validatePassword(password)
+                                },
+                                label = { Text("Password") },
+                                visualTransformation = passwordVisibilityOption.takeIf { it }
+                                    ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
+                                isError = !isPasswordValid,
+                            )
+                            Icon(
+                                modifier = Modifier
+                                    .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
+                                    .size(40.dp, 40.dp)
+                                    .clickable { passwordVisibilityOption = !passwordVisibilityOption },
+                                imageVector = passwordVisibilityIcon,
+                                contentDescription = "Eye icon",
+                                tint = MaterialTheme.colorScheme.secondary,
+                            )
+                        }
+                        isPasswordValid.takeIf { !it }?.run { Text(
+                            text = """Please enter a valid password:
+>>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                                     |At least 6 characters
                                     |At least one number
                                     |At least one uppercase letter
                                     |At least one special character
                                 """.trimMargin(),
+<<<<<<< HEAD
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(bottom = 10.dp)
@@ -231,16 +339,52 @@ fun LoginScreen(navController: NavController) {
                                 .padding(end = 20.dp)
                                 .weight(1f)
                         ) {
+=======
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
+                        ) }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    top = ScreenConstants.AVERAGE_PADDING.dp,
+                                    bottom = ScreenConstants.DOUBLE_PADDING.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                                    .size(40.dp, 40.dp)
+                                    .clickable {
+                                        controller.navigateRegisterScreen(scope, snackbarHostState)
+                                    },
+                                imageVector = ImageVector.vectorResource(id = R.drawable.user_add_500),
+                                contentDescription = "Add user account icon",
+                                tint = MaterialTheme.colorScheme.secondary,
+                            )
+>>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                             Text(
                                 text = "LOGIN",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
+<<<<<<< HEAD
+=======
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .clickable {
+                                        controller.navigateRegisterScreen(scope, snackbarHostState)
+                                    }
+                                    .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
+>>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                             )
                         }
                         Button(
                             onClick = { controller.navigateToOverviewScreen(scope, snackbarHostState) },
                             elevation = ButtonDefaults.buttonElevation(2.dp),
                             modifier = Modifier
+<<<<<<< HEAD
                                 .padding(start = 20.dp)
                                 .weight(1f)
                         ) {
@@ -249,6 +393,42 @@ fun LoginScreen(navController: NavController) {
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
+=======
+                                .fillMaxWidth()
+                                .padding(ScreenConstants.DOUBLE_PADDING.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Button(
+                                onClick = {
+                                    scope.launch { controller.login(userEmail, password, scope, snackbarHostState) }
+                                },
+                                enabled = isEmailValid && isPasswordValid,
+                                elevation = ButtonDefaults.buttonElevation(2.dp),
+                                modifier = Modifier
+                                    .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "LOGIN",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                )
+                            }
+                            Button(
+                                onClick = { controller.navigateToOverviewScreen(scope, snackbarHostState) },
+                                elevation = ButtonDefaults.buttonElevation(2.dp),
+                                modifier = Modifier
+                                    .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "CANCEL",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+>>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                         }
                     }
                 }

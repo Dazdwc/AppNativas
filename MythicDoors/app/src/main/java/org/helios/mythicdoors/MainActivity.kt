@@ -2,26 +2,20 @@ package org.helios.mythicdoors
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.AppNavigation
-import org.helios.mythicdoors.services.UserServiceImp
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels
@@ -53,9 +47,14 @@ class MainActivity : ComponentActivity() {
                 map[ScreensViewModels.LOGIN_SCREEN_VIEWMODEL] = LoginScreenViewModel(it)
                 map[ScreensViewModels.REGISTER_SCREEN_VIEWMODEL] = RegisterScreenViewModel(it)
                 map[ScreensViewModels.SCORES_SCREEN_VIEWMODEL] = ScoresScreenViewModel(it)
+                map[ScreensViewModels.MENU_BAR_SCREEN_VIEWMODEL] = MenuViewModel(it)
                 // ...otros view models que dependen de dataController
             }
             map.toMap()
+        }
+
+        fun getContext(): Context {
+            return appContext
         }
 
         fun setContext(context: Context) {
@@ -81,14 +80,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MythicDoorsTheme {
-                Scaffold(
-                    topBar = {
-                        // TODO: Add top bar
-                    },
-                    bottomBar = {
-                        // TODO: Add bottom bar
-                    }
-                ) { innerPadding ->
+                Scaffold { innerPadding ->
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()
@@ -104,30 +96,6 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         dbHelper.close()
-    }
-}
-
-@Composable
-fun dbTest(dbHelper: Connection) {
-    var name: String = "Dboj"
-    var email: String = "dboj-test@helios.com"
-    var pass: String = "1234"
-    val userServiceImpl: UserServiceImp = UserServiceImp(dbHelper)
-    val scope = rememberCoroutineScope()
-    var userList: List<User> = mutableListOf()
-
-    Column {
-        Button(onClick = {
-            scope.launch {
-                if (userServiceImpl.saveUser(User.create(name, email, pass))) Log.w("DB", "User saved!")
-                else Log.w("DB", "User not saved!")
-                userList = userServiceImpl.getUsers() ?: mutableListOf()
-                Log.w("DB", "User list: $userList")
-            }
-
-        }) {
-
-        }
     }
 }
 
