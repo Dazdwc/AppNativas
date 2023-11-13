@@ -1,6 +1,6 @@
 package org.helios.mythicdoors.store
 
-import org.helios.mythicdoors.model.entities.EnemyDBoj
+import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.utils.AppConstants.GameMode
 
@@ -10,11 +10,12 @@ data class AppStore(
     val playerInitialStats: PlayerInitialStats = PlayerInitialStats(),
     var actualUser: User? = null,
     var gameMode: GameMode = GameMode.SINGLE_PLAYER,
+    var gameScore: Int = 0
     )
 
 data class CombatResults(
     var isPlayerWinner: Boolean = false,
-    var enemy: EnemyDBoj? = null,
+    var enemy: Enemy? = null,
     var resultCoinAmount: Int = 0,
     var resultXpAmount: Int = 0
 )
@@ -54,7 +55,7 @@ class StoreManager {
 
     fun updateCombatResults(
         isPlayerWinner: Boolean,
-        enemy: EnemyDBoj?,
+        enemy: Enemy?,
         resultCoinAmount: Int,
         resultXpAmount: Int
     ) {
@@ -82,6 +83,8 @@ class StoreManager {
 
     fun updatePlayerCoins(coins: Int) { appStore.actualUser?.getCoins()?.takeIf { it < 100 }.let { appStore.actualUser?.setCoins(coins) } }
 
+    fun updateGameScore(score: Int) { appStore.gameScore = score }
+
     fun clearCombatResults() {
         appStore.combatResults.isPlayerWinner = false
         appStore.combatResults.enemy = null
@@ -89,5 +92,17 @@ class StoreManager {
         appStore.combatResults.resultXpAmount = 0
     }
 
+    fun clearCombatData() {
+        clearCombatResults()
+        clearPlayerAction()
+    }
+
     fun logout() { appStore.actualUser = null }
+
+    fun resetPlayerCoins() { appStore.actualUser?.setCoins(100) }
+
+    private fun clearPlayerAction() {
+        appStore.playerAction.bet = 0
+        appStore.playerAction.selectedDoorId = ""
+    }
 }

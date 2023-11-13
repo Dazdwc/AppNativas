@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.INavFunctions
@@ -28,10 +30,23 @@ class GameActionScreenViewModel (
     private val store: StoreManager by lazy { StoreManager.getInstance() }
     private val gameController: GameLogicViewModel by lazy { GameLogicViewModel(dataController) }
 
-    private val player by lazy { store.getAppStore().actualUser }
+    private var player: User? = null
 
     val combatSuccessful: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>(false) }
     fun resetCombatSuccessful() { combatSuccessful.value = false }
+
+    fun initialLoad() {
+        player = loadPlayerData()
+    }
+
+    fun loadPlayerData(): User? {
+        return try {
+            store.getAppStore().actualUser ?: null.also {throw Exception("User not found") }
+        } catch (e: Exception) {
+            Log.e("GameActionScreenViewModel", "loadPlayerData: $e")
+            null
+        }
+    }
 
     fun getPlayerLevel(): Int {
         return try {
@@ -60,9 +75,9 @@ class GameActionScreenViewModel (
         }
     }
 
-    fun updateValuesOnPlayerAction(bet: String, selectedDoorId: String, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+    fun updateValuesOnPlayerAction(bet: String, selectedDoorId: String) {
         try {
-            store.updatePlayerAction(bet.toInt(), selectedDoorId).run { resolveBetAction(scope, snackbarHostState) }
+            store.updatePlayerAction(bet.toInt(), selectedDoorId).run { resolveBetAction() }
         } catch (e: Exception) {
             Log.e("GameActionScreenViewModel", "updateOnPlayerActionValues: $e")
         }
@@ -76,15 +91,38 @@ class GameActionScreenViewModel (
         }
     }
 
-    private fun resolveBetAction(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+    private fun resolveBetAction() {
         try {
-            gameController.battle().takeIf { it }?.let {
-                combatSuccessful.value = true
-                Log.w("GameActionScreenViewModel", "resolveBetAction: Resolving bet action.")
+            gameController.loadBetValues()
+            Log.w("GameActionScreenViewModel", "resolveBetAction: Resolving bet action.")
+            gameController.battle().let {
+                if (it) {
+                    updateStore()
+                    combatSuccessful.value = true
+                }
             }
-            Log.e("Store", "Store: ${store.getAppStore().combatResults}")
         } catch (e: Exception) {
             Log.e("GameActionScreenViewModel", "resolveGameAction: $e")
+        }
+    }
+
+    private fun updateUserFromStore() {
+        try {
+            updateStore()
+            player = loadPlayerData() ?: throw Exception("User not found")
+        } catch (e: Exception) {
+            Log.e("GameActionScreenViewModel", "updateUserInStore: $e")
+        }
+    }
+
+    private fun updateStore() {
+        try {
+            viewModelScope.launch {
+                store.updateActualUser(dataController.getUser(player?.getId()?: throw Exception("User id not valid")) ?: throw Exception("User not found"))
+                player = loadPlayerData() ?: throw Exception("User not found")
+            }
+        } catch (e: Exception) {
+            Log.e("GameActionScreenViewModel", "updateUserInStore: $e")
         }
     }
 }

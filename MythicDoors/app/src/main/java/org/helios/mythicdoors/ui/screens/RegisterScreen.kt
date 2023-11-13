@@ -3,7 +3,10 @@ package org.helios.mythicdoors.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -29,6 +32,7 @@ fun RegisterScreen(navController: NavController) {
     val controller: RegisterScreenViewModel = (MainActivity.viewModelsMap[REGISTER_SCREEN_VIEWMODEL] as RegisterScreenViewModel).apply { setNavController(navController) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val scrollState = rememberScrollState()
 
     var userName: String by remember { mutableStateOf("") }
     var userEmail: String by remember { mutableStateOf("") }
@@ -45,6 +49,10 @@ fun RegisterScreen(navController: NavController) {
     }
 
     val registerSuccessful by controller.registerSuccessful.observeAsState(false)
+    LaunchedEffect(registerSuccessful) {
+        if (registerSuccessful) controller.navigateToGameOptsScreen(scope, snackbarHostState)
+        controller.resetRegisterSuccessful()
+    }
 
     Scaffold(
         bottomBar = {
@@ -60,17 +68,6 @@ fun RegisterScreen(navController: NavController) {
                 .padding(contentPadding),
             color = MaterialTheme.colorScheme.background
         ) {
-            Text(
-                text = "Mythic Doors",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .padding(
-                        top = ScreenConstants.DOUBLE_PADDING.dp,
-                        bottom = ScreenConstants.DOUBLE_PADDING.dp)
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.CenterHorizontally),
-            )
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -80,6 +77,7 @@ fun RegisterScreen(navController: NavController) {
                 Column(
                     modifier = Modifier
                         .width(maxWidth.minus(maxWidth * 0.20f))
+                        .scrollable(scrollState, orientation = Orientation.Vertical)
                         .padding(
                             top = ScreenConstants.DOUBLE_PADDING.dp,
                             bottom = ScreenConstants.AVERAGE_PADDING.dp
@@ -87,6 +85,18 @@ fun RegisterScreen(navController: NavController) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Text(
+                        text = "Mythic Doors",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .padding(
+                                top = ScreenConstants.DOUBLE_PADDING.dp,
+                                bottom = ScreenConstants.DOUBLE_PADDING.dp
+                            )
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally),
+                    )
                     Text(
                         text = "Register New Player",
                         style = MaterialTheme.typography.headlineMedium,
