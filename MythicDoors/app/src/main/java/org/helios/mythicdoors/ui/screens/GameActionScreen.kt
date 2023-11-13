@@ -1,6 +1,5 @@
 package org.helios.mythicdoors.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,10 +23,10 @@ import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.ui.fragments.MenuBar
-import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.AVERAGE_DOOR
 import org.helios.mythicdoors.utils.AppConstants.EASY_DOOR
 import org.helios.mythicdoors.utils.AppConstants.HARD_DOOR
+import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.GAME_ACTION_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.GameActionScreenViewModel
 
@@ -40,8 +39,6 @@ fun GameActionScreen(navController: NavController) {
     var isDoorSelected: Boolean by remember { mutableStateOf(false) }
     var selectedDoorId: String by remember { mutableStateOf("") }
 
-    val playerLevel: Int by remember { mutableIntStateOf(controller.getPlayerLevel()) }
-    var playerCoins: Int by remember { mutableIntStateOf(controller.getPlayerCoins()) }
     var playerBet: String by remember { mutableStateOf("") }
     var isBetValid: Boolean by remember { mutableStateOf(false) }
 
@@ -52,6 +49,8 @@ fun GameActionScreen(navController: NavController) {
             controller.resetCombatSuccessful()
         }
     }
+
+    controller.initialLoad()
 
     Scaffold(
         bottomBar = {
@@ -67,7 +66,7 @@ fun GameActionScreen(navController: NavController) {
                 .padding(contentPadding),
             color = MaterialTheme.colorScheme.background) {
           BoxWithConstraints {
-
+              controller.loadPlayerData()
               val maxWidth = constraints.maxWidth
 
               Column {
@@ -94,7 +93,7 @@ fun GameActionScreen(navController: NavController) {
                           contentAlignment = Alignment.Center
                       ) {
                           Text(
-                              text = "Current Player Level: $playerLevel",
+                              text = "Current Player Level: ${controller.getPlayerLevel()}",
                               style = MaterialTheme.typography.titleSmall,
                               color = MaterialTheme.colorScheme.onBackground,
                               modifier = Modifier.padding(ScreenConstants.AVERAGE_PADDING.dp),
@@ -167,6 +166,7 @@ fun GameActionScreen(navController: NavController) {
                             verticalArrangement = Arrangement.Center
                       ) {
                           Row(Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)) {
+
                               Icon(modifier = Modifier
                                   .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                                   .size(40.dp, 40.dp),
@@ -178,8 +178,8 @@ fun GameActionScreen(navController: NavController) {
                                   .background(MaterialTheme.colorScheme.primary)
                                   .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
                                   .weight(1f),
-                                  value = playerCoins.toString(),
-                                  onValueChange = { playerCoins = it.toInt() },
+                                  value = controller.getPlayerCoins().toString(),
+                                  onValueChange = { controller.getPlayerCoins() },
                                   label = { Text(text = "Player Coins") },
                                   readOnly = true,
                               )
@@ -207,7 +207,7 @@ fun GameActionScreen(navController: NavController) {
                               )
                           }
                           Button(onClick = {
-                               controller.updateValuesOnPlayerAction(playerBet, selectedDoorId, scope, snackbarHostState)
+                               controller.updateValuesOnPlayerAction(playerBet, selectedDoorId)
                                 scope.launch {
                                    snackbarHostState.showSnackbar("You have bet $playerBet coins on the $selectedDoorId door")
                                }

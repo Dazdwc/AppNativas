@@ -18,7 +18,7 @@ object AppConstants {
     const val ENEMY_REAPY = "The Reaper"
     const val ENEY_WOLFIE = "Wolfie"
 
-    const val INITIAL_COINS_AMOUNT = 100
+    const val INITIAL_COINS_AMOUNT = 200
 
     object Screens {
         const val OVERVIEW_SCREEN = "overview_screen"

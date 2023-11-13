@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,10 +31,12 @@ fun ActionResultScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val playerCurrentStats: User = controller.loadPlayerData()
-    val gameCurrentStats: GameResults = controller.loadGameResultsData()
+    val playerCurrentStats: User by lazy { controller.playerData ?: User.createEmptyUser() }
+    val gameCurrentStats: GameResults by lazy { controller.gameResultsData ?: GameResults.create(false, null, 0, 0) }
 
     val isEnoughCoins: Boolean by lazy { controller.isEnoughCoins() }
+
+    controller.initialLoad()
 
     Scaffold(
         bottomBar = {

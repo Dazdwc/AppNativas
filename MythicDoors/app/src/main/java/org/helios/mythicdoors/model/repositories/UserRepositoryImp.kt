@@ -72,10 +72,8 @@ class UserRepositoryImp(dbHelper: Connection):
 
     override suspend fun insertOne(item: User): Long = withContext(Dispatchers.IO) {
         try {
-            dbWrite.use { db ->
-                contentValues= buildUser(item)
-                return@withContext db.insert(Contracts.UserTableContract.TABLE_NAME, null, contentValues)
-            }
+            contentValues= buildUser(item)
+            return@withContext dbWrite.insert(Contracts.UserTableContract.TABLE_NAME, null, contentValues)
         } catch (e: Exception) {
             Log.e("UserRepositoryImp", "Error inserting user: ${e.message}")
             return@withContext  -1
@@ -84,15 +82,13 @@ class UserRepositoryImp(dbHelper: Connection):
 
     override suspend fun updateOne(item: User): Long = withContext(Dispatchers.IO) {
         try {
-dbWrite.use { db ->
-                contentValues = buildUser(item)
-                return@withContext db.update(
-                    Contracts.UserTableContract.TABLE_NAME,
-                    contentValues,
-                    "${Contracts.UserTableContract.COLUMN_NAME_ID} = ?",
-                    arrayOf(item.getId().toString())
-                ).toLong()
-            }
+            contentValues = buildUser(item)
+            return@withContext dbWrite.update(
+                Contracts.UserTableContract.TABLE_NAME,
+                contentValues,
+                "${Contracts.UserTableContract.COLUMN_NAME_ID} = ?",
+                arrayOf(item.getId().toString())
+            ).toLong()
         } catch(e: Exception) {
             Log.e("UserRepositoryImp", "Error updating user: ${e.message}")
             return@withContext -1
@@ -101,13 +97,11 @@ dbWrite.use { db ->
 
     override suspend fun deleteOne(id: Long): Long = withContext(Dispatchers.IO) {
         try {
-            dbWrite.use { db ->
-                return@withContext db.delete(
-                    Contracts.UserTableContract.TABLE_NAME,
-                    "${Contracts.UserTableContract.COLUMN_NAME_ID} = ?",
-                    arrayOf(id.toString())
-                ).toLong()
-            }
+            return@withContext dbWrite.delete(
+                Contracts.UserTableContract.TABLE_NAME,
+                "${Contracts.UserTableContract.COLUMN_NAME_ID} = ?",
+                arrayOf(id.toString())
+            ).toLong()
         } catch(e: Exception) {
             Log.e("UserRepositoryImp", "Error deleting user: ${e.message}")
             return@withContext -1

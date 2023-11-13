@@ -8,69 +8,68 @@ import org.helios.mythicdoors.model.entities.DoorDBoj
 import org.helios.mythicdoors.model.entities.EnemyDBoj
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.store.StoreManager
+import kotlin.properties.Delegates
 
 class GameLogicViewModel(private val dataController: DataController): ViewModel() {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val storeManager: StoreManager by lazy { StoreManager.getInstance() }
-
-    /* En esta ocasión no podemos continuar con la lógica hasta tener al usuario jugador, la puerta escogida por este y su apuesta,
-    * así que la captura de usuario se genera en una coroutine que bloquea el resto de lógica.
-    */
-    private val player: User by lazy {
-        runBlocking {
-            storeManager.getAppStore().actualUser ?: throw Exception("User not found") }
-    }
-
-    private val chosenDoor: String by lazy {
-        runBlocking {
-            storeManager.getAppStore().playerAction.selectedDoorId
-        }
-    }
-    private val bet: Int by lazy {
-        runBlocking {
-            storeManager.getAppStore().playerAction.bet
-        }
-    }
+    private lateinit var player: User
+    private var chosenDoor: String = ""
+    private var bet: Int = 0
 
     private lateinit var door: DoorDBoj
     private lateinit var enemy: EnemyDBoj
-    private val combatConfrontationResult: Boolean by lazy { generateCombat() }
+    private var combatConfrontationResult by Delegates.notNull<Boolean>()
+
+    fun loadBetValues() {
+        chosenDoor = runBlocking { storeManager.getAppStore().playerAction.selectedDoorId }
+        bet = runBlocking { storeManager.getAppStore().playerAction.bet }
+        player = loadPlayer()
+    }
 
     fun battle(): Boolean {
+
+        door = generateDoor()
+        enemy = generateEnemy()
+
         return try {
-            door = generateDoor()
-            enemy = generateEnemy()
-            combatUpdater(combatConfrontationResult).takeIf { it }?.let { scope.launch { updateUser() } }.also { clearEnemyAndDoor() }
+            combatConfrontationResult = generateCombat()
+            combatUpdater(combatConfrontationResult).let { scope.launch { updateUser() } }
+            clearEnemyAndDoor()
             true
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("GameLogicViewModel", "battle: ${e.message}")
             false
+        }
+    }
+
+    private fun loadPlayer(): User {
+        return try {
+            runBlocking { storeManager.getAppStore().actualUser ?: User.createEmptyUser().also { throw Exception("User not found") } }
+        } catch (e: Exception) {
+            Log.e("GameLogicViewModel", "loadPlayer: $e")
+            User.createEmptyUser()
         }
     }
 
     private suspend fun updateUser(): Boolean {
         return try {
-            storeManager.updateActualUser(getNewUserStaticsAfterBattle())
+            var isUserSaved = false
+            val updatedUser: User = getNewUserStaticsAfterBattle()
+            Log.w("GameLogicViewModel", "updateUser: $updatedUser")
+            storeManager.updateActualUser(updatedUser)
 
-            val saveUserJob: CompletableJob = Job()
-            saveUserJob.apply {
-                scope.launch {
-                    dataController.saveUser(storeManager.getAppStore().actualUser ?: throw Exception("User not found"))
-                    saveUserJob.complete()
-                }
-                    .join()
-            }
-            return saveUserJob.isCompleted
+            scope.launch {
+                isUserSaved = dataController.saveUser(updatedUser)
+            }.join()
+            return isUserSaved
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("GameLogicViewModel", "updateUser: ${e.message}")
             false
         }
     }
 
     private fun getNewUserStaticsAfterBattle(): User {
-//        //combatConfrontationResult.takeIf { it }?.let { combatUpdater(true)} ?: combatUpdater(false)
-//        combatUpdater(combatConfrontationResult)
-
         return User(
             player.getId(),
             player.getName(),
@@ -91,7 +90,6 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
     private fun generateEnemy(): EnemyDBoj { return EnemyDBoj.create(generateEnemyLevel()) }
 
     private fun generateCombat(): Boolean {
-        Log.e("GameLogicViewModel", "generateCombat: ${player.getLevel() >= (enemy.getLevel())}")
         return player.getLevel() >= (enemy.getLevel()) }
 
     private fun generateEnemyLevel(): Int {
@@ -100,51 +98,60 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
     }
 
     private fun generateRangeValues(): Pair<Int, Int> {
-        val minimumEnemyRage = door.getMinEnemyRangeSetter().let { player.getLevel().plus(it).coerceAtLeast(0) }
-        val maximumEnemyRage = door.getMaxEnemyRangeSetter().let { player.getLevel().plus(it).coerceAtMost(10) }
+        val minimumEnemyRage = player.getLevel().plus(door.getMinEnemyRangeSetter().coerceAtLeast(0))
+        val maximumEnemyRage = player.getLevel().plus(door.getMaxEnemyRangeSetter().coerceAtMost(10))
 
-        return if(minimumEnemyRage < maximumEnemyRage) Pair(0, 2) else Pair(minimumEnemyRage, maximumEnemyRage)
+        return if(minimumEnemyRage > maximumEnemyRage) Pair(0, 2) else Pair(minimumEnemyRage, maximumEnemyRage)
     }
 
-    private fun generateRandomNumber(min: Int, max: Int): Int { return (min..max).random() }
+    private fun generateRandomNumber(min: Int, max: Int): Int { return (min..max).random().coerceIn(0..10) }
 
     private fun combatUpdater(userHasWon: Boolean): Boolean {
         try {
-            userHasWon.takeIf { it }?.let {
-                storeManager.updateCombatResults(
-                    true,
-                    enemy,
-                    player.getCoins().plus(getCoinReward()).coerceAtLeast(0),
-                    player.getLevel().takeIf { it >= (enemy.getLevel()) }?.let { player.getExperience().plus(getXpReward()) } ?: 0
-                )
-            } ?: storeManager.updateCombatResults(
-                false,
-                enemy,
-                player.getCoins().takeIf { it >= bet }?.minus(bet) ?: -1,
-                player.getExperience().coerceAtLeast(0)
-            )
+            userHasWon.let { winner ->
+                if (winner) {
+                    storeManager.updateCombatResults(
+                        true,
+                        enemy,
+                        player.getCoins().plus(getCoinReward()).coerceAtLeast(0),
+                        player.getLevel().takeIf { it >= (enemy.getLevel()) }
+                            ?.let { player.getExperience().plus(getXpReward()) } ?: 0
+                    )
+
+                    Log.e("GameLogicViewModel", "combatUpdater: ${calculateScore()}")
+                    storeManager.updateGameScore(storeManager.getAppStore().gameScore.plus(calculateScore()))
+                } else {
+                    storeManager.updateCombatResults(
+                        false,
+                        enemy,
+                        player.getCoins().takeIf { it >= bet }?.minus(bet) ?: -1,
+                        player.getExperience().coerceAtLeast(0)
+                    )
+                }
+            }
             return true
         } catch (e: Exception) {
-            e.printStackTrace().also { return false }
+            Log.e("GameLogicViewModel", "combatUpdater: ${e.message}").also { return false }
         }
     }
 
-    private fun getCoinReward(): Int {
-        return door.getBonusRatio().let { it -> enemy.getCoinReward().times(it).let { bet.plus(it).toInt() } }
+    private fun getCoinReward(): Int { return door.getBonusRatio().let { it -> enemy.getCoinReward().times(it).let { bet.plus(it).toInt() } } }
+
+    private fun getXpReward(): Int {
+        return if (combatConfrontationResult) door.getBonusRatio().let { player.getLevel().minus(enemy.getLevel()).times(it).plus(enemy.getCoinReward()).times(getCoinReward()).toInt() }
+            else 0
     }
 
-    private fun getXpReward(): Int { return door.getBonusRatio().let { enemy.getLevel().minus(player.getLevel()).times(it).toInt() } }
-
     private fun calculateScore(): Int {
-        val scoreIncrement: Int = storeManager.getAppStore().combatResults.resultCoinAmount.times(door.getBonusRatio()).toInt()
-        return if (storeManager.getAppStore().combatResults.isPlayerWinner) player.getScore().plus(scoreIncrement) else 0
+        val scoreIncrement: Int = player.getScore().plus(enemy.getCoinReward().times(door.getBonusRatio()).toInt())
+        return if (combatConfrontationResult) player.getScore().plus(scoreIncrement) else 0
     }
 
     private fun increaseCurrentLevelIfNeeded(): Int {
-        val experienceIncrement = 100
+        val experienceIncrement = 1000
         val newUserExperience = player.getExperience().plus(storeManager.getAppStore().combatResults.resultXpAmount)
 
-        newUserExperience.takeIf { it >= experienceIncrement && it % experienceIncrement == 0 }?.let { return player.getLevel().plus(1).coerceAtMost(9) }
+        newUserExperience.takeIf { it >= experienceIncrement && it % experienceIncrement == 0 }?.let { return player.getLevel().plus(1).coerceIn(1..9) }
             ?: return player.getLevel()
     }
 

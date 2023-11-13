@@ -43,6 +43,7 @@ class GameRepositoryImp(dbHelper: Connection):
                     do { gamesList.add(mapGame(cursor))} while (moveToNext())
                 }
             }
+            return@withContext gamesList
         } catch (e: Exception) {
             Log.e("GameRepositoryImp", "Error getting all games: ${e.message}")
         }
@@ -71,11 +72,9 @@ class GameRepositoryImp(dbHelper: Connection):
 
     override suspend fun insertOne(item: Game): Long = withContext(Dispatchers.IO) {
         try {
-            dbWrite.use {db ->
-                contentValues.clear()
-                contentValues.putAll(buildGame(item))
-                return@withContext db.insert(Contracts.GameTableContract.TABLE_NAME, null, contentValues)
-            }
+            contentValues.clear()
+            contentValues.putAll(buildGame(item))
+            return@withContext dbWrite.insert(Contracts.GameTableContract.TABLE_NAME, null, contentValues)
         } catch (e: Exception) {
             Log.e("GameRepositoryImp", "Error inserting game: ${e.message}")
         }
@@ -84,16 +83,14 @@ class GameRepositoryImp(dbHelper: Connection):
 
     override suspend fun updateOne(item: Game): Long = withContext(Dispatchers.IO) {
         try {
-            dbWrite.use { db ->
-                contentValues.clear()
-                contentValues.putAll(buildGame(item))
-                return@withContext db.update(
-                    Contracts.GameTableContract.TABLE_NAME,
-                    contentValues,
-                    "${Contracts.GameTableContract.COLUMN_NAME_ID} = ?",
-                    arrayOf(item.getId().toString())
-                ).toLong()
-            }
+            contentValues.clear()
+            contentValues.putAll(buildGame(item))
+            return@withContext dbWrite.update(
+                Contracts.GameTableContract.TABLE_NAME,
+                contentValues,
+                "${Contracts.GameTableContract.COLUMN_NAME_ID} = ?",
+                arrayOf(item.getId().toString())
+            ).toLong()
         } catch (e: Exception) {
             Log.e("GameRepositoryImp", "Error updating game: ${e.message}")
         }
@@ -102,13 +99,11 @@ class GameRepositoryImp(dbHelper: Connection):
 
     override suspend fun deleteOne(id: Long): Long = withContext(Dispatchers.IO) {
         try {
-            dbWrite.use { db ->
-                return@withContext db.delete(
-                    Contracts.GameTableContract.TABLE_NAME,
-                    "${Contracts.GameTableContract.COLUMN_NAME_ID} = ?",
-                    arrayOf(id.toString())
-                ).toLong()
-            }
+            return@withContext dbWrite.delete(
+                Contracts.GameTableContract.TABLE_NAME,
+                "${Contracts.GameTableContract.COLUMN_NAME_ID} = ?",
+                arrayOf(id.toString())
+            ).toLong()
         } catch(e: Exception) {
             Log.e("GameRepositoryImp", "Error deleting game: ${e.message}")
         }

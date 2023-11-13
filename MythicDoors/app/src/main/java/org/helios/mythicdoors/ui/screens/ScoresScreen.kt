@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.Game
@@ -43,11 +44,13 @@ fun ScoresScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     var singlePlayerGamesCollection by remember { mutableStateOf(emptyList<Game>()) }
+    LaunchedEffect(controller) {
+        controller.loadPlayerGamesList()
+    }
     /*
     * A implementar en la fase 3
     val multiPlayerGamesCollection: Game by lazy { controller.loadMultiPlayerGames() }
     */
-
 
     Scaffold(
         bottomBar = {
@@ -137,7 +140,6 @@ fun ScoresScreen(navController: NavController) {
                     LazyColumn {
                         stickyHeader { Header() }
 
-                        controller.loadPlayerGamesList()
                         singlePlayerGamesCollection = controller.userGamesList.value.orEmpty()
 
                         items(singlePlayerGamesCollection) { item ->
