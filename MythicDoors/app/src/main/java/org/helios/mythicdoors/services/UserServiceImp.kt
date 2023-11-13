@@ -45,7 +45,6 @@ class UserServiceImp(dbHelper: Connection): IUserService {
     override suspend fun saveUser(user: User): Boolean = withContext(Dispatchers.IO) {
         try {
             user.takeIf { it.isValid() }?.run {
-                val userExists: Boolean = checkIfUserExists(this)
                 return@withContext if (isEmpty()) checkIfUserExists(this).takeIf { !it }?.let { repository.insertOne(this) > 0L } ?: false
                 else repository.updateOne(this) > 0L
             } ?: return@withContext false
