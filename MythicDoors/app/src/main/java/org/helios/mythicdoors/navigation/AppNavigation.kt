@@ -1,5 +1,7 @@
 package org.helios.mythicdoors.navigation
 
+
+
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -15,13 +17,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-<<<<<<< HEAD
-
-        //startDestination = AppDestination.Overview.route
-        startDestination = AppDestination.Scores.route
-=======
         startDestination = AppDestination.Overview.route
->>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
     ) {
         composable(AppDestination.Overview.route)  { OverviewScreen(navController = navController) }
         composable(AppDestination.Login.route)  { LoginScreen(navController = navController) }
