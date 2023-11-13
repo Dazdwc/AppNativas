@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import org.helios.mythicdoors.model.DataController
-import org.helios.mythicdoors.model.entities.DoorDBoj
-import org.helios.mythicdoors.model.entities.EnemyDBoj
+import org.helios.mythicdoors.model.entities.Door
+import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.store.StoreManager
 import kotlin.properties.Delegates
@@ -17,8 +17,8 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
     private var chosenDoor: String = ""
     private var bet: Int = 0
 
-    private lateinit var door: DoorDBoj
-    private lateinit var enemy: EnemyDBoj
+    private lateinit var door: Door
+    private lateinit var enemy: Enemy
     private var combatConfrontationResult by Delegates.notNull<Boolean>()
 
     fun loadBetValues() {
@@ -85,9 +85,9 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
         ).also { Log.w("GameLogicViewModel", "getNewUserStaticsAfterBattle: $it") }
     }
 
-    private fun generateDoor(): DoorDBoj { return DoorDBoj.create(chosenDoor) }
+    private fun generateDoor(): Door { return Door.create(chosenDoor) }
 
-    private fun generateEnemy(): EnemyDBoj { return EnemyDBoj.create(generateEnemyLevel()) }
+    private fun generateEnemy(): Enemy { return Enemy.create(generateEnemyLevel()) }
 
     private fun generateCombat(): Boolean {
         return player.getLevel() >= (enemy.getLevel()) }
@@ -156,7 +156,7 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
     }
 
     private fun clearEnemyAndDoor() {
-        enemy.takeIf { true }?.let { enemy = EnemyDBoj.createEmptyEnemy() }
-        door.takeIf { true }?.let { door = DoorDBoj.createEmptyDoor()}
+        enemy.takeIf { true }?.let { enemy = Enemy.createEmptyEnemy() }
+        door.takeIf { true }?.let { door = Door.createEmptyDoor()}
     }
 }

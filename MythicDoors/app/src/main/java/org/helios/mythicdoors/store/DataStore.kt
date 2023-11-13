@@ -1,7 +1,6 @@
 package org.helios.mythicdoors.store
 
-import android.util.Log
-import org.helios.mythicdoors.model.entities.EnemyDBoj
+import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.utils.AppConstants.GameMode
 
@@ -16,7 +15,7 @@ data class AppStore(
 
 data class CombatResults(
     var isPlayerWinner: Boolean = false,
-    var enemy: EnemyDBoj? = null,
+    var enemy: Enemy? = null,
     var resultCoinAmount: Int = 0,
     var resultXpAmount: Int = 0
 )
@@ -56,7 +55,7 @@ class StoreManager {
 
     fun updateCombatResults(
         isPlayerWinner: Boolean,
-        enemy: EnemyDBoj?,
+        enemy: Enemy?,
         resultCoinAmount: Int,
         resultXpAmount: Int
     ) {

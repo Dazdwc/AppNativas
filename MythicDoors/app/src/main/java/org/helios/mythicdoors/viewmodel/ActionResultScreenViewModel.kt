@@ -7,7 +7,7 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
-import org.helios.mythicdoors.model.entities.EnemyDBoj
+import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Game
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.INavFunctions
@@ -142,20 +142,20 @@ class ActionResultScreenViewModel(
 */
 object GameResults {
     private var isPlayerWinner: Boolean = false
-    private var enemy: EnemyDBoj? = null
+    private var enemy: Enemy? = null
     private var resultCoinAmount: Int = 0
     private var resultXpAmount: Int = 0
 
     fun getIsPlayerWinner(): Boolean { return isPlayerWinner }
 
-    fun getEnemy(): EnemyDBoj? { return enemy }
+    fun getEnemy(): Enemy? { return enemy }
 
     fun getResultCoinAmount(): Int { return resultCoinAmount }
 
     fun getResultXpAmount(): Int { return resultXpAmount }
 
 
-    fun create(isPlayerWinner: Boolean, enemy: EnemyDBoj?, resultCoinAmount: Int, resultXpAmount: Int): GameResults {
+    fun create(isPlayerWinner: Boolean, enemy: Enemy?, resultCoinAmount: Int, resultXpAmount: Int): GameResults {
         return GameResults.apply {
             this.isPlayerWinner = isPlayerWinner
             this.enemy = enemy
