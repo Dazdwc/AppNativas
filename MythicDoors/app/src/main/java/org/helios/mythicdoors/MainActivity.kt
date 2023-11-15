@@ -6,17 +6,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.AppNavigation
 import org.helios.mythicdoors.store.StoreManager
+import org.helios.mythicdoors.ui.fragments.AudioPlayer
+import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels
 import org.helios.mythicdoors.utils.Connection
@@ -28,7 +30,8 @@ class MainActivity : ComponentActivity() {
         private lateinit var appContext: Context
 
         private val dbHelper: Connection by lazy { Connection(appContext) }
-
+        private val navController: NavController by lazy { NavController(appContext) }
+        private val snackbarHostState: SnackbarHostState by lazy { SnackbarHostState() }
         lateinit var dataController: DataController
 
         /* DataController se iniciará con el patrón Singleton
@@ -46,6 +49,7 @@ class MainActivity : ComponentActivity() {
                 map[ScreensViewModels.REGISTER_SCREEN_VIEWMODEL] = RegisterScreenViewModel(it)
                 map[ScreensViewModels.SCORES_SCREEN_VIEWMODEL] = ScoresScreenViewModel(it)
                 map[ScreensViewModels.MENU_BAR_SCREEN_VIEWMODEL] = MenuViewModel(it)
+                map[ScreensViewModels.AUDIO_PLAYER_SCREEN_VIEWMODEL] = AudioPlayerViewModel.getInstance(it)
                 // ...otros view models que dependen de dataController
             }
             map.toMap()
@@ -78,7 +82,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MythicDoorsTheme {
-                Scaffold { innerPadding ->
+                Scaffold(topBar = {
+                    AudioPlayer()
+                },
+                    bottomBar = {
+                        MenuBar(navController)
+                    },
+                    snackbarHost = {
+                        SnackbarHost(hostState = snackbarHostState)
+                    }
+                ) { innerPadding ->
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()
@@ -93,6 +106,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        GameMediaPlayer.resetMediaPlayer()
         dbHelper.close()
     }
 }

@@ -1,6 +1,9 @@
 package org.helios.mythicdoors.store
 
+import android.net.Uri
+import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.Enemy
+import org.helios.mythicdoors.model.entities.Song
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.utils.AppConstants.GameMode
 
@@ -8,6 +11,10 @@ data class AppStore(
     val combatResults: CombatResults = CombatResults(),
     val playerAction: PlayerAction = PlayerAction(),
     val playerInitialStats: PlayerInitialStats = PlayerInitialStats(),
+    val gameSongsList: List<Song> = listOf(
+        Song.create(R.raw.we_cannot_defend_you, "We Cannot Defend You", "Three Steps to Hell", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.we_cannot_defend_you)),
+        Song.create(R.raw.there_was_a_simple_answer, "There Was a Simple Answer", "Three Steps to Hell", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.there_was_a_simple_answer)),
+    ),
     var actualUser: User? = null,
     var gameMode: GameMode = GameMode.SINGLE_PLAYER,
     var gameScore: Int = 0

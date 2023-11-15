@@ -40,6 +40,7 @@ object AppConstants {
         const val ACTION_RESULT_SCREEN_VIEWMODEL = "action-result-screen-viewmodel"
         const val SCORES_SCREEN_VIEWMODEL = "scores-screen-viewmodel"
         const val MENU_BAR_SCREEN_VIEWMODEL = "menu-bar-screen-viewmodel"
+        const val AUDIO_PLAYER_SCREEN_VIEWMODEL = "audio-player-screen-viewmodel"
     }
 
     enum class GameMode {
