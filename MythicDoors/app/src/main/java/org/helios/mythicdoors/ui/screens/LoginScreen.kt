@@ -58,17 +58,6 @@ fun LoginScreen(navController: NavController) {
                 .fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Text(
-                text = "Mythic Doors",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .padding(
-                        top = ScreenConstants.DOUBLE_PADDING.dp,
-                        bottom = ScreenConstants.DOUBLE_PADDING.dp)
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.CenterHorizontally),
-            )
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -78,12 +67,21 @@ fun LoginScreen(navController: NavController) {
                 Column(
                     modifier = Modifier
                         .width(maxWidth.minus(maxWidth * 0.20f))
-                        .padding(
-                            top = ScreenConstants.DOUBLE_PADDING.dp,
-                            bottom = ScreenConstants.AVERAGE_PADDING.dp),
+                        .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Text(
+                        text = "Mythic Doors",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .padding(
+                                top = ScreenConstants.DOUBLE_PADDING.dp,
+                                bottom = ScreenConstants.DOUBLE_PADDING.dp)
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally),
+                    )
                     Text(
                         text = "Login",
                         style = MaterialTheme.typography.headlineMedium,

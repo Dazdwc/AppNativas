@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.viewmodel.tools
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.SoundPool
@@ -8,9 +9,30 @@ import androidx.lifecycle.ViewModel
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.store.StoreManager
 
+@SuppressLint("StaticFieldLeak")
 class SoundManagementViewModel(
-    context: Context
+    private var _context: Context
 ): ViewModel() {
+    companion object {
+        @Volatile
+        private var instance : SoundManagementViewModel? = null
+
+        fun getInstance(context: Context): SoundManagementViewModel {
+            return instance ?: synchronized(this) {
+                instance ?: buildSoundManagementViewModel(context).also { instance = it }
+            }
+        }
+
+        private fun buildSoundManagementViewModel(context: Context): SoundManagementViewModel {
+            return SoundManagementViewModel(context)
+        }
+    }
+
+    var context: Context
+        get() = _context
+        set(value) { _context = value }
+
+
     private val store: StoreManager by lazy { StoreManager.getInstance() }
 
     private val soundPool: SoundPool
@@ -30,7 +52,7 @@ class SoundManagementViewModel(
             .build()
 
         loadListeners()
-        loadSounds(context)
+        loadSounds(_context)
     }
 
     private fun loadSounds(context: Context) {
@@ -65,7 +87,6 @@ class SoundManagementViewModel(
             } catch (e: Exception) {
                 Log.e("SOUND", "Error playing sound")
             }
-            soundPool.pause(soundId)
         }
     }
 

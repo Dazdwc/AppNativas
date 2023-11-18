@@ -25,7 +25,8 @@ data class AppStore(
         R.raw.werewolf,
         R.raw.castle_door,
         R.raw.rain,
-        R.raw.score_ladder_sound,
+        R.raw.scores_screen_sound,
+        R.raw.door_select,
     )
 )
 

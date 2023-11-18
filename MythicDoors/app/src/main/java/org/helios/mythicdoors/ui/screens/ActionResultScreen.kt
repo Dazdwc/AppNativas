@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -23,6 +24,7 @@ import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
+import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.ACTION_RESULT_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.ActionResultScreenViewModel
@@ -36,12 +38,21 @@ fun ActionResultScreen(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context: Context = LocalContext.current
 
-    val soundManager = remember { SoundManagementViewModel(context) }.apply { loadSoundsIfNeeded(context) }
+    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel).apply {
+        this.context = context
+        loadSoundsIfNeeded(context)
+    }
 
     val playerCurrentStats: User by lazy { controller.playerData ?: User.createEmptyUser() }
     val gameCurrentStats: GameResults by lazy { controller.gameResultsData ?: GameResults.create(false, null, 0, 0) }
 
     val isEnoughCoins: Boolean by lazy { controller.isEnoughCoins() }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            soundManager.stopPlayingSounds()
+        }
+    }
 
     controller.initialLoad()
     soundManager.playSound(R.raw.werewolf)

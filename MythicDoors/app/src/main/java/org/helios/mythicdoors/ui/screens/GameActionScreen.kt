@@ -25,6 +25,7 @@ import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
+import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.AVERAGE_DOOR
 import org.helios.mythicdoors.utils.AppConstants.EASY_DOOR
 import org.helios.mythicdoors.utils.AppConstants.HARD_DOOR
@@ -40,7 +41,10 @@ fun GameActionScreen(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context: Context = LocalContext.current
 
-    val soundManager: SoundManagementViewModel = remember { SoundManagementViewModel(context) }.apply { loadSoundsIfNeeded(context) }
+    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel).apply {
+        this.context = context
+        loadSoundsIfNeeded(context)
+    }
 
     var isDoorSelected: Boolean by remember { mutableStateOf(false) }
     var selectedDoorId: String by remember { mutableStateOf("") }
@@ -53,6 +57,12 @@ fun GameActionScreen(navController: NavController) {
         if (isCombatSuccessful) {
             snackbarHostState.currentSnackbarData?.dismiss().run { controller.navigateToActionResultScreen(scope, snackbarHostState) }
             controller.resetCombatSuccessful()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            soundManager.stopPlayingSounds()
         }
     }
 
@@ -107,6 +117,8 @@ fun GameActionScreen(navController: NavController) {
                           modifier = Modifier
                               .height(ScreenConstants.IMAGE_HEIGHT.dp)
                               .clickable {
+                                  soundManager.stopPlayingSounds().also { soundManager.playSound(R.raw.door_select) }
+
                                   (selectedDoorId != EASY_DOOR).also {
                                       selectedDoorId = EASY_DOOR
                                       isDoorSelected = it
@@ -122,6 +134,8 @@ fun GameActionScreen(navController: NavController) {
                           modifier = Modifier
                               .height(ScreenConstants.IMAGE_HEIGHT.dp)
                               .clickable {
+                                  soundManager.stopPlayingSounds().also { soundManager.playSound(R.raw.door_select) }
+
                                   (selectedDoorId != AVERAGE_DOOR).also {
                                       selectedDoorId = AVERAGE_DOOR
                                       isDoorSelected = it
@@ -137,6 +151,8 @@ fun GameActionScreen(navController: NavController) {
                           modifier = Modifier
                               .height(ScreenConstants.IMAGE_HEIGHT.dp)
                               .clickable {
+                                  soundManager.stopPlayingSounds().also { soundManager.playSound(R.raw.door_select) }
+
                                   (selectedDoorId != HARD_DOOR).also {
                                       selectedDoorId = HARD_DOOR
                                       isDoorSelected = it

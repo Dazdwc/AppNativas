@@ -31,6 +31,7 @@ import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.Game
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
+import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.SCORES_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.ScoresScreenViewModel
@@ -47,7 +48,10 @@ fun ScoresScreen(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    val soundManager = remember { SoundManagementViewModel(context) }.apply { loadSoundsIfNeeded(context) }
+    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel).apply {
+        this.context = context
+        loadSoundsIfNeeded(context)
+    }
 
     var singlePlayerGamesCollection by remember { mutableStateOf(emptyList<Game>()) }
     LaunchedEffect(controller) {
@@ -58,7 +62,13 @@ fun ScoresScreen(navController: NavController) {
     val multiPlayerGamesCollection: Game by lazy { controller.loadMultiPlayerGames() }
     */
 
-    soundManager.playSound(R.raw.score_ladder_sound)
+    DisposableEffect(Unit) {
+        onDispose {
+            soundManager.stopPlayingSounds()
+        }
+    }
+
+    soundManager.playSound(R.raw.scores_screen_sound)
     Surface(
         modifier = Modifier
             .fillMaxSize(),
