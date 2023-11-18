@@ -11,14 +11,23 @@ data class AppStore(
     val combatResults: CombatResults = CombatResults(),
     val playerAction: PlayerAction = PlayerAction(),
     val playerInitialStats: PlayerInitialStats = PlayerInitialStats(),
-    val gameSongsList: List<Song> = listOf(
-        Song.create(R.raw.we_cannot_defend_you, "We Cannot Defend You", "Three Steps to Hell", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.we_cannot_defend_you)),
-        Song.create(R.raw.there_was_a_simple_answer, "There Was a Simple Answer", "Three Steps to Hell", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.there_was_a_simple_answer)),
-    ),
     var actualUser: User? = null,
     var gameMode: GameMode = GameMode.SINGLE_PLAYER,
-    var gameScore: Int = 0
+    var gameScore: Int = 0,
+    val gameSongsList: List<Song> = listOf(
+        Song.create(R.raw.guardians_of_the_sword, "Guardians of The Sword", "Dark Fantasy Studio", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.guardians_of_the_sword)),
+        Song.create(R.raw.the_girl_and_the_sword, "The Girl and The Sword", "Dark Fantasy Studio", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.the_girl_and_the_sword)),
+        Song.create(R.raw.i_feel_the_power, "I Feel The Power", "Dark Fantasy Studio", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.i_feel_the_power)),
+    ),
+    val gameSoundsList: List<Int> = listOf(
+        R.raw.door_open,
+        R.raw.wolf,
+        R.raw.werewolf,
+        R.raw.castle_door,
+        R.raw.rain,
+        R.raw.score_ladder_sound,
     )
+)
 
 data class CombatResults(
     var isPlayerWinner: Boolean = false,

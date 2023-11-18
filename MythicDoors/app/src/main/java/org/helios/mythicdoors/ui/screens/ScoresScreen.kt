@@ -34,6 +34,7 @@ import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.SCORES_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.ScoresScreenViewModel
+import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
 /*
 * Habilitamos la API ExperimentalFoundationApi para poder usar el encabezado fijo de LazyColumn
@@ -44,6 +45,10 @@ fun ScoresScreen(navController: NavController) {
     val controller: ScoresScreenViewModel = (MainActivity.viewModelsMap[SCORES_SCREEN_VIEWMODEL] as ScoresScreenViewModel).apply { setNavController(navController) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    val soundManager = remember { SoundManagementViewModel(context) }.apply { loadSoundsIfNeeded(context) }
+
     var singlePlayerGamesCollection by remember { mutableStateOf(emptyList<Game>()) }
     LaunchedEffect(controller) {
         controller.loadPlayerGamesList()
@@ -53,6 +58,7 @@ fun ScoresScreen(navController: NavController) {
     val multiPlayerGamesCollection: Game by lazy { controller.loadMultiPlayerGames() }
     */
 
+    soundManager.playSound(R.raw.score_ladder_sound)
     Surface(
         modifier = Modifier
             .fillMaxSize(),

@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,12 +31,16 @@ import org.helios.mythicdoors.utils.AppConstants.HARD_DOOR
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.GAME_ACTION_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.GameActionScreenViewModel
+import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
 @Composable
 fun GameActionScreen(navController: NavController) {
     val controller: GameActionScreenViewModel = (MainActivity.viewModelsMap[GAME_ACTION_SCREEN_VIEWMODEL] as GameActionScreenViewModel).apply { setNavController(navController) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context: Context = LocalContext.current
+
+    val soundManager: SoundManagementViewModel = remember { SoundManagementViewModel(context) }.apply { loadSoundsIfNeeded(context) }
 
     var isDoorSelected: Boolean by remember { mutableStateOf(false) }
     var selectedDoorId: String by remember { mutableStateOf("") }
@@ -52,7 +57,7 @@ fun GameActionScreen(navController: NavController) {
     }
 
     controller.initialLoad()
-
+    soundManager.playSound(R.raw.wolf)
 
     Surface(
         modifier = Modifier
@@ -200,7 +205,8 @@ fun GameActionScreen(navController: NavController) {
                           )
                       }
                       Button(onClick = {
-                           controller.updateValuesOnPlayerAction(playerBet, selectedDoorId)
+                            soundManager.stopPlayingSounds().also { soundManager.playSound(R.raw.door_open) }
+                            controller.updateValuesOnPlayerAction(playerBet, selectedDoorId)
                             scope.launch {
                                snackbarHostState.showSnackbar("You have bet $playerBet coins on the $selectedDoorId door")
                            }

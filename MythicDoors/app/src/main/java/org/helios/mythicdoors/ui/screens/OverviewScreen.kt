@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -19,6 +20,7 @@ import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.OVERVIEW_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.OverviewScreenViewModel
+import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
 
 @Composable
@@ -26,6 +28,9 @@ fun OverviewScreen(navController: NavController) {
     val controller: OverviewScreenViewModel = (MainActivity.viewModelsMap[OVERVIEW_SCREEN_VIEWMODEL] as OverviewScreenViewModel).apply { setNavController(navController) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context: Context = LocalContext.current
+
+    val soundManager = remember { SoundManagementViewModel(context) }.apply { loadSoundsIfNeeded(context) }
 
     Surface(
         modifier = Modifier
@@ -48,7 +53,10 @@ fun OverviewScreen(navController: NavController) {
             Row {
                 Button(
                     onClick = {
-                        controller.navigateToLoginScreen(scope, snackbarHostState)
+                        soundManager.stopPlayingSounds().also {
+                            soundManager.playSound(R.raw.castle_door)
+                            controller.navigateToLoginScreen(scope, snackbarHostState)
+                        }
                     },
                     modifier = Modifier.padding(top = 30.dp, start = 30.dp, end = 30.dp),
                 ) {

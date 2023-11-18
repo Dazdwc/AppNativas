@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,6 +13,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -25,12 +27,16 @@ import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.ACTION_RESULT_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.ActionResultScreenViewModel
 import org.helios.mythicdoors.viewmodel.GameResults
+import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
 @Composable
 fun ActionResultScreen(navController: NavController) {
     val controller: ActionResultScreenViewModel = (MainActivity.viewModelsMap[ACTION_RESULT_SCREEN_VIEWMODEL] as ActionResultScreenViewModel).apply { setNavController(navController) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context: Context = LocalContext.current
+
+    val soundManager = remember { SoundManagementViewModel(context) }.apply { loadSoundsIfNeeded(context) }
 
     val playerCurrentStats: User by lazy { controller.playerData ?: User.createEmptyUser() }
     val gameCurrentStats: GameResults by lazy { controller.gameResultsData ?: GameResults.create(false, null, 0, 0) }
@@ -38,6 +44,7 @@ fun ActionResultScreen(navController: NavController) {
     val isEnoughCoins: Boolean by lazy { controller.isEnoughCoins() }
 
     controller.initialLoad()
+    soundManager.playSound(R.raw.werewolf)
 
     Surface(
         modifier = Modifier
@@ -124,7 +131,7 @@ fun ActionResultScreen(navController: NavController) {
                             .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                             .size(40.dp, 40.dp),
                             imageVector = ImageVector.vectorResource(R.drawable.actual_coins_500),
-                            contentDescription = "icon representing the user-s actual coins",
+                            contentDescription = "icon representing the user's actual coins",
                             tint = MaterialTheme.colorScheme.secondary
                         )
                         TextField(modifier = Modifier
@@ -141,8 +148,8 @@ fun ActionResultScreen(navController: NavController) {
                         Icon(modifier = Modifier
                             .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                             .size(40.dp, 40.dp),
-                            imageVector = ImageVector.vectorResource(R.drawable.bet_500),
-                            contentDescription = "icon representing the user's actual coins",
+                            imageVector = ImageVector.vectorResource(R.drawable.star_500),
+                            contentDescription = "icon representing the user's actual experience",
                             tint = MaterialTheme.colorScheme.secondary
                         )
                         TextField(modifier = Modifier

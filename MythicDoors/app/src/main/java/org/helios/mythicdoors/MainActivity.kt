@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -23,6 +22,9 @@ import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels
 import org.helios.mythicdoors.utils.Connection
 import org.helios.mythicdoors.viewmodel.*
+import org.helios.mythicdoors.viewmodel.tools.AudioPlayerViewModel
+import org.helios.mythicdoors.viewmodel.tools.GameMediaPlayer
+import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

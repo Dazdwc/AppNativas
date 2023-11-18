@@ -1,7 +1,5 @@
 package org.helios.mythicdoors.ui.fragments
 
-import android.content.Context
-import android.media.MediaPlayer
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.MarqueeSpacing
@@ -19,14 +17,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.Song
-import org.helios.mythicdoors.store.AppStore
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.AUDIO_PLAYER_SCREEN_VIEWMODEL
-import org.helios.mythicdoors.viewmodel.AudioPlayerViewModel
-import org.helios.mythicdoors.viewmodel.MenuViewModel
+import org.helios.mythicdoors.viewmodel.tools.AudioPlayerViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
