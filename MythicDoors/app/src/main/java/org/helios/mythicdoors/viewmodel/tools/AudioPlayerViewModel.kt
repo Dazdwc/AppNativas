@@ -1,12 +1,16 @@
 package org.helios.mythicdoors.viewmodel.tools
 
 import android.content.Context
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.Song
@@ -32,13 +36,21 @@ class AudioPlayerViewModel(
     }
 
     private val store: StoreManager by lazy { StoreManager.getInstance() }
+    private val context: Context? by lazy { store.getContext() }
 
     private val gameSongsList: List<Song> by lazy { getSongList() }
     private val player: GameMediaPlayer? by lazy { GameMediaPlayer.getInstance() }
 
+    private val audioManager: AudioManager by lazy { context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
+
     private val isPaused: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>(false) }
     private val isPlaying: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>(false) }
     val actualSong: MutableLiveData<Song> by lazy { MutableLiveData<Song>() }
+
+    init {
+        Log.e("AudioPlayerViewModel", "init: ${context.toString()}")
+        setupAudioFocusListener()
+    }
 
     // Implementando recursividad podemos reproducir una lista de canciones en bucle
     fun playInGameMusic(context: Context, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
@@ -75,7 +87,7 @@ class AudioPlayerViewModel(
     }
 
     fun playMusic(context: Context, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
-        if (player == null ) playInGameMusic(context, scope, snackbarHostState).also {
+        if (player == null )  if (!isPlaying.value!!) playInGameMusic(context, scope, snackbarHostState).also {
             isPaused.value = false
             return
         }
@@ -101,6 +113,34 @@ class AudioPlayerViewModel(
     override fun onCleared() {
         super.onCleared()
         player?.release()
+    }
+
+    private fun setupAudioFocusListener() {
+        val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setOnAudioFocusChangeListener { focusChange ->
+                when (focusChange) {
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                        player?.setVolume(0.3f, 0.3f)
+                    }
+
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                        player?.pause()
+                    }
+
+                    AudioManager.AUDIOFOCUS_GAIN -> {
+                        player?.setVolume(1f, 1f)
+                        player?.start()
+                    }
+
+                    AudioManager.AUDIOFOCUS_LOSS -> {
+                        player?.stop()
+                        player?.release()
+                    }
+                }
+            }
+            .build()
+
+        audioManager.requestAudioFocus(audioFocusRequest)
     }
 }
 // Inner class -> Solo la usmos aquí, por eso la ponemos como inner

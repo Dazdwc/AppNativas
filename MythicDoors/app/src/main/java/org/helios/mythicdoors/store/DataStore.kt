@@ -1,16 +1,19 @@
 package org.helios.mythicdoors.store
 
+import android.content.Context
 import android.net.Uri
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Song
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.utils.AppConstants.GameMode
+import java.lang.ref.WeakReference
 
 data class AppStore(
     val combatResults: CombatResults = CombatResults(),
     val playerAction: PlayerAction = PlayerAction(),
     val playerInitialStats: PlayerInitialStats = PlayerInitialStats(),
+    var contextReference: WeakReference<Context>? = null,
     var actualUser: User? = null,
     var gameMode: GameMode = GameMode.SINGLE_PLAYER,
     var gameScore: Int = 0,
@@ -69,6 +72,12 @@ class StoreManager {
     }
 
     fun getAppStore(): AppStore { return appStore }
+
+    fun getContext(): Context? { return appStore.contextReference?.get() }
+
+    fun setContext(context: Context) { appStore.contextReference = WeakReference(context) }
+
+    fun releaseContext() { appStore.contextReference?.clear().also { appStore.contextReference = null } }
 
     fun updateCombatResults(
         isPlayerWinner: Boolean,

@@ -32,10 +32,8 @@ fun OverviewScreen(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context: Context = LocalContext.current
 
-    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel).apply {
-        this.context = context
-        loadSoundsIfNeeded(context)
-    }
+    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel)
+        .apply { loadSoundsIfNeeded() }
 
     DisposableEffect(Unit) {
         onDispose {

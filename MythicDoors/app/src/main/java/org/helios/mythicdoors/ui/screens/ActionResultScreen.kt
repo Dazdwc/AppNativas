@@ -38,10 +38,8 @@ fun ActionResultScreen(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context: Context = LocalContext.current
 
-    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel).apply {
-        this.context = context
-        loadSoundsIfNeeded(context)
-    }
+    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel)
+        .apply { loadSoundsIfNeeded() }
 
     val playerCurrentStats: User by lazy { controller.playerData ?: User.createEmptyUser() }
     val gameCurrentStats: GameResults by lazy { controller.gameResultsData ?: GameResults.create(false, null, 0, 0) }

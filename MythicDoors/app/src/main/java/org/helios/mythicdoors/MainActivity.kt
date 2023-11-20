@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 map[ScreensViewModels.SCORES_SCREEN_VIEWMODEL] = ScoresScreenViewModel(it)
                 map[ScreensViewModels.MENU_BAR_SCREEN_VIEWMODEL] = MenuViewModel(it)
                 map[ScreensViewModels.AUDIO_PLAYER_SCREEN_VIEWMODEL] = AudioPlayerViewModel.getInstance(it)
-                map[ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] = SoundManagementViewModel.getInstance(appContext)
+                map[ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] = SoundManagementViewModel.getInstance()
                 // ...otros view models que dependen de dataController
             }
             map.toMap()
@@ -81,6 +81,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContext(applicationContext)
+
+        storeManager.setContext(applicationContext)
         storeManager.updateActualUser(User.createEmptyUser())
 
         setContent {
@@ -111,6 +113,7 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
         GameMediaPlayer.resetMediaPlayer()
         dbHelper.close()
+        storeManager.releaseContext()
     }
 }
 
