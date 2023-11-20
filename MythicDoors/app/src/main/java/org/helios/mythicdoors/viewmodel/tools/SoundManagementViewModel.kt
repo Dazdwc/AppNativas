@@ -3,6 +3,8 @@ package org.helios.mythicdoors.viewmodel.tools
 import android.annotation.SuppressLint
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.SoundPool
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -31,6 +33,8 @@ class SoundManagementViewModel(): ViewModel() {
     private val soundPool: SoundPool
     private val soundMap: MutableMap<Int, Int> = mutableMapOf()
 
+    private val audioManager: AudioManager by lazy { context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
+
     private var isSoundsLoaded: Boolean = false
 
     init {
@@ -51,6 +55,8 @@ class SoundManagementViewModel(): ViewModel() {
         } catch (e: Exception) {
             Log.e("SOUND", "Error loading sounds")
         }
+
+        setupAudioFocusListener()
     }
 
     private fun loadSounds(context: Context) {
@@ -106,6 +112,29 @@ class SoundManagementViewModel(): ViewModel() {
 
     fun stopPlayingSounds() {
         soundPool.autoPause()
+    }
+
+    private fun setupAudioFocusListener() {
+        val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setOnAudioFocusChangeListener { focusChange ->
+                when (focusChange) {
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                        soundPool.autoPause()
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                        soundPool.autoPause()
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS -> {
+                        soundPool.autoPause()
+                    }
+                    AudioManager.AUDIOFOCUS_GAIN -> {
+                        soundPool.autoResume()
+                    }
+                }
+            }
+            .build()
+
+        audioManager.requestAudioFocus(audioFocusRequest)
     }
 
     override fun onCleared() {
