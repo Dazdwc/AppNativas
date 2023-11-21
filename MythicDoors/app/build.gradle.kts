@@ -94,4 +94,7 @@ dependencies {
 
     // Text animations -> Accompanist
     implementation("com.google.accompanist:accompanist-pager:0.28.0")
+
+    // Loc -> Location management
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 }

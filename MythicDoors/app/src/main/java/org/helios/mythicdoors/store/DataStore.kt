@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.store
 
+import android.Manifest
 import android.content.Context
 import android.net.Uri
 import org.helios.mythicdoors.R
