@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -15,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.airbnb.lottie.LottieComposition
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
@@ -23,7 +25,7 @@ import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.OVERVIEW_SCRE
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.OverviewScreenViewModel
 import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
-
+import com.airbnb.lottie.*
 
 @Composable
 fun OverviewScreen(navController: NavController) {
@@ -31,6 +33,7 @@ fun OverviewScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val context: Context = LocalContext.current
+    val composition by 
 
     val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel).apply {
         this.context = context
@@ -87,3 +90,4 @@ fun OverviewScreen(navController: NavController) {
 fun OverviewScreenPreview() {
     OverviewScreen(navController = NavController(LocalContext.current))
 }
+

@@ -29,4 +29,5 @@ class OverviewScreenViewModel @Inject constructor(
     fun navigateToLoginScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         navFunctions.navigateToLoginScreen(scope, snackbarHostState)
     }
+
 }

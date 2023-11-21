@@ -80,7 +80,7 @@ dependencies {
     // SQLite Helper -> Database implementation and management
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
     // LottieFiles -> Manejo de animaciones por Json
-    //implementation("com.airbnb-android:lottie:6.1.0")
+    implementation("com.airbnb.android:lottie:6.2.0")
 
     // Google Material Icons
     implementation("com.google.android.material:material:1.10.0")
