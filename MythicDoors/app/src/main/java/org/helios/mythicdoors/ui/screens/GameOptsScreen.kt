@@ -51,7 +51,7 @@ fun GameOptsScreen(navController: NavController) {
                 .padding(contentPadding),
             color = MaterialTheme.colorScheme.background
         ) {
-            Column {
+            Column{
                 Text(
                     text = "Mythic Doors",
                     style = MaterialTheme.typography.headlineLarge,
@@ -61,36 +61,6 @@ fun GameOptsScreen(navController: NavController) {
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally),
                 )
-<<<<<<< HEAD
-                Column {
-                    Text(
-                        text = "Game Options",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier
-                            .padding(top = 30.dp, bottom = 30.dp)
-                            .fillMaxWidth()
-                            .wrapContentWidth(Alignment.CenterHorizontally),
-                    )
-                    Row {
-                        Column(
-                            modifier = Modifier
-                                .padding(top = 20.dp, bottom = 30.dp, end = 15.dp)
-                                .weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Image(
-                                painterResource(id = R.drawable.sirtrap),
-                                contentDescription = "Single player image",
-                                Modifier.size(150.dp, 150.dp)
-                            )
-                            Button(
-                                onClick = {
-                                    controller.updateGameModeInStore(GameMode.SINGLE_PLAYER.toString())
-                                    controller.navigateToGameActionScreen(scope, snackbarHostState)
-                                },
-=======
                 Text(text = "Game Options",
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -118,7 +88,6 @@ fun GameOptsScreen(navController: NavController) {
                                 contentDescription = "Single player image",
                                 Modifier.size(200.dp, 200.dp))
                             Button(onClick = { controller.startGame(GameMode.SINGLE_PLAYER.toString()) },
->>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                                 modifier = Modifier
                                     .padding(
                                         top = ScreenConstants.DOUBLE_PADDING.dp,
@@ -128,19 +97,12 @@ fun GameOptsScreen(navController: NavController) {
                                     .wrapContentWidth(Alignment.CenterHorizontally),
                                 elevation = ButtonDefaults.buttonElevation(2.dp),
                             ) {
-                                Text(
-                                    text = "SINGLE PLAYER",
+                                Text(text = "SINGLE PLAYER",
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onBackground,
                                 )
                             }
                         }
-<<<<<<< HEAD
-                        Column(
-                            modifier = Modifier
-                                .padding(top = 20.dp, bottom = 30.dp, end = 15.dp)
-                                .weight(1f),
-=======
                         Column(modifier = Modifier
                             .padding(
                                 top = ScreenConstants.AVERAGE_PADDING.dp,
@@ -148,22 +110,11 @@ fun GameOptsScreen(navController: NavController) {
                                 end = ScreenConstants.AVERAGE_PADDING.dp
                             )
                             .weight(1f),
->>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Image(
-                                painterResource(id = R.drawable.multiplayer),
+                            Image(painterResource(id = R.drawable.multiplayer),
                                 contentDescription = "Multiplayer image",
-<<<<<<< HEAD
-                                Modifier.size(150.dp, 150.dp)
-                            )
-                            Button(
-                                modifier = Modifier
-                                    .padding(top = 30.dp, bottom = 30.dp)
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.CenterHorizontally),
-=======
                                 Modifier.size(200.dp, 200.dp))
                             Button(modifier = Modifier
                                 .padding(
@@ -172,47 +123,17 @@ fun GameOptsScreen(navController: NavController) {
                                 )
                                 .fillMaxWidth()
                                 .wrapContentWidth(Alignment.CenterHorizontally),
->>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                                 elevation = ButtonDefaults.buttonElevation(2.dp),
                                 enabled = false,
                                 onClick = { controller.startGame(GameMode.MULTI_PLAYER.toString()) },
                             ) {
-                                Text(
-                                    text = "MULTIPLAYER",
+                                Text(text = "MULTIPLAYER",
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onBackground,
                                 )
                             }
                         }
                     }
-<<<<<<< HEAD
-
-                    Row() {
-                         Column(
-                             modifier = Modifier
-                                 .padding(top = 20.dp, bottom = 30.dp, end = 15.dp)
-                                 .weight(1f),
-                             horizontalAlignment = Alignment.CenterHorizontally,
-                             verticalArrangement = Arrangement.Center
-                         ) {
-                             Image(
-                                painterResource(id = R.drawable.ladder),
-                                contentDescription = "Ladder Image",
-                                Modifier.size(150.dp, 150.dp)
-                            )
-                            Button(modifier = Modifier
-                                .padding(top = 30.dp, bottom = 30.dp)
-                                .fillMaxWidth()
-                                .wrapContentWidth(Alignment.CenterHorizontally),
-                                elevation = ButtonDefaults.buttonElevation(2.dp),
-                                enabled = true,
-                                onClick = {
-                                    //falta la opcion de desloguearse
-                                    controller.navigateToScores(scope, snackbarHostState)
-                                }) {
-                                Text(
-                                    text = "Ladder",
-=======
                     Row {
                         Column(modifier = Modifier
                             .padding(
@@ -238,46 +159,11 @@ fun GameOptsScreen(navController: NavController) {
                                 elevation = ButtonDefaults.buttonElevation(2.dp),
                             ) {
                                 Text(text = "SCORES LADDER",
->>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onBackground,
                                 )
                             }
                         }
-<<<<<<< HEAD
-
-                         Column(
-                             modifier = Modifier
-                                 .padding(top = 20.dp, bottom = 30.dp, end = 15.dp)
-                                 .weight(1f),
-                             horizontalAlignment = Alignment.CenterHorizontally,
-                             verticalArrangement = Arrangement.Center
-                         ) {
-                             Image(
-                                painterResource(id = R.drawable.clapbrazos),
-                                contentDescription = "Loggout Image",
-                                Modifier.size(150.dp, 150.dp)
-                         )
-                            Button(modifier = Modifier
-                                .padding(top = 30.dp, bottom = 30.dp)
-                                .fillMaxWidth()
-                                .wrapContentWidth(Alignment.CenterHorizontally),
-                                elevation = ButtonDefaults.buttonElevation(2.dp),
-                                enabled = false,
-                                onClick = {
-                                //falta la opcion de desloguearse
-                                controller.navigateToLogin(scope, snackbarHostState)
-                            }) {
-                            Text(
-                                text = "Unlogin",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onBackground,
-                            )
-                        }
-                    } }
-                }
-
-=======
                         Column(modifier = Modifier
                             .padding(
                                 top = ScreenConstants.AVERAGE_PADDING.dp,
@@ -308,11 +194,11 @@ fun GameOptsScreen(navController: NavController) {
                             }
                         }
                     }
->>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
                 }
             }
         }
     }
+}
 
 @Preview(showBackground = true)
 @Composable

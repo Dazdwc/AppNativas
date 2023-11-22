@@ -17,10 +17,7 @@ import org.helios.mythicdoors.store.StoreManager
 
 class ActionResultScreenViewModel(
     private val dataController: DataController
-<<<<<<< HEAD
-): ViewModel() { }
 
-=======
     ): ViewModel() {
     private val navController: NavController
         get() {
@@ -144,4 +141,4 @@ object GameResults {
         }
     }
 }
->>>>>>> d75d61cae29e238d5f5da87834cead65859bd66d
+
