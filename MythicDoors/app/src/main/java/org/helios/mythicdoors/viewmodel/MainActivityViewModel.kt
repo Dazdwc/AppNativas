@@ -24,7 +24,6 @@ class MainActivityViewModel(
     val visiblePermissionDialogQueue = mutableStateListOf<String>()
 
     fun dismissDialog() {
-        Log.e("TAG: Permission", visiblePermissionDialogQueue.forEach(::println).toString())
         if (!visiblePermissionDialogQueue.isEmpty()) visiblePermissionDialogQueue.removeFirst()
     }
 

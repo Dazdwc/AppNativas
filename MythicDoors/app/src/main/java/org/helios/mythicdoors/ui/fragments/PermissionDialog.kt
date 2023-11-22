@@ -72,7 +72,7 @@ interface IPermissionTextProvider { fun getDescription(isPermanentlyDecline: Boo
 
 class LocationPermissionTextProvider: IPermissionTextProvider {
     override fun getDescription(isPermanentlyDecline: Boolean): String {
-        return if (isPermanentlyDecline) "This app needs to access your location to show you the events near you. You can change this in the settings" else "This app needs to access your location to show you the events near you"
+        return if (isPermanentlyDecline) "This app needs to access your location to get your location. You can change this in the settings" else "This app needs to access your location to get your location"
     }
 }
 
@@ -85,5 +85,11 @@ class InternalImageStorePermissionTextProvider: IPermissionTextProvider {
 class CalendarPermissionTextProvider: IPermissionTextProvider {
     override fun getDescription(isPermanentlyDecline: Boolean): String {
         return if (isPermanentlyDecline) "This app needs to access your calendar to save the events you create. You can change this in the settings" else "This app needs to access your calendar to save the events you create"
+    }
+}
+
+class ForegroundServicePermissionTextProvider: IPermissionTextProvider {
+    override fun getDescription(isPermanentlyDecline: Boolean): String {
+        return if (isPermanentlyDecline) "This app needs to access your notifications service in order to show your usage notifications. You can change this in the settings" else "This app needs to access your notifications service in order to show you usage notifications"
     }
 }

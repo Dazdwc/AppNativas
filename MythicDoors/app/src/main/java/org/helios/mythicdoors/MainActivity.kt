@@ -1,5 +1,6 @@
 package org.helios.mythicdoors
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -13,10 +14,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -101,11 +102,20 @@ class MainActivity : ComponentActivity() {
         setContent {
             MythicDoorsTheme {
                 val dialogQueue = controller.visiblePermissionDialogQueue
+
+                val foregroundPermissionLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(),
+                    onResult = { isGranted ->
+                        controller.onPermissionResult(
+                            permission = Manifest.permission.FOREGROUND_SERVICE,
+                            isGranted = isGranted
+                        )
+                    }
+                )
+
                 val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.RequestMultiplePermissions(),
                     onResult = { permissions ->
                         AppPermissionsRequests.appPermissionRequests.forEach {permission ->
-                            Log.e("TAG: Permission", "Permission: $permission")
                             controller.onPermissionResult(
                                 permission = permission,
                                 isGranted = permissions[permission] == true
@@ -131,7 +141,14 @@ class MainActivity : ComponentActivity() {
                     }
 
                 Scaffold(topBar = {
-                    AudioPlayer()
+                    Row(modifier = Modifier
+                        .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AudioPlayer()
+                    }
+
                 },
                     bottomBar = {
                         MenuBar(navController)
@@ -145,6 +162,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding),
                     ) {
+                        foregroundPermissionLauncher.launch(Manifest.permission.FOREGROUND_SERVICE)
                         multiplePermissionResultLauncher.launch(AppPermissionsRequests.appPermissionRequests)
                         AppNavigation()
                     }
