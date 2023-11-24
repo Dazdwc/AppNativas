@@ -35,10 +35,8 @@ fun OverviewScreen(navController: NavController) {
     val context: Context = LocalContext.current
     val composition by 
 
-    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel).apply {
-        this.context = context
-        loadSoundsIfNeeded(context)
-    }
+    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel)
+        .apply { loadSoundsIfNeeded() }
 
     DisposableEffect(Unit) {
         onDispose {

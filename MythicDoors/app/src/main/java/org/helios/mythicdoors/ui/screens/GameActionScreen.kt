@@ -41,10 +41,8 @@ fun GameActionScreen(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context: Context = LocalContext.current
 
-    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel).apply {
-        this.context = context
-        loadSoundsIfNeeded(context)
-    }
+    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel)
+        .apply { loadSoundsIfNeeded() }
 
     var isDoorSelected: Boolean by remember { mutableStateOf(false) }
     var selectedDoorId: String by remember { mutableStateOf("") }

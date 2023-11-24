@@ -3,40 +3,37 @@ package org.helios.mythicdoors.viewmodel.tools
 import android.annotation.SuppressLint
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.SoundPool
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.store.StoreManager
 
-@SuppressLint("StaticFieldLeak")
-class SoundManagementViewModel(
-    private var _context: Context
-): ViewModel() {
+class SoundManagementViewModel(): ViewModel() {
     companion object {
         @Volatile
         private var instance : SoundManagementViewModel? = null
 
-        fun getInstance(context: Context): SoundManagementViewModel {
+        fun getInstance(): SoundManagementViewModel {
             return instance ?: synchronized(this) {
-                instance ?: buildSoundManagementViewModel(context).also { instance = it }
+                instance ?: buildSoundManagementViewModel().also { instance = it }
             }
         }
 
-        private fun buildSoundManagementViewModel(context: Context): SoundManagementViewModel {
-            return SoundManagementViewModel(context)
+        private fun buildSoundManagementViewModel(): SoundManagementViewModel {
+            return SoundManagementViewModel()
         }
     }
 
-    var context: Context
-        get() = _context
-        set(value) { _context = value }
-
-
     private val store: StoreManager by lazy { StoreManager.getInstance() }
+    private val context: Context? by lazy { store.getContext() }
 
     private val soundPool: SoundPool
     private val soundMap: MutableMap<Int, Int> = mutableMapOf()
+
+    private val audioManager: AudioManager by lazy { context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
 
     private var isSoundsLoaded: Boolean = false
 
@@ -52,7 +49,14 @@ class SoundManagementViewModel(
             .build()
 
         loadListeners()
-        loadSounds(_context)
+
+        try {
+            loadSounds(context!!)
+        } catch (e: Exception) {
+            Log.e("SOUND", "Error loading sounds")
+        }
+
+        setupAudioFocusListener()
     }
 
     private fun loadSounds(context: Context) {
@@ -72,9 +76,13 @@ class SoundManagementViewModel(
         }
     }
 
-    fun loadSoundsIfNeeded(context: Context) {
+    fun loadSoundsIfNeeded() {
         if (!isSoundsLoaded) {
-            loadSounds(context)
+            try {
+                loadSounds(context!!)
+            } catch (e: Exception) {
+                Log.e("SOUND", "Error loading sounds")
+            }
         }
     }
 
@@ -104,6 +112,29 @@ class SoundManagementViewModel(
 
     fun stopPlayingSounds() {
         soundPool.autoPause()
+    }
+
+    private fun setupAudioFocusListener() {
+        val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setOnAudioFocusChangeListener { focusChange ->
+                when (focusChange) {
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                        soundPool.autoPause()
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                        soundPool.autoPause()
+                    }
+                    AudioManager.AUDIOFOCUS_LOSS -> {
+                        soundPool.autoPause()
+                    }
+                    AudioManager.AUDIOFOCUS_GAIN -> {
+                        soundPool.autoResume()
+                    }
+                }
+            }
+            .build()
+
+        audioManager.requestAudioFocus(audioFocusRequest)
     }
 
     override fun onCleared() {

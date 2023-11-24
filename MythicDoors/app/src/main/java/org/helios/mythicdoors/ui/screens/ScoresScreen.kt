@@ -48,10 +48,8 @@ fun ScoresScreen(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel).apply {
-        this.context = context
-        loadSoundsIfNeeded(context)
-    }
+    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel)
+        .apply { loadSoundsIfNeeded() }
 
     var singlePlayerGamesCollection by remember { mutableStateOf(emptyList<Game>()) }
     LaunchedEffect(controller) {
