@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -35,7 +38,7 @@ class MainActivity : ComponentActivity() {
         private val navController: NavController by lazy { NavController(appContext) }
         private val snackbarHostState: SnackbarHostState by lazy { SnackbarHostState() }
         lateinit var dataController: DataController
-
+        private var currentLanguage by mutableStateOf("en")
         /* DataController se iniciará con el patrón Singleton
         * Hay que asegurarse que no se inicialice hasta que no se haya inicializado dataController
         */

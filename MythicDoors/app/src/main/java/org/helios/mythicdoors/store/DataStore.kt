@@ -6,6 +6,7 @@ import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Song
 import org.helios.mythicdoors.model.entities.User
+import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
 import org.helios.mythicdoors.utils.AppConstants.GameMode
 import java.lang.ref.WeakReference
 
@@ -30,7 +31,7 @@ data class AppStore(
         R.raw.rain,
         R.raw.scores_screen_sound,
         R.raw.door_select,
-    )
+    ),
 )
 
 data class CombatResults(
@@ -51,6 +52,7 @@ data class PlayerInitialStats(
     var coins: Int = 0,
     var score: Int = 0
 )
+
 
 class StoreManager {
     private var appStore: AppStore = AppStore()
@@ -131,4 +133,22 @@ class StoreManager {
         appStore.playerAction.bet = 0
         appStore.playerAction.selectedDoorId = ""
     }
+
+
+    private val languageObservers = mutableListOf<LanguageChangeListener>()
+
+    fun addObserver(observer: LanguageChangeListener) {
+        languageObservers.add(observer)
+    }
+
+    fun removeObserver(observer: LanguageChangeListener) {
+        languageObservers.remove(observer)
+    }
+
+    fun notifyLanguageChanged(newLanguage: String) {
+        languageObservers.forEach {
+            it.onLanguageChanged(newLanguage)
+        }
+    }
+
 }

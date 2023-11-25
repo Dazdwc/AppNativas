@@ -21,10 +21,13 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
+import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.LOGIN_SCREEN_VIEWMODEL
+import org.helios.mythicdoors.utils.lenguage
 import org.helios.mythicdoors.viewmodel.LoginScreenViewModel
 
 @Composable
@@ -43,6 +46,21 @@ fun LoginScreen(navController: NavController) {
         ImageVector.vectorResource(R.drawable.eye_500)
     } else {
         ImageVector.vectorResource(R.drawable.eye_off_500)
+    }
+    var currentLanguage by remember { mutableStateOf("en") }
+
+    val storeManager = StoreManager.getInstance()
+
+    DisposableEffect(Unit) {
+        val observer: LanguageChangeListener = object : LanguageChangeListener {
+            override fun onLanguageChanged(newLanguage: String) {
+                currentLanguage = newLanguage
+            }
+        }
+        storeManager.addObserver(observer)
+        onDispose {
+            storeManager.removeObserver(observer)
+        }
     }
 
     val loginSuccessful by controller.loginSuccessful.observeAsState(false)
@@ -83,7 +101,7 @@ fun LoginScreen(navController: NavController) {
                             .wrapContentWidth(Alignment.CenterHorizontally),
                     )
                     Text(
-                        text = "Login",
+                        text = lenguage["login_$currentLanguage"]?: "Login",
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(bottom = 50.dp)
@@ -124,7 +142,7 @@ fun LoginScreen(navController: NavController) {
                         )
                     }
                     isEmailValid.takeIf { !it }?.run { Text(
-                        text = "Please enter a valid email address",
+                        text = lenguage["errorvalidmail_$currentLanguage"]?:"Please enter a valid email address",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(bottom = 10.dp)
