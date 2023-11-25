@@ -7,6 +7,7 @@ import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Song
 import org.helios.mythicdoors.model.entities.User
+import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
 import org.helios.mythicdoors.utils.AppConstants.GameMode
 import java.lang.ref.WeakReference
 
@@ -131,5 +132,21 @@ class StoreManager {
     private fun clearPlayerAction() {
         appStore.playerAction.bet = 0
         appStore.playerAction.selectedDoorId = ""
+    }
+
+    private val languageObservers = mutableListOf<LanguageChangeListener>()
+
+    fun addObserver(observer: LanguageChangeListener) {
+        languageObservers.add(observer)
+    }
+
+    fun removeObserver(observer: LanguageChangeListener) {
+        languageObservers.remove(observer)
+    }
+
+    fun notifyLanguageChanged(newLanguage: String) {
+        languageObservers.forEach {
+            it.onLanguageChanged(newLanguage)
+        }
     }
 }

@@ -21,10 +21,13 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
+import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.LOGIN_SCREEN_VIEWMODEL
+import org.helios.mythicdoors.utils.lenguage
 import org.helios.mythicdoors.viewmodel.LoginScreenViewModel
 
 @Composable
@@ -50,6 +53,20 @@ fun LoginScreen(navController: NavController) {
         if (loginSuccessful) {
             snackbarHostState.currentSnackbarData?.dismiss().run { controller.navigateToGameOptsScreen(scope, snackbarHostState) }
             controller.resetLoginSuccessful()
+        }
+    }
+    var currentLanguage by remember { mutableStateOf("en") }
+    val storeManager = StoreManager.getInstance()
+
+    DisposableEffect(Unit) {
+        val observer: LanguageChangeListener = object : LanguageChangeListener {
+            override fun onLanguageChanged(newLanguage: String) {
+                currentLanguage = newLanguage
+            }
+        }
+        storeManager.addObserver(observer)
+        onDispose {
+            storeManager.removeObserver(observer)
         }
     }
 
@@ -83,7 +100,7 @@ fun LoginScreen(navController: NavController) {
                             .wrapContentWidth(Alignment.CenterHorizontally),
                     )
                     Text(
-                        text = "Login",
+                        text = lenguage["login_$currentLanguage"]?:"Login",
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(bottom = 50.dp)
@@ -113,10 +130,10 @@ fun LoginScreen(navController: NavController) {
                                 userEmail = it
                                 isEmailValid = controller.validateEmail(userEmail)
                             },
-                            label = { Text("Email") },
+                            label = { Text(lenguage["mail_$currentLanguage"]?:"Email") },
                             placeholder = {
                                 Text(
-                                    "Your Email",
+                                    lenguage["yourmail_$currentLanguage"]?:"Your Email",
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             },
@@ -124,7 +141,7 @@ fun LoginScreen(navController: NavController) {
                         )
                     }
                     isEmailValid.takeIf { !it }?.run { Text(
-                        text = "Please enter a valid email address",
+                        text = lenguage["errorvalidmail_$currentLanguage"]?:"Please enter a valid email address",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(bottom = 10.dp)
@@ -153,7 +170,7 @@ fun LoginScreen(navController: NavController) {
                                 password = it
                                 isPasswordValid = controller.validatePassword(password)
                             },
-                            label = { Text("Password") },
+                            label = { Text(lenguage["password_$currentLanguage"]?:"Password") },
                             visualTransformation = passwordVisibilityOption.takeIf { it }
                                 ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
                             isError = !isPasswordValid,
@@ -169,7 +186,7 @@ fun LoginScreen(navController: NavController) {
                         )
                     }
                     isPasswordValid.takeIf { !it }?.run { Text(
-                        text = """Please enter a valid password:
+                        text = lenguage["messagevalidpassword_$currentLanguage"]?:"""Please enter a valid password:
                                 |At least 6 characters
                                 |At least one number
                                 |At least one uppercase letter
@@ -200,7 +217,7 @@ fun LoginScreen(navController: NavController) {
                             tint = MaterialTheme.colorScheme.secondary,
                         )
                         Text(
-                            text = "New User",
+                            text = lenguage["newuser_$currentLanguage"]?:"New User",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center,
@@ -229,7 +246,7 @@ fun LoginScreen(navController: NavController) {
                                 .weight(1f)
                         ) {
                             Text(
-                                text = "LOGIN",
+                                text = lenguage["login_$currentLanguage"]?:"LOGIN",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -242,7 +259,7 @@ fun LoginScreen(navController: NavController) {
                                 .weight(1f)
                         ) {
                             Text(
-                                text = "CANCEL",
+                                text = lenguage["cancel_$currentLanguage"]?:"CANCEL",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
