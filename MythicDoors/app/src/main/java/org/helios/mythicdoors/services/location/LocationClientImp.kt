@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Looper
+import androidx.annotation.RequiresApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -14,17 +16,20 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
-import org.helios.mythicdoors.utils.hasLocationPermission
+import org.helios.mythicdoors.utils.extenssions.hasForegroundPermission
+import org.helios.mythicdoors.utils.extenssions.hasLocationPermission
 
 class LocationClientImp(
     private val context: Context,
     private val client: FusedLocationProviderClient
 ): ILocationClient {
     /* We can suppress the Missing Permission Check because we have externalized the logic in a util */
+    @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("MissingPermission")
     override fun getLocationUpdates(interval: Long): Flow<Location> {
         return callbackFlow {
             if (!context.hasLocationPermission()) throw ILocationClient.LocationException("Location permission not granted")
+            if (!context.hasForegroundPermission()) throw ILocationClient.LocationException("Foreground permission not granted")
 
             val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 

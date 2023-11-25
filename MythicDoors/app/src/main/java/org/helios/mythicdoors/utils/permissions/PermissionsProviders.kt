@@ -1,4 +1,4 @@
-package org.helios.mythicdoors.utils
+package org.helios.mythicdoors.utils.permissions
 
 import android.Manifest
 import android.os.Build.VERSION_CODES.TIRAMISU

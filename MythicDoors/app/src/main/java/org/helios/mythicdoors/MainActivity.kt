@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -32,9 +31,9 @@ import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.ui.fragments.PermissionDialog
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels
-import org.helios.mythicdoors.utils.AppPermissionsRequests
-import org.helios.mythicdoors.utils.Connection
-import org.helios.mythicdoors.utils.PermissionsTextProviders
+import org.helios.mythicdoors.utils.permissions.AppPermissionsRequests
+import org.helios.mythicdoors.utils.connection.Connection
+import org.helios.mythicdoors.utils.permissions.PermissionsTextProviders
 import org.helios.mythicdoors.viewmodel.*
 import org.helios.mythicdoors.viewmodel.tools.AudioPlayerViewModel
 import org.helios.mythicdoors.viewmodel.tools.GameMediaPlayer
@@ -115,7 +114,7 @@ class MainActivity : ComponentActivity() {
                 val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.RequestMultiplePermissions(),
                     onResult = { permissions ->
-                        AppPermissionsRequests.appPermissionRequests.forEach {permission ->
+                        AppPermissionsRequests.appPermissionRequests.forEach { permission ->
                             controller.onPermissionResult(
                                 permission = permission,
                                 isGranted = permissions[permission] == true
