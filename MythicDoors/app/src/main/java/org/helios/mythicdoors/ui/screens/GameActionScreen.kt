@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,8 +24,6 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
-import org.helios.mythicdoors.ui.fragments.AudioPlayer
-import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.AVERAGE_DOOR
 import org.helios.mythicdoors.utils.AppConstants.EASY_DOOR
@@ -77,7 +76,7 @@ fun GameActionScreen(navController: NavController) {
 
           Column {
               Text(
-                  text = "Mythic Doors",
+                  text = stringResource(id = R.string.app_name),
                   style = MaterialTheme.typography.headlineLarge,
                   color = MaterialTheme.colorScheme.onBackground,
                   modifier = Modifier
@@ -99,7 +98,7 @@ fun GameActionScreen(navController: NavController) {
                       contentAlignment = Alignment.Center
                   ) {
                       Text(
-                          text = "Current Player Level: ${controller.getPlayerLevel()}",
+                          text = "${stringResource(id = R.string.current_player_level)} ${controller.getPlayerLevel()}",
                           style = MaterialTheme.typography.titleSmall,
                           color = MaterialTheme.colorScheme.onBackground,
                           modifier = Modifier.padding(ScreenConstants.AVERAGE_PADDING.dp),
@@ -115,7 +114,9 @@ fun GameActionScreen(navController: NavController) {
                           modifier = Modifier
                               .height(ScreenConstants.IMAGE_HEIGHT.dp)
                               .clickable {
-                                  soundManager.stopPlayingSounds().also { soundManager.playSound(R.raw.door_select) }
+                                  soundManager
+                                      .stopPlayingSounds()
+                                      .also { soundManager.playSound(R.raw.door_select) }
 
                                   (selectedDoorId != EASY_DOOR).also {
                                       selectedDoorId = EASY_DOOR
@@ -132,7 +133,9 @@ fun GameActionScreen(navController: NavController) {
                           modifier = Modifier
                               .height(ScreenConstants.IMAGE_HEIGHT.dp)
                               .clickable {
-                                  soundManager.stopPlayingSounds().also { soundManager.playSound(R.raw.door_select) }
+                                  soundManager
+                                      .stopPlayingSounds()
+                                      .also { soundManager.playSound(R.raw.door_select) }
 
                                   (selectedDoorId != AVERAGE_DOOR).also {
                                       selectedDoorId = AVERAGE_DOOR
@@ -149,7 +152,9 @@ fun GameActionScreen(navController: NavController) {
                           modifier = Modifier
                               .height(ScreenConstants.IMAGE_HEIGHT.dp)
                               .clickable {
-                                  soundManager.stopPlayingSounds().also { soundManager.playSound(R.raw.door_select) }
+                                  soundManager
+                                      .stopPlayingSounds()
+                                      .also { soundManager.playSound(R.raw.door_select) }
 
                                   (selectedDoorId != HARD_DOOR).also {
                                       selectedDoorId = HARD_DOOR
@@ -162,7 +167,8 @@ fun GameActionScreen(navController: NavController) {
                               )
                       )
                   }
-                  Text(text = "Make a Bet And Choose a Door",
+                  Text(
+                      text = stringResource(id = R.string.playing_main_helper) ,
                       style = MaterialTheme.typography.titleSmall,
                       color = MaterialTheme.colorScheme.onBackground,
                       modifier = Modifier
@@ -186,13 +192,14 @@ fun GameActionScreen(navController: NavController) {
                               contentDescription = "icon representing the user-s actual coins",
                               tint = MaterialTheme.colorScheme.secondary
                           )
-                          TextField(modifier = Modifier
-                              .background(MaterialTheme.colorScheme.primary)
-                              .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
-                              .weight(1f),
+                          TextField(
+                              modifier = Modifier
+                                  .background(MaterialTheme.colorScheme.primary)
+                                  .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                  .weight(1f),
                               value = controller.getPlayerCoins().toString(),
                               onValueChange = { controller.getPlayerCoins() },
-                              label = { Text(text = "Player Coins") },
+                              label = { Text(text = stringResource(id = R.string.player_coins)) },
                               readOnly = true,
                           )
                       }
@@ -204,16 +211,17 @@ fun GameActionScreen(navController: NavController) {
                               contentDescription = "icon representing the user's actual coins",
                               tint = MaterialTheme.colorScheme.secondary
                           )
-                          TextField(modifier = Modifier
-                              .background(MaterialTheme.colorScheme.primary)
-                              .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
-                              .weight(1f),
+                          TextField(
+                              modifier = Modifier
+                                  .background(MaterialTheme.colorScheme.primary)
+                                  .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                  .weight(1f),
                               value = playerBet,
                               onValueChange = {
                                   playerBet = it
                                   isBetValid = controller.validateBet(it)
                               },
-                              label = { Text(text = "Bet") },
+                              label = { Text(text = stringResource(id = R.string.bet)) },
                               isError = !isBetValid,
                               keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                           )
@@ -222,7 +230,8 @@ fun GameActionScreen(navController: NavController) {
                             soundManager.stopPlayingSounds().also { soundManager.playSound(R.raw.door_open) }
                             controller.updateValuesOnPlayerAction(playerBet, selectedDoorId)
                             scope.launch {
-                               snackbarHostState.showSnackbar("You have bet $playerBet coins on the $selectedDoorId door")
+                               snackbarHostState.showSnackbar(context.getString(R.string.bet_message, playerBet, selectedDoorId),
+                                   duration = SnackbarDuration.Short)
                            }
                       },
                           enabled = isBetValid && isDoorSelected,
@@ -235,7 +244,8 @@ fun GameActionScreen(navController: NavController) {
                       }
                       Spacer(modifier = Modifier.padding(top = ScreenConstants.AVERAGE_PADDING.dp))
                       isBetValid.takeIf { !it }?.let {
-                            Text(text = "You can only bet up to your current coins",
+                            Text(
+                                text = stringResource(id = R.string.bet_validator),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error,
                             )

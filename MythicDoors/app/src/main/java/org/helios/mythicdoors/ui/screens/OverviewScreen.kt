@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -54,7 +55,7 @@ fun OverviewScreen(navController: NavController) {
             .fillMaxWidth()
             .padding(top = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Mythic Doors",
+            Text(text = stringResource(id = R.string.app_name),
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(bottom = 30.dp))
@@ -73,7 +74,7 @@ fun OverviewScreen(navController: NavController) {
                     },
                     modifier = Modifier.padding(top = 30.dp, start = 30.dp, end = 30.dp),
                 ) {
-                    Text(text = "Play",
+                    Text(text = stringResource(id = R.string.play_button)/*"Play"*/,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onBackground)
                 }

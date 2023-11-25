@@ -17,6 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -86,7 +87,7 @@ fun ScoresScreen(navController: NavController) {
 
             Column {
                 Text(
-                    text = "Mythic Doors",
+                    text = stringResource(id = R.string.app_name),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
@@ -98,7 +99,7 @@ fun ScoresScreen(navController: NavController) {
                         .wrapContentWidth(Alignment.CenterHorizontally),
                 )
                 Text(
-                    text = "Scores Ladder",
+                    text = stringResource(id = R.string.ladder),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
@@ -113,7 +114,7 @@ fun ScoresScreen(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = "Single Player Stats",
+                        text = stringResource(id = R.string.single_player_stats),
                         style = TextStyle(
                                 fontFamily = FontFamily.Default,
                                 fontWeight = FontWeight.Normal,
@@ -165,7 +166,7 @@ fun ScoresScreen(navController: NavController) {
                         modifier = Modifier
                             .width(ScreenConstants.BUTTON_WIDTH.dp)
                     ) {
-                        Text(text = "CONTINUE",
+                        Text(text = stringResource(id = R.string.back),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -186,21 +187,21 @@ fun Header() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "Player",
+        Text(text = stringResource(id = R.string.ladder_hd_player),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .weight(1f)
                 .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
         )
-        Text(text = "Level",
+        Text(text = stringResource(id = R.string.ladder_hd_level),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .weight(1f)
                 .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
         )
-        Text(text = "Score",
+        Text(text = stringResource(id = R.string.ladder_hd_score),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
@@ -255,7 +256,7 @@ private fun LoadingIndicator(controller: ScoresScreenViewModel) {
                 .padding(ScreenConstants.AVERAGE_PADDING.dp),
             color = MaterialTheme.colorScheme.secondary,
         )
-        Text(text = "Loading...",
+        Text(text = stringResource(id = R.string.loading_indicator_msg),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier

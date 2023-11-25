@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -46,7 +47,7 @@ fun GameOptsScreen(navController: NavController) {
     ) {
         Column{
             Text(
-                text = "Mythic Doors",
+                text = stringResource(id = R.string.app_name),
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
@@ -54,7 +55,8 @@ fun GameOptsScreen(navController: NavController) {
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.CenterHorizontally),
             )
-            Text(text = "Game Options",
+            Text(
+                text = stringResource(id = R.string.game_opts),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
@@ -90,7 +92,8 @@ fun GameOptsScreen(navController: NavController) {
                                 .wrapContentWidth(Alignment.CenterHorizontally),
                             elevation = ButtonDefaults.buttonElevation(2.dp),
                         ) {
-                            Text(text = "SINGLE PLAYER",
+                            Text(
+                                text = stringResource(id = R.string.single_player).uppercase(),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -120,7 +123,7 @@ fun GameOptsScreen(navController: NavController) {
                             enabled = false,
                             onClick = { controller.startGame(GameMode.MULTI_PLAYER.toString()) },
                         ) {
-                            Text(text = "MULTIPLAYER",
+                            Text(text = stringResource(id = R.string.multi_player).uppercase(),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -151,7 +154,8 @@ fun GameOptsScreen(navController: NavController) {
                                 .wrapContentWidth(Alignment.CenterHorizontally),
                             elevation = ButtonDefaults.buttonElevation(2.dp),
                         ) {
-                            Text(text = "SCORES LADDER",
+                            Text(
+                                text = stringResource(id = R.string.ladder).uppercase(),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -180,7 +184,7 @@ fun GameOptsScreen(navController: NavController) {
                             elevation = ButtonDefaults.buttonElevation(2.dp),
                             onClick = { controller.logout(scope, snackbarHostState) },
                         ) {
-                            Text(text = "LOGOUT",
+                            Text(text = stringResource(id = R.string.logout).uppercase(),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )

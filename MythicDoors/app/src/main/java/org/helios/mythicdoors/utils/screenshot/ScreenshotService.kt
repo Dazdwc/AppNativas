@@ -11,13 +11,13 @@ class ScreenshotService(
     private val view: View,
     private val activity: Activity
 ) {
-    private val screenchotClient: IScreenshot = ScreenshotClientImp()
+    private val screenshotClient: IScreenshot = ScreenshotClientImp()
 
     suspend fun takeScreenshot(): Boolean {
         val notification = createNotification()
 
         return try {
-            if (screenchotClient.takeScreenshot(view, activity)) {
+            if (screenshotClient.takeScreenshot(view, activity)) {
                 notification.build().let { it ->
                     activity.getSystemService(Activity.NOTIFICATION_SERVICE)?.let { notificationManager ->
                         (notificationManager as NotificationManager).notify(1, it)

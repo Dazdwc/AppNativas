@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -65,7 +66,7 @@ fun ActionResultScreen(navController: NavController) {
 
             Column {
                 Text(
-                    text = "Mythic Doors",
+                    text = stringResource(id = R.string.app_name),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
@@ -93,7 +94,7 @@ fun ActionResultScreen(navController: NavController) {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "You won!".uppercase(),
+                                    text = stringResource(id = R.string.game_won).uppercase(),
                                     style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.onBackground,
                                     modifier = Modifier
@@ -111,7 +112,8 @@ fun ActionResultScreen(navController: NavController) {
                                     .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(text = "You lost!".uppercase(),
+                                Text(
+                                    text = stringResource(id = R.string.game_lost).uppercase(),
                                     style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.onBackground,
                                     modifier = Modifier
@@ -143,13 +145,14 @@ fun ActionResultScreen(navController: NavController) {
                             contentDescription = "icon representing the user's actual coins",
                             tint = MaterialTheme.colorScheme.secondary
                         )
-                        TextField(modifier = Modifier
-                            .background(MaterialTheme.colorScheme.primary)
-                            .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
-                            .weight(1f),
+                        TextField(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.primary)
+                                .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                .weight(1f),
                             value = playerCurrentStats.getCoins().coerceAtLeast(0).toString(),
                             onValueChange = { playerCurrentStats.getCoins().toString() },
-                            label = { Text(text = "Current Coins") },
+                            label = { Text(text = stringResource(id = R.string.current_coins)) },
                             readOnly = true,
                         )
                     }
@@ -161,13 +164,14 @@ fun ActionResultScreen(navController: NavController) {
                             contentDescription = "icon representing the user's actual experience",
                             tint = MaterialTheme.colorScheme.secondary
                         )
-                        TextField(modifier = Modifier
-                            .background(MaterialTheme.colorScheme.primary)
-                            .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
-                            .weight(1f),
+                        TextField(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.primary)
+                                .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                .weight(1f),
                             value = playerCurrentStats.getLevel().toString(),
-                            onValueChange = {playerCurrentStats.getLevel().toString() },
-                            label = { Text(text = "Current Level") },
+                            onValueChange = { playerCurrentStats.getLevel().toString() },
+                            label = { Text(text = stringResource(id = R.string.current_level)) },
                             readOnly = true,
                         )
                     }
@@ -182,7 +186,8 @@ fun ActionResultScreen(navController: NavController) {
                                 .weight(1f)
                                 .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                         ) {
-                            Text(text = "CONTINUE",
+                            Text(
+                                text = stringResource(id = R.string.continue_opt).uppercase(),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -193,7 +198,8 @@ fun ActionResultScreen(navController: NavController) {
                                 .weight(1f)
                                 .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
                         ) {
-                            Text(text = "EXIT",
+                            Text(
+                                text = stringResource(id = R.string.exit_opt).uppercase(),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -201,7 +207,8 @@ fun ActionResultScreen(navController: NavController) {
                     }
                     Spacer(modifier = Modifier.padding(top = ScreenConstants.AVERAGE_PADDING.dp))
                     isEnoughCoins.takeIf { !it }?.let {
-                        Text(text = "You don't have enough coins to bet",
+                        Text(
+                            text = stringResource(id = R.string.not_coins),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.error,
                         )

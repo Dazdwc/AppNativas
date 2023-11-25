@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -21,8 +22,6 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
-import org.helios.mythicdoors.ui.fragments.AudioPlayer
-import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.LOGIN_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.LoginScreenViewModel
@@ -72,18 +71,19 @@ fun LoginScreen(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Mythic Doors",
+                        text = stringResource(id = R.string.app_name),
                         style = MaterialTheme.typography.headlineLarge,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier
                             .padding(
                                 top = ScreenConstants.DOUBLE_PADDING.dp,
-                                bottom = ScreenConstants.DOUBLE_PADDING.dp)
+                                bottom = ScreenConstants.DOUBLE_PADDING.dp
+                            )
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.CenterHorizontally),
                     )
                     Text(
-                        text = "Login",
+                        text = stringResource(id = R.string.login),
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(bottom = 50.dp)
@@ -113,10 +113,10 @@ fun LoginScreen(navController: NavController) {
                                 userEmail = it
                                 isEmailValid = controller.validateEmail(userEmail)
                             },
-                            label = { Text("Email") },
+                            label = { Text(stringResource(id = R.string.email)) },
                             placeholder = {
                                 Text(
-                                    "Your Email",
+                                    stringResource(id = R.string.email_helper),
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             },
@@ -124,7 +124,7 @@ fun LoginScreen(navController: NavController) {
                         )
                     }
                     isEmailValid.takeIf { !it }?.run { Text(
-                        text = "Please enter a valid email address",
+                        text = stringResource(id = R.string.email_validator),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(bottom = 10.dp)
@@ -153,7 +153,7 @@ fun LoginScreen(navController: NavController) {
                                 password = it
                                 isPasswordValid = controller.validatePassword(password)
                             },
-                            label = { Text("Password") },
+                            label = { Text(stringResource(id = R.string.password)) },
                             visualTransformation = passwordVisibilityOption.takeIf { it }
                                 ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
                             isError = !isPasswordValid,
@@ -169,12 +169,7 @@ fun LoginScreen(navController: NavController) {
                         )
                     }
                     isPasswordValid.takeIf { !it }?.run { Text(
-                        text = """Please enter a valid password:
-                                |At least 6 characters
-                                |At least one number
-                                |At least one uppercase letter
-                                |At least one special character
-                            """.trimMargin(),
+                        text =  stringResource(id = R.string.password_requirements).trimMargin(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
@@ -184,7 +179,8 @@ fun LoginScreen(navController: NavController) {
                             .fillMaxWidth()
                             .padding(
                                 top = ScreenConstants.AVERAGE_PADDING.dp,
-                                bottom = ScreenConstants.DOUBLE_PADDING.dp),
+                                bottom = ScreenConstants.DOUBLE_PADDING.dp
+                            ),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
@@ -200,7 +196,7 @@ fun LoginScreen(navController: NavController) {
                             tint = MaterialTheme.colorScheme.secondary,
                         )
                         Text(
-                            text = "New User",
+                            text = stringResource(id = R.string.new_user),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center,
@@ -229,7 +225,7 @@ fun LoginScreen(navController: NavController) {
                                 .weight(1f)
                         ) {
                             Text(
-                                text = "LOGIN",
+                                text = stringResource(id = R.string.login).uppercase(),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -242,7 +238,7 @@ fun LoginScreen(navController: NavController) {
                                 .weight(1f)
                         ) {
                             Text(
-                                text = "CANCEL",
+                                text = stringResource(id = R.string.cancel).uppercase(),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground
                             )

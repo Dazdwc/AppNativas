@@ -1,3 +1,56 @@
 <resources>
     <string name="app_name">Mythic Doors</string>
+    <string name="play_button">PLAY</string>
+    <string name="game_won">You won!</string>
+    <string name="game_lost">You loose!</string>
+    <string name="current_coins">Current Coins</string>
+    <string name="current_level">Current Level</string>
+    <string name="continue_opt">Continue</string>
+    <string name="exit_opt">Exit</string>
+    <string name="not_coins">You don\'t have enough coins to bet</string>
+    <string name="current_player_level">Current Player Level:</string>
+    <string name="playing_main_helper">Make a Bet And Choose a Door</string>
+    <string name="player_coins">Player Coins</string>
+    <string name="bet">Bet</string>
+    <string name="bet_message">You have bet %1$i coins on the %2$s door</string>
+    <string name="bet_validator">You can only bet up to your current coins</string>
+    <string name="game_opts">Game Options</string>
+    <string name="single_player">Single Player</string>
+    <string name="multi_player">Multiplayer</string>
+    <string name="ladder">Scores Ladder</string>
+    <string name="logout">Logout</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="email_helper">Your email address</string>
+    <string name="email_validator">Please enter a valid email address</string>
+    <string name="password">Password</string>
+    <string name="password_requirements">
+        <![CDATA[
+        Please enter a valid password:
+        |At least 6 characters
+        |At least one number
+        |At least one uppercase letter
+        |At least one special character
+        ]]>
+    </string>
+    <string name="new_user">New User</string>
+    <string name="cancel">Cancel</string>
+    <string name="register_new">Register New Player</string>
+    <string name="pl_name">Name</string>
+    <string name="name_helper">A name for the new player</string>
+    <string name="password_helper">Insert a password</string>
+    <string name="password_retype">Retype your password</string>
+    <string name="password_retype_validator">The password and the retyped password are different!</string>
+    <string name="register">Register</string>
+    <string name="back">Back</string>
+    <string name="single_player_stats">Single Player Stats</string>
+    <string name="ladder_hd_player">Player</string>
+    <string name="ladder_hd_level">Level</string>
+    <string name="ladder_hd_score">Score</string>
+    <string name="loading_indicator_msg">Loading…</string>
+    <string name="main_btn">Main</string>
+    <string name="exit_btn">Exit</string>
+    <string name="permission_dlg_required">Permission required</string>
+    <string name="settings_btn">Settings</string>
+    <string name="ok_btn">OK</string>
 </resources>

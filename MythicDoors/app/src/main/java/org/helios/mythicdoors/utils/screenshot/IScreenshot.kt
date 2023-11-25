@@ -1,7 +1,6 @@
 package org.helios.mythicdoors.utils.screenshot
 
 import android.app.Activity
-import android.graphics.Bitmap
 import android.view.View
 
 interface IScreenshot {
