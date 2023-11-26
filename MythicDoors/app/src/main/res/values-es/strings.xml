@@ -36,7 +36,7 @@
     </string>
     <string name="new_user">Nuevo Usuario</string>
     <string name="cancel">Cancelar</string>
-    <string name="register_new">Register Nuevo Jugador</string>
+    <string name="register_new">Registrar Nuevo Jugador</string>
     <string name="pl_name">Nombre</string>
     <string name="name_helper">Un nombre para el nuevo jugador</string>
     <string name="password_helper">Introduce una contraseñá</string>
@@ -54,4 +54,8 @@
     <string name="permission_dlg_required">Permiso necesario</string>
     <string name="settings_btn">Opciones</string>
     <string name="ok_btn">Ok</string>
+    <string name="locale_default_language_key">en</string>
+    <string name="locale_default_language_code">en</string>
+    <string name="locale_default_language_name">English</string>
+    <string name="locale_default_language_flag">us</string>
 </resources>

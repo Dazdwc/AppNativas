@@ -53,4 +53,8 @@
     <string name="permission_dlg_required">Permission required</string>
     <string name="settings_btn">Settings</string>
     <string name="ok_btn">OK</string>
+    <string name="locale_default_language_key">en</string>
+    <string name="locale_default_language_code">en</string>
+    <string name="locale_default_language_name">English</string>
+    <string name="locale_default_language_flag">us</string>
 </resources>

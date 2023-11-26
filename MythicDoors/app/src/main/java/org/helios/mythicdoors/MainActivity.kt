@@ -19,16 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.AppNavigation
 import org.helios.mythicdoors.store.StoreManager
-import org.helios.mythicdoors.ui.fragments.AudioPlayer
-import org.helios.mythicdoors.ui.fragments.IPermissionTextProvider
-import org.helios.mythicdoors.ui.fragments.MenuBar
-import org.helios.mythicdoors.ui.fragments.PermissionDialog
+import org.helios.mythicdoors.ui.fragments.*
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels
 import org.helios.mythicdoors.utils.permissions.AppPermissionsRequests
@@ -37,6 +35,7 @@ import org.helios.mythicdoors.utils.permissions.PermissionsTextProviders
 import org.helios.mythicdoors.viewmodel.*
 import org.helios.mythicdoors.viewmodel.tools.AudioPlayerViewModel
 import org.helios.mythicdoors.viewmodel.tools.GameMediaPlayer
+import org.helios.mythicdoors.viewmodel.tools.LanguageManagerViewModel
 import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
 @AndroidEntryPoint
@@ -66,6 +65,7 @@ class MainActivity : ComponentActivity() {
                 map[ScreensViewModels.MENU_BAR_SCREEN_VIEWMODEL] = MenuViewModel(it)
                 map[ScreensViewModels.AUDIO_PLAYER_SCREEN_VIEWMODEL] = AudioPlayerViewModel.getInstance(it)
                 map[ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] = SoundManagementViewModel.getInstance()
+                map[ScreensViewModels.LANGUAGE_MANAGER_SCREEN_VIEWMODEL] = LanguageManagerViewModel.getInstance()
                 // ...otros view models que dependen de dataController
             }
             map.toMap()
