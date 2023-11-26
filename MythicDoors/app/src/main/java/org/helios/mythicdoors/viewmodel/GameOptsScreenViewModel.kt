@@ -47,7 +47,11 @@ class GameOptsScreenViewModel(
 
     private fun saveOriginalPlayerStats(user: User?) { store.updateOriginalPlayerStats(user) }
 
-    private fun loadInitialCoins() { store.updatePlayerCoins(AppConstants.INITIAL_COINS_AMOUNT) }
+    private fun loadInitialCoins() {
+        store.getAppStore().actualUser?.let {
+            store.updatePlayerCoins(AppConstants.INITIAL_COINS_AMOUNT)
+        }
+    }
 
     private fun clearCombatResultsInStore() { store.clearCombatResults() }
 

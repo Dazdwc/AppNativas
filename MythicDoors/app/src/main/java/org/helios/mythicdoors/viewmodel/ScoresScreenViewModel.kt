@@ -38,14 +38,16 @@ class ScoresScreenViewModel(
 
     private fun chargePlayer(): User { return store.getAppStore().actualUser ?: throw Exception("User not found") }
 
-    fun loadPlayerGamesList() {
+    suspend fun loadPlayerGamesList() {
         loading.value = true
         try {
             viewModelScope.launch {
                 userGamesList.value = dataController.getAllGames()
                     ?.filter { it.getUser().getEmail() == actualPlayer.getEmail() }
+                    ?.sortedByDescending { it.getScore() }
                     ?: listOf()
-            }
+            }.join()
+            Log.e("ScoresScreenViewModel", "ladUserGamesList: ${userGamesList.value}")
         } catch (e: Exception) {
             Log.e("ScoresScreenViewModel", "ladUserGamesList: $e")
             userGamesList.value = listOf()

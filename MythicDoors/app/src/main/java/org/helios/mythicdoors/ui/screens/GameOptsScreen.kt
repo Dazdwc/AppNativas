@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.GameMode
@@ -37,161 +39,151 @@ fun GameOptsScreen(navController: NavController) {
         }
     }
 
-    Scaffold(
-        bottomBar = {
-            MenuBar(navController)
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }
-    ) { contentPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Column{
-                Text(
-                    text = "Mythic Doors",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .padding(top = ScreenConstants.DOUBLE_PADDING.dp)
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally),
-                )
-                Text(text = "Game Options",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
+    Surface(
+        modifier = Modifier
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Column{
+            Text(
+                text = "Mythic Doors",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .padding(top = ScreenConstants.DOUBLE_PADDING.dp)
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally),
+            )
+            Text(text = "Game Options",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .padding(
+                        top = ScreenConstants.DOUBLE_PADDING.dp,
+                        bottom = ScreenConstants.DOUBLE_PADDING.dp
+                    )
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally),
+            )
+            Column(Modifier.verticalScroll(scrollState)) {
+                Row {
+                    Column(modifier = Modifier
                         .padding(
-                            top = ScreenConstants.DOUBLE_PADDING.dp,
-                            bottom = ScreenConstants.DOUBLE_PADDING.dp
+                            top = ScreenConstants.AVERAGE_PADDING.dp,
+                            bottom = ScreenConstants.DOUBLE_PADDING.dp,
+                            end = ScreenConstants.AVERAGE_PADDING.dp
                         )
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally),
-                )
-                Column(Modifier.verticalScroll(scrollState)) {
-                    Row {
-                        Column(modifier = Modifier
-                            .padding(
-                                top = ScreenConstants.AVERAGE_PADDING.dp,
-                                bottom = ScreenConstants.DOUBLE_PADDING.dp,
-                                end = ScreenConstants.AVERAGE_PADDING.dp
-                            )
-                            .weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Image(painterResource(id = R.drawable.claptrap_rich),
-                                contentDescription = "Single player image",
-                                Modifier.size(200.dp, 200.dp))
-                            Button(onClick = { controller.startGame(GameMode.SINGLE_PLAYER.toString()) },
-                                modifier = Modifier
-                                    .padding(
-                                        top = ScreenConstants.DOUBLE_PADDING.dp,
-                                        bottom = ScreenConstants.DOUBLE_PADDING.dp
-                                    )
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.CenterHorizontally),
-                                elevation = ButtonDefaults.buttonElevation(2.dp),
-                            ) {
-                                Text(text = "SINGLE PLAYER",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                )
-                            }
-                        }
-                        Column(modifier = Modifier
-                            .padding(
-                                top = ScreenConstants.AVERAGE_PADDING.dp,
-                                bottom = ScreenConstants.DOUBLE_PADDING.dp,
-                                end = ScreenConstants.AVERAGE_PADDING.dp
-                            )
-                            .weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Image(painterResource(id = R.drawable.multiplayer),
-                                contentDescription = "Multiplayer image",
-                                Modifier.size(200.dp, 200.dp))
-                            Button(modifier = Modifier
+                        .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(painterResource(id = R.drawable.claptrap_rich),
+                            contentDescription = "Single player image",
+                            Modifier.size(200.dp, 200.dp))
+                        Button(onClick = { controller.startGame(GameMode.SINGLE_PLAYER.toString()) },
+                            modifier = Modifier
                                 .padding(
                                     top = ScreenConstants.DOUBLE_PADDING.dp,
                                     bottom = ScreenConstants.DOUBLE_PADDING.dp
                                 )
                                 .fillMaxWidth()
                                 .wrapContentWidth(Alignment.CenterHorizontally),
-                                elevation = ButtonDefaults.buttonElevation(2.dp),
-                                enabled = false,
-                                onClick = { controller.startGame(GameMode.MULTI_PLAYER.toString()) },
-                            ) {
-                                Text(text = "MULTIPLAYER",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                )
-                            }
+                            elevation = ButtonDefaults.buttonElevation(2.dp),
+                        ) {
+                            Text(text = "SINGLE PLAYER",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
                         }
                     }
-                    Row {
-                        Column(modifier = Modifier
+                    Column(modifier = Modifier
+                        .padding(
+                            top = ScreenConstants.AVERAGE_PADDING.dp,
+                            bottom = ScreenConstants.DOUBLE_PADDING.dp,
+                            end = ScreenConstants.AVERAGE_PADDING.dp
+                        )
+                        .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(painterResource(id = R.drawable.multiplayer),
+                            contentDescription = "Multiplayer image",
+                            Modifier.size(200.dp, 200.dp))
+                        Button(modifier = Modifier
                             .padding(
-                                top = ScreenConstants.AVERAGE_PADDING.dp,
-                                bottom = ScreenConstants.DOUBLE_PADDING.dp,
-                                end = ScreenConstants.AVERAGE_PADDING.dp
+                                top = ScreenConstants.DOUBLE_PADDING.dp,
+                                bottom = ScreenConstants.DOUBLE_PADDING.dp
                             )
-                            .weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally),
+                            elevation = ButtonDefaults.buttonElevation(2.dp),
+                            enabled = false,
+                            onClick = { controller.startGame(GameMode.MULTI_PLAYER.toString()) },
                         ) {
-                            Image(painterResource(id = R.drawable.sirtrap),
-                                contentDescription = "Scores Ladder image",
-                                Modifier.size(200.dp, 200.dp))
-                            Button(onClick = { controller.navigateToScoresScreen(scope, snackbarHostState) },
-                                modifier = Modifier
-                                    .padding(
-                                        top = ScreenConstants.DOUBLE_PADDING.dp,
-                                        bottom = ScreenConstants.DOUBLE_PADDING.dp
-                                    )
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.CenterHorizontally),
-                                elevation = ButtonDefaults.buttonElevation(2.dp),
-                            ) {
-                                Text(text = "SCORES LADDER",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                )
-                            }
+                            Text(text = "MULTIPLAYER",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
                         }
-                        Column(modifier = Modifier
-                            .padding(
-                                top = ScreenConstants.AVERAGE_PADDING.dp,
-                                bottom = ScreenConstants.DOUBLE_PADDING.dp,
-                                end = ScreenConstants.AVERAGE_PADDING.dp
-                            )
-                            .weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Image(painterResource(id = R.drawable.oldclap),
-                                contentDescription = "Logout Image",
-                                Modifier.size(200.dp, 200.dp))
-                            Button(modifier = Modifier
+                    }
+                }
+                Row {
+                    Column(modifier = Modifier
+                        .padding(
+                            top = ScreenConstants.AVERAGE_PADDING.dp,
+                            bottom = ScreenConstants.DOUBLE_PADDING.dp,
+                            end = ScreenConstants.AVERAGE_PADDING.dp
+                        )
+                        .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(painterResource(id = R.drawable.sirtrap),
+                            contentDescription = "Scores Ladder image",
+                            Modifier.size(200.dp, 200.dp))
+                        Button(onClick = { controller.navigateToScoresScreen(scope, snackbarHostState) },
+                            modifier = Modifier
                                 .padding(
                                     top = ScreenConstants.DOUBLE_PADDING.dp,
                                     bottom = ScreenConstants.DOUBLE_PADDING.dp
                                 )
                                 .fillMaxWidth()
                                 .wrapContentWidth(Alignment.CenterHorizontally),
-                                elevation = ButtonDefaults.buttonElevation(2.dp),
-                                onClick = { controller.logout(scope, snackbarHostState) },
-                            ) {
-                                Text(text = "LOGOUT",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                )
-                            }
+                            elevation = ButtonDefaults.buttonElevation(2.dp),
+                        ) {
+                            Text(text = "SCORES LADDER",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                    }
+                    Column(modifier = Modifier
+                        .padding(
+                            top = ScreenConstants.AVERAGE_PADDING.dp,
+                            bottom = ScreenConstants.DOUBLE_PADDING.dp,
+                            end = ScreenConstants.AVERAGE_PADDING.dp
+                        )
+                        .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(painterResource(id = R.drawable.oldclap),
+                            contentDescription = "Logout Image",
+                            Modifier.size(200.dp, 200.dp))
+                        Button(modifier = Modifier
+                            .padding(
+                                top = ScreenConstants.DOUBLE_PADDING.dp,
+                                bottom = ScreenConstants.DOUBLE_PADDING.dp
+                            )
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally),
+                            elevation = ButtonDefaults.buttonElevation(2.dp),
+                            onClick = { controller.logout(scope, snackbarHostState) },
+                        ) {
+                            Text(text = "LOGOUT",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
                         }
                     }
                 }

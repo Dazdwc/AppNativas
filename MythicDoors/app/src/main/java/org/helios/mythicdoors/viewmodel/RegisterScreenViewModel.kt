@@ -1,5 +1,6 @@
 package org.helios.mythicdoors.viewmodel
 
+import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,20 +40,16 @@ class RegisterScreenViewModel(
         scope: CoroutineScope,
         snackbarHostState: SnackbarHostState) {
         try {
-            scope.launch { dataController.saveUser(User.create(name, email, password))
-                .takeIf { it }
-                .let {
-                    registerSuccessful.postValue(it)
-                    store.updateActualUser(User.create(name, email, password))
-                }
+            scope.launch {
+                dataController.saveUser(User.create(name, email, password))
+                    .takeIf { it }?.let {
+                    registerSuccessful.postValue(true)
+                    store.updateActualUser(dataController.getLastUser() ?: throw Exception("Error getting last user"))
+                    snackbarHostState.showSnackbar("Register successful!")
+                } ?: snackbarHostState.showSnackbar("Register failed!")
             }
         } catch (e: Exception) {
-            e.printStackTrace().also { registerSuccessful.postValue(false) }
-        } finally {
-            scope.launch {
-                registerSuccessful.value?.takeIf { it }?.let { snackbarHostState.showSnackbar("Register successful!") }
-                    ?: snackbarHostState.showSnackbar("Register failed: User may exist!")
-            }
+            Log.e("RegisterScreenViewModel", "register: ${e.message}").also { registerSuccessful.postValue(false) }
         }
     }
 

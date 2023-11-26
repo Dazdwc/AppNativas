@@ -1,11 +1,11 @@
 package org.helios.mythicdoors.viewmodel.gamelogic
 
-import org.helios.mythicdoors.model.entities.EnemyDBoj
+import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.User
 import kotlin.random.Random
 
 class GameLogicViewModelMarc {
-    fun doorLow(user: User, enemy: EnemyDBoj): Int? {
+    fun doorLow(user: User, enemy: Enemy): Int? {
         val lvlRandom = Random.nextInt(-3, 2)
         val lvlEnemy = user.getLevel() + lvlRandom
         val bet = 200
@@ -22,7 +22,7 @@ class GameLogicViewModelMarc {
         return win
     }
 
-    fun doorMedium(user:User, enemy: EnemyDBoj): Int? {
+    fun doorMedium(user:User, enemy: Enemy): Int? {
         val lvlRandom = Random.nextInt(-2, 3)
         val lvlEnemy = user.getLevel() + lvlRandom
         val bet = 200
@@ -39,7 +39,7 @@ class GameLogicViewModelMarc {
         return win
     }
 
-    fun doorHigh(user:User, enemy: EnemyDBoj): Int?{
+    fun doorHigh(user:User, enemy: Enemy): Int?{
         val lvlRandom = Random.nextInt(-1, 4)
         val lvlEnemy = user.getLevel() + lvlRandom
         val bet = 200

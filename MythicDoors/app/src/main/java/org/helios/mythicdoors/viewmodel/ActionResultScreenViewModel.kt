@@ -2,18 +2,18 @@ package org.helios.mythicdoors.viewmodel
 
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
-import org.helios.mythicdoors.model.entities.EnemyDBoj
+import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Game
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.store.StoreManager
+import org.helios.mythicdoors.utils.AppConstants
 
 class ActionResultScreenViewModel(
     private val dataController: DataController
@@ -31,23 +31,24 @@ class ActionResultScreenViewModel(
     }
 
     private val store: StoreManager by lazy { StoreManager.getInstance() }
-    private val playerData: User by lazy { chargePlayerData() }
-    private val gameResultsData: GameResults by lazy { chargeGameResults() }
+    var playerData: User? = null
+    var gameResultsData: GameResults? = null
 
-    fun loadPlayerData(): User { return playerData }
-
-    fun loadGameResultsData(): GameResults { return gameResultsData }
+    fun initialLoad() {
+        playerData = loadPlayerData()
+        gameResultsData = loadGameResults()
+    }
 
     fun isEnoughCoins(): Boolean {
         return try {
-            playerData.getCoins().coerceAtLeast(0) > 0
+            (playerData?.getCoins()?.coerceAtLeast(0) ?: 0) > 0
         } catch (e: NumberFormatException) {
             Log.e("GameActionScreenViewModel", "getPlayerCoins: $e")
             false
         }
     }
 
-    private fun chargeGameResults(): GameResults {
+    private fun loadGameResults(): GameResults {
         return GameResults.create(
             store.getAppStore().combatResults.isPlayerWinner,
             store.getAppStore().combatResults.enemy,
@@ -56,7 +57,14 @@ class ActionResultScreenViewModel(
         )
     }
 
-    private fun chargePlayerData(): User { return store.getAppStore().actualUser ?: throw Exception("User not found") }
+    private fun loadPlayerData(): User? {
+        return try {
+            store.getAppStore().actualUser ?: throw Exception("User not found")
+        } catch (e: Exception) {
+            Log.e("GameActionScreenViewModel", "loadPlayerData: $e")
+            null
+        }
+    }
 
     fun returnToGameOptionsScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         try {
@@ -77,8 +85,8 @@ class ActionResultScreenViewModel(
     fun returnToGameActionScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         try {
             scope.launch {
-                saveGameResults(scope).takeIf { it }
-                    .run { navFunctions.navigateGameActionScreen(scope, snackbarHostState) }
+                clearCombatData()
+                navFunctions.navigateGameActionScreen(scope, snackbarHostState)
             }
             return
         } catch (e: Exception) {
@@ -99,16 +107,32 @@ class ActionResultScreenViewModel(
             val actualGame: Game = Game.create(
                 store.getAppStore().actualUser ?: throw Exception("User not found"),
                 lastGameResults.resultCoinAmount.minus(originalPlayerStats.coins).coerceAtLeast(0),
-                playerData.getLevel(),
-                playerData.getScore().minus(originalPlayerStats.score).coerceAtLeast(0),
+                playerData?.getLevel() ?: 1,
+                store.getAppStore().gameScore.minus(originalPlayerStats.score),
                 lastGameResults.resultXpAmount.minus(originalPlayerStats.experience).coerceAtLeast(0),
             )
 
-            scope.launch { saveFlag = dataController.saveGame(actualGame) }.join()
+            scope.launch {
+                saveFlag = dataController.saveGame(actualGame)
+            }.join()
+            playerData.let {
+                playerData?.setCoins(AppConstants.INITIAL_COINS_AMOUNT)
+                scope.launch {
+                    saveFlag = dataController.saveUser(it ?: throw Exception("User not found"))
+                }.join()
+            }
             return saveFlag
         } catch (e: Exception) {
             Log.e("GameActionScreenViewModel", "saveGameResults: $e")
             false
+        }
+    }
+
+    private fun clearCombatData() {
+        try {
+            store.clearCombatData()
+        } catch (e: Exception) {
+            Log.e("GameActionScreenViewModel", "clearCombatData: $e")
         }
     }
 }
@@ -119,20 +143,20 @@ class ActionResultScreenViewModel(
 */
 object GameResults {
     private var isPlayerWinner: Boolean = false
-    private var enemy: EnemyDBoj? = null
+    private var enemy: Enemy? = null
     private var resultCoinAmount: Int = 0
     private var resultXpAmount: Int = 0
 
     fun getIsPlayerWinner(): Boolean { return isPlayerWinner }
 
-    fun getEnemy(): EnemyDBoj? { return enemy }
+    fun getEnemy(): Enemy? { return enemy }
 
     fun getResultCoinAmount(): Int { return resultCoinAmount }
 
     fun getResultXpAmount(): Int { return resultXpAmount }
 
 
-    fun create(isPlayerWinner: Boolean, enemy: EnemyDBoj?, resultCoinAmount: Int, resultXpAmount: Int): GameResults {
+    fun create(isPlayerWinner: Boolean, enemy: Enemy?, resultCoinAmount: Int, resultXpAmount: Int): GameResults {
         return GameResults.apply {
             this.isPlayerWinner = isPlayerWinner
             this.enemy = enemy

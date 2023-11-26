@@ -42,8 +42,8 @@ class LoginScreenViewModel(
     ) {
         try {
             scope.launch {
-                dataController.getAllUsers()
-                    ?.find { it.getEmail() == userEmail && it.getPassword() == userPassword }
+                dataController.getAllUsers().orEmpty()
+                    .find { it.getEmail() == userEmail && it.getPassword() == userPassword }
                     ?.let {
                         loginSuccessful.value = true
                         store.updateActualUser(it)

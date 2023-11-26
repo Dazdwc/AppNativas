@@ -1,34 +1,55 @@
+package org.helios.mythicdoors.model.entities
+
+import org.helios.mythicdoors.R
+import org.helios.mythicdoors.utils.AppConstants.ENEMY_MUMMY
+import org.helios.mythicdoors.utils.AppConstants.ENEMY_FRANKY
+import org.helios.mythicdoors.utils.AppConstants.ENEMY_JACKO
+import org.helios.mythicdoors.utils.AppConstants.ENEMY_REAPY
+import org.helios.mythicdoors.utils.AppConstants.ENEY_WOLFIE
+
 data class Enemy(
-    private val id: Long?,
+    // private val id: Long?,
     private val name: String,
     private val level: Int,
     private val coinReward: Int,
-    private var image: String?
-    // TODO: Add fields
+    private var imageResourceId: Int?
 ) {
-    fun getId(): Long? { return id }
+    // fun getId(): Long? { return id }
     fun getName(): String { return name }
     fun getLevel(): Int { return level }
     fun getCoinReward(): Int { return coinReward }
-    fun getImage(): String? { return image }
+    fun getImage(): Int? { return imageResourceId }
 
-    fun setImage(image: String) { this.image = image }
+    fun setImage(imageResourceId: Int?) { this.imageResourceId = imageResourceId }
 
     /*
-
-Implementación del patrón Fabric*/
+    * Implementación del patrón Fabric
+    */
     companion object {
         fun create(
-            name: String,
             level: Int,
-            coinReward: Int,
         ): Enemy {
-            return Enemy(null, name, level, coinReward, null)
+            return when (level) {
+                in 0..2 -> Enemy(ENEMY_MUMMY, level, 10, R.drawable.enemy_mummy)
+                in 3..4-> Enemy(ENEMY_FRANKY, level, 20, R.drawable.enemy_franky)
+                in 5..6 -> Enemy(ENEY_WOLFIE, level, 30, R.drawable.enemy_wolfie)
+                in 7..8 -> Enemy(ENEMY_JACKO, level, 40, R.drawable.enemy_jacko)
+                in 9..10 -> Enemy(ENEMY_REAPY, level, 50, R.drawable.enemy_reapy)
+                else -> throw Exception("Invalid enemy level")
+            }
+        }
+
+        fun createEmptyEnemy(): Enemy {
+            return Enemy(
+                "",
+                0,
+                0,
+                null
+            )
         }
     }
 
-
     fun isEmpty(): Boolean {
-        return id == null
+        return name.isBlank()
     }
 }

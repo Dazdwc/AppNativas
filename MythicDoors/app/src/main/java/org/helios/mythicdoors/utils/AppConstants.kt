@@ -18,7 +18,7 @@ object AppConstants {
     const val ENEMY_REAPY = "The Reaper"
     const val ENEY_WOLFIE = "Wolfie"
 
-    const val INITIAL_COINS_AMOUNT = 100
+    const val INITIAL_COINS_AMOUNT = 200
 
     object Screens {
         const val OVERVIEW_SCREEN = "overview_screen"
@@ -40,6 +40,8 @@ object AppConstants {
         const val ACTION_RESULT_SCREEN_VIEWMODEL = "action-result-screen-viewmodel"
         const val SCORES_SCREEN_VIEWMODEL = "scores-screen-viewmodel"
         const val MENU_BAR_SCREEN_VIEWMODEL = "menu-bar-screen-viewmodel"
+        const val AUDIO_PLAYER_SCREEN_VIEWMODEL = "audio-player-screen-viewmodel"
+        const val SOUND_MANAGEMENT_SCREEN_VIEWMODEL = "sound-management-screen-viewmodel"
     }
 
     enum class GameMode {

@@ -51,7 +51,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.activity:activity-compose:1.8.1")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui:1.5.4")
     implementation("androidx.compose.ui:ui-graphics:1.5.4")
@@ -65,19 +65,19 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.4")
 
-    // Versión más reciente de compose compiler
-    implementation("androidx.compose.compiler:compiler:1.5.3")
+    // Most recent Kotlin Compiler Extension for Compose
+    implementation("androidx.compose.compiler:compiler:1.5.4")
 
-    // Navegación mediante compose
+    // Compose navigation
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
 
-    // Corutinas -> Manejo de la asincronía y la recurrencia
+    // Coroutines -> Threading management
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
-    // SQLite Helper -> Manejo de la base de datos
+    // SQLite Helper -> Database implementation and management
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
     // LottieFiles -> Manejo de animaciones por Json
     //implementation("com.airbnb-android:lottie:6.1.0")
@@ -85,10 +85,13 @@ dependencies {
     // Google Material Icons
     implementation("com.google.android.material:material:1.10.0")
 
-    // Uso de ObserveAsState
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.0-alpha08")
+    // Observe As State and LiveData management
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0-beta01")
 
-    // Inyección de dependencias
+    // Dependency injection
     implementation("com.google.dagger:hilt-android:2.46.1")
     implementation("com.google.dagger:hilt-android-compiler:2.45")
+
+    // Text animations -> Accompanist
+    implementation("com.google.accompanist:accompanist-pager:0.28.0")
 }
