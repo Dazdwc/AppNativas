@@ -21,6 +21,7 @@ object AppConstants {
         const val LOCATION_NOTIFICATION_CHANNEL = "location"
         const val CALENDAR_NOTIFICATION_CHANNEL = "calendar"
         const val IMAGES_NOTIFICATION_CHANNEL = "images"
+        const val GAMEWON_NOTIFICATION_CHANNEL = "gamewon"
     }
 
 

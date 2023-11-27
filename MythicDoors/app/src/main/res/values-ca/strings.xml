@@ -13,7 +13,7 @@
     <string name="playing_main_helper">Fes una Aposta i escull una Porta</string>
     <string name="player_coins">Monedes Actuals</string>
     <string name="bet">Aposta</string>
-    <string name="bet_message">Has apostat %1$i monedes a la porta %2$s</string>
+    <string name="bet_message">Has apostat %1$s monedes a la porta %2$s</string>
     <string name="bet_validator">No pots apostar més monedes de les que disposes</string>
     <string name="game_opts">Opcions</string>
     <string name="single_player">Un jugador</string>

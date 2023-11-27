@@ -9,6 +9,7 @@ import org.helios.mythicdoors.ui.fragments.*
 object AppPermissionsRequests {
     val appPermissionRequests: Array<String> = arrayOf(
         Manifest.permission.FOREGROUND_SERVICE,
+        Manifest.permission.POST_NOTIFICATIONS,
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.READ_MEDIA_IMAGES,
@@ -23,6 +24,7 @@ object AppPermissionsRequests {
 object PermissionsTextProviders {
     val permissionsTextProviders = mapOf(
         Manifest.permission.FOREGROUND_SERVICE to ForegroundServicePermissionTextProvider(),
+        Manifest.permission.POST_NOTIFICATIONS to PostNotificationsPermissionTextProvider(),
         Manifest.permission.ACCESS_FINE_LOCATION to LocationPermissionTextProvider(),
         Manifest.permission.ACCESS_COARSE_LOCATION to LocationPermissionTextProvider(),
         Manifest.permission.READ_MEDIA_IMAGES to InternalImageStorePermissionTextProvider(),

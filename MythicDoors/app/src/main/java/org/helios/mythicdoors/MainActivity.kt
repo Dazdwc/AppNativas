@@ -1,13 +1,16 @@
 package org.helios.mythicdoors
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -20,11 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.AppNavigation
+import org.helios.mythicdoors.services.location.LocationService
+import org.helios.mythicdoors.services.location.LocationServiceReceiver
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.*
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
@@ -97,6 +103,8 @@ class MainActivity : ComponentActivity() {
 
         storeManager.setContext(applicationContext)
         storeManager.updateActualUser(User.createEmptyUser())
+
+        startLocationService()
 
         setContent {
             MythicDoorsTheme {
@@ -190,6 +198,16 @@ private fun Activity.openAppSettings() {
         Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
         Uri.fromParts("package", packageName, null)
     ).also(::startActivity)
+}
+
+private fun startLocationService() {
+    try {
+        Intent(MainActivity.getContext(), LocationService::class.java).also {
+            MainActivity.getContext().startService(it)
+        }
+    } catch (e: Exception) {
+        Log.e("MainActivity", "startLocationService: ${e.message}")
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)

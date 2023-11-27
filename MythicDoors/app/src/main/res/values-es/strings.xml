@@ -13,7 +13,7 @@
     <string name="playing_main_helper">Haz una Apuesta y escoge una Puerta</string>
     <string name="player_coins">Monedas Actuales</string>
     <string name="bet">Apuesta</string>
-    <string name="bet_message">Hass apostado %1$i monedas en la puerta %2$s</string>
+    <string name="bet_message">Has apostado %1$s monedas en la puerta %2$s</string>
     <string name="bet_validator">No puedes apostar más monedas de las que dispones</string>
     <string name="game_opts">Opciones</string>
     <string name="single_player">Un Jugador</string>

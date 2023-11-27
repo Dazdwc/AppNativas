@@ -95,3 +95,9 @@ class ForegroundServicePermissionTextProvider: IPermissionTextProvider {
         return if (isPermanentlyDecline) "This app needs to access your notifications service in order to show your usage notifications. You can change this in the settings" else "This app needs to access your notifications service in order to show you usage notifications"
     }
 }
+
+class PostNotificationsPermissionTextProvider: IPermissionTextProvider {
+    override fun getDescription(isPermanentlyDecline: Boolean): String {
+        return if (isPermanentlyDecline) "This app needs to access your notifications service in order to show your usage notifications. You can change this in the settings" else "This app needs to access your notifications service in order to show you usage notifications"
+    }
+}

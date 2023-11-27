@@ -7,6 +7,7 @@
 <!--    Notifications services -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+        <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 <!--    Internet connection -->
     <uses-permission android:name="android.permission.INTERNET"/>
 <!--    External data reading and writing -->
@@ -40,6 +41,23 @@
             android:enableOnBackInvokedCallback="true"
             tools:targetApi="33">
         <service android:name=".services.location.LocationService" android:foregroundServiceType="location" />
+
+        <!--&lt;!&ndash;<receiver
+            android:name=".services.location.LocationServiceReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.helios.mythicdoors.services.location.ACTION_LOCATION_UPDATE" />
+            </intent-filter>
+        </receiver>-->
+
+        <receiver
+            android:name=".services.location.LocationServiceReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.helios.mythicdoors.services.location.ACTION_LOCATION_UPDATE" />
+            </intent-filter>
+        </receiver>
+
         <activity
                 android:name=".MainActivity"
                 android:exported="true"

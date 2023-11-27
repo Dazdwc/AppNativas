@@ -6,14 +6,16 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.helios.mythicdoors.MainActivity
+import org.helios.mythicdoors.model.entities.Location
+import org.helios.mythicdoors.store.AppStore
+import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.LOCATION_NOTIFICATION_CHANNEL
 
 class LocationService(): Service() {
@@ -21,14 +23,22 @@ class LocationService(): Service() {
     companion object {
         const val ACTION_START = "ACTION_START"
         const val ACTION_STOP = "ACTION_STOP"
+        const val ACTION_LOCATION_UPDATE = "ACTION_LOCATION_UPDATE"
+
+        lateinit var instance: LocationService
+            private set
     }
 
     private val serviceScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var locationClient: ILocationClient
 
-    private lateinit var locationCoordinates: Map<String, Double>
+    private val store: StoreManager by lazy { StoreManager.getInstance() }
 
-    fun getLocationCoordinates(): Map<String, Double> { return locationCoordinates }
+    private lateinit var locationCoordinates: Map<String, Double>
+    private var _locationLiveData = MutableLiveData<Map<String, Double>>()
+    val locationLiveData get() = _locationLiveData
+
+    var locationCallback: ILocationCallback? = null
 
     override fun onBind(intent: Intent?): IBinder? { return null }
 
@@ -38,6 +48,7 @@ class LocationService(): Service() {
             applicationContext,
             LocationServices.getFusedLocationProviderClient(applicationContext)
         )
+        instance = this
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -50,6 +61,7 @@ class LocationService(): Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        stop()
         serviceScope.cancel()
     }
 
@@ -65,11 +77,12 @@ class LocationService(): Service() {
                     "latitude" to location.latitude,
                     "longitude" to location.longitude
                 )
+                _locationLiveData.postValue(locationCoordinates)
+                locationCallback?.onLocationUpdate(locationCoordinates)
+
+                stopSelf()
 
                 updateNotification(notification)
-
-                /* TODO BORRAR*/
-                Log.e("LocationService", "Location: ${location.latitude}, ${location.longitude}")
             }
             .launchIn(serviceScope)
 
@@ -81,6 +94,22 @@ class LocationService(): Service() {
         stopSelf()
     }
 
+    fun updateLocation() {
+        val dataController = MainActivity.dataController
+
+        serviceScope.launch {
+            Location.create(
+                store.getAppStore().actualUser ?: return@launch,
+                locationCoordinates["latitude"] ?: 0.0,
+                locationCoordinates["longitude"] ?: 0.0
+            ).also { dataController.saveLocation(it) }
+
+            // TODO: Este bloque es simplemente para que el profe lo vea en el LOG
+            val location = dataController.getLastLocation()
+            Log.d("LocationService", "updateLocation: $location")
+        }
+    }
+
     private fun createNotification(): NotificationCompat.Builder {
         return NotificationCompat.Builder(this, LOCATION_NOTIFICATION_CHANNEL)
             .setContentTitle("Tracking your location...")
@@ -90,9 +119,13 @@ class LocationService(): Service() {
     }
 
     private fun updateNotification(notification: NotificationCompat.Builder) {
-        val updatedNotification = notification.setContentText("Your location has been set to: ${locationCoordinates["latitude"]}, ${locationCoordinates["longitude"]}")
+        val updatedNotification = notification.setContentText("Your location has been set to: ${locationCoordinates?.get("latitude")}, ${locationCoordinates?.get("longitude")}")
 
         val notificationManager: NotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(1, updatedNotification.build())
     }
+}
+
+interface ILocationCallback {
+    fun onLocationUpdate(location: Map<String, Double>)
 }
