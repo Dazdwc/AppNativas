@@ -1,19 +1,36 @@
 package org.helios.mythicdoors.viewmodel
 
+import android.annotation.SuppressLint
+import android.app.Application
+import android.content.Context
+import android.os.Build
 import android.util.Log
+import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.ui.platform.LocalView
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import dagger.hilt.android.internal.Contexts.getApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.helios.mythicdoors.MainActivity
+import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Game
+import org.helios.mythicdoors.model.entities.Location
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.utils.AppConstants
+import org.helios.mythicdoors.utils.calendar.CalendarService
+import org.helios.mythicdoors.utils.extenssions.hasPostNotificationPermission
+import org.helios.mythicdoors.utils.screenshot.ScreenshotService
 
 class ActionResultScreenViewModel(
     private val dataController: DataController
@@ -33,9 +50,14 @@ class ActionResultScreenViewModel(
     var playerData: User? = null
     var gameResultsData: GameResults? = null
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun initialLoad() {
         playerData = loadPlayerData()
         gameResultsData = loadGameResults()
+
+        if (gameResultsData?.getIsPlayerWinner() == true) {
+            sendOnWinNotification()
+        }
     }
 
     fun isEnoughCoins(): Boolean {
@@ -133,6 +155,62 @@ class ActionResultScreenViewModel(
         } catch (e: Exception) {
             Log.e("GameActionScreenViewModel", "clearCombatData: $e")
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun makeScreenshot(
+        view: View,
+        activity: MainActivity
+    ) {
+        try {
+            viewModelScope.launch {
+                ScreenshotService.build(view, activity).takeScreenshot()
+                    .also { if (it) sendOnScreenshotNotification() }
+            }
+        } catch (e: Exception) {
+            Log.e("GameActionScreenViewModel", "makeScreenshot: $e")
+        }
+    }
+
+    /* We can suppress the Missing Permission Check because we have externalized the logic in a util */
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @SuppressLint("MissingPermission")
+    private fun sendOnWinNotification() {
+        val context = store.getContext() ?: MainActivity.getContext()
+        if (!context.hasPostNotificationPermission()) throw Exception("Post notification permission not granted")
+
+        val notification = createOnWinNotification()
+        NotificationManagerCompat.from(context).notify(AppConstants.NotificationIds.GAMEWON_NOTIFICATION_ID, notification.build())
+    }
+
+    private fun createOnWinNotification(): NotificationCompat.Builder {
+        val context = store.getContext() ?: MainActivity.getContext()
+
+        return NotificationCompat.Builder(context, AppConstants.NotificationChannels.GAMEWON_NOTIFICATION_CHANNEL)
+            .setContentTitle(context.getString(R.string.win_notification_title))
+            .setContentText(context.getString(R.string.win_notification_content))
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setOngoing(true)
+    }
+
+    @SuppressLint("MissingPermission")
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun sendOnScreenshotNotification() {
+        val context = store.getContext() ?: MainActivity.getContext()
+        if (!context.hasPostNotificationPermission()) throw Exception("Post notification permission not granted")
+
+        val notification = createOnScreenshotNotification()
+        NotificationManagerCompat.from(context).notify(AppConstants.NotificationIds.IMAGES_NOTIFICATION_ID, notification.build())
+    }
+
+    private fun createOnScreenshotNotification(): NotificationCompat.Builder {
+        val context = store.getContext() ?: MainActivity.getContext()
+
+        return NotificationCompat.Builder(context, AppConstants.NotificationChannels.IMAGES_NOTIFICATION_CHANNEL)
+            .setContentTitle(context.getString(R.string.screenshot_notification_title))
+            .setContentText(context.getString(R.string.screenshot_notification_content))
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setOngoing(true)
     }
 }
 

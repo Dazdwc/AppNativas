@@ -31,7 +31,7 @@ class LocationRepositoryImp(dbHelper: Connection):
 
         try {
             dbRead.query(
-                Contracts.GameTableContract.TABLE_NAME,
+                Contracts.LocationTableContract.TABLE_NAME,
                 null,
                 null,
                 null,
@@ -89,7 +89,7 @@ class LocationRepositoryImp(dbHelper: Connection):
     override suspend fun count(): Int = withContext(Dispatchers.IO) {
         try {
             dbRead.query(
-                Contracts.GameTableContract.TABLE_NAME,
+                Contracts.LocationTableContract.TABLE_NAME,
                 null,
                 null,
                 null,
@@ -109,16 +109,17 @@ class LocationRepositoryImp(dbHelper: Connection):
     override suspend fun getLast(): Location = withContext(Dispatchers.IO) {
         try {
             dbRead.query(
-                Contracts.UserTableContract.TABLE_NAME,
+                Contracts.LocationTableContract.TABLE_NAME,
                 null,
                 null,
                 null,
                 null,
                 null,
-                "${Contracts.UserTableContract.COLUMN_NAME_ID} DESC",
+                "${Contracts.LocationTableContract.COLUMN_NAME_ID} DESC",
                 "1"
             ).use { cursor ->
-                if (cursor.moveToFirst()) return@withContext mapLocation(cursor)
+                cursor.moveToFirst()
+                return@withContext mapLocation(cursor)
             }
         } catch (e: Exception) {
             Log.e("LocationRepositoryImp", "Error getting last location: ${e.message}")
@@ -128,6 +129,7 @@ class LocationRepositoryImp(dbHelper: Connection):
 
     private fun buildLocation(location: Location): ContentValues {
         return ContentValues().apply {
+            if (location.getId() != null) put(Contracts.LocationTableContract.COLUMN_NAME_ID, location.getId())
             put(Contracts.LocationTableContract.COLUMN_NAME_ID_USER, location.getUser().getId())
             put(Contracts.LocationTableContract.COLUMN_NAME_LATITUDE, location.getLatitude())
             put(Contracts.LocationTableContract.COLUMN_NAME_LONGITUDE, location.getLongitude())
@@ -138,7 +140,7 @@ class LocationRepositoryImp(dbHelper: Connection):
     private suspend fun mapLocation(cursor: Cursor): Location {
         return Location(
             cursor.getLong(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_ID)),
-            getUser(cursor.getLong(cursor.getColumnIndexOrThrow(Contracts.GameTableContract.COLUMN_NAME_ID_USER))),
+            getUser(cursor.getLong(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_ID_USER))),
             cursor.getDouble(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_LATITUDE)),
             cursor.getDouble(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_LONGITUDE)),
             LocalDate.parse(cursor.getStringOrNull(cursor.getColumnIndex(Contracts.LocationTableContract.COLUMN_NAME_CREATED_AT)))

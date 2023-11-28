@@ -73,7 +73,7 @@ data class User(
         /* Testing function */
         fun createDummyUser(): User {
             return User(
-                null,
+                9999999999,
                 "Jane Doe",
                 "janedoe@dummy.com",
                 "1234",

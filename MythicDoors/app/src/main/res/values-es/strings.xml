@@ -58,4 +58,10 @@
     <string name="locale_default_language_code">en</string>
     <string name="locale_default_language_name">English</string>
     <string name="locale_default_language_flag">us</string>
+    <string name="guide">Game Guide</string>
+    <string name="win_notification_title">Mythic Doors</string>
+    <string name="win_notification_content">You has won a game!</string>
+    <string name="calendar_notification_title">Mythic Doors Calendar Event</string>
+    <string name="screenshot_notification_title">Mythic Doors Screenshots</string>
+    <string name="screenshot_notification_content">Mythic Doors has taken a screenshot of your victory</string>
 </resources>

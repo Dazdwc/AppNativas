@@ -14,6 +14,7 @@ import org.helios.mythicdoors.utils.locales.Locales
 import java.io.File
 import java.io.FileOutputStream
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class ScreenshotClientImp(): IScreenshot {
@@ -22,7 +23,9 @@ class ScreenshotClientImp(): IScreenshot {
         activity: Activity,
     ): Boolean {
         activity.window?.let { window ->
-            val imageFile: File = getScreenshotFile(context = activity)
+            val imageFile: File = getScreenshotFile(context = activity).apply {
+                parentFile?.mkdirs()
+            }
             val outputStream = FileOutputStream(imageFile)
             val screenshot: Bitmap? =  recordScreen(view)
 
@@ -44,8 +47,8 @@ class ScreenshotClientImp(): IScreenshot {
     }
 
     private fun getDate(): String {
-        val dateFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofPattern("dd/MM/yyyy_hh:ss", Locales.spainLocale) }
-        return LocalDate.now().format(dateFormatter)
+        val dateFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofPattern("dd/MM/yyyy_HH:mm:ss", Locales.spainLocale) }
+        return LocalDateTime.now().format(dateFormatter)
     }
 
     private fun getScreenshotFile(context: Context): File {

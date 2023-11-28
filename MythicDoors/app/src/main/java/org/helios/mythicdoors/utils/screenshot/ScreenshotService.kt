@@ -11,6 +11,12 @@ class ScreenshotService(
     private val view: View,
     private val activity: Activity
 ) {
+    companion object {
+        fun build(view: View, activity: Activity): ScreenshotService {
+            return ScreenshotService(view, activity)
+        }
+    }
+
     private val screenshotClient: IScreenshot = ScreenshotClientImp()
 
     suspend fun takeScreenshot(): Boolean {

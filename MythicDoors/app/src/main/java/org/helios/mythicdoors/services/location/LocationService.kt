@@ -16,6 +16,7 @@ import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.model.entities.Location
 import org.helios.mythicdoors.store.AppStore
 import org.helios.mythicdoors.store.StoreManager
+import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.LOCATION_NOTIFICATION_CHANNEL
 
 class LocationService(): Service() {
@@ -122,7 +123,7 @@ class LocationService(): Service() {
         val updatedNotification = notification.setContentText("Your location has been set to: ${locationCoordinates?.get("latitude")}, ${locationCoordinates?.get("longitude")}")
 
         val notificationManager: NotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(1, updatedNotification.build())
+        notificationManager.notify(AppConstants.NotificationIds.LOCATION_NOTIFICATION_ID, updatedNotification.build())
     }
 }
 

@@ -191,6 +191,38 @@ fun GameOptsScreen(navController: NavController) {
                         }
                     }
                 }
+                Row {
+                    Column(modifier = Modifier
+                        .padding(
+                            top = ScreenConstants.AVERAGE_PADDING.dp,
+                            bottom = ScreenConstants.DOUBLE_PADDING.dp,
+                            end = ScreenConstants.AVERAGE_PADDING.dp
+                        )
+                        .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(painterResource(id = R.drawable.clapwub),
+                            contentDescription = "Game Guide image",
+                            Modifier.size(200.dp, 200.dp))
+                        Button(onClick = { controller.navigateToGameGuideWebView(scope, snackbarHostState) },
+                            modifier = Modifier
+                                .padding(
+                                    top = ScreenConstants.DOUBLE_PADDING.dp,
+                                    bottom = ScreenConstants.DOUBLE_PADDING.dp
+                                )
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally),
+                            elevation = ButtonDefaults.buttonElevation(2.dp),
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.guide).uppercase(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                    }
+                }
             }
         }
     }

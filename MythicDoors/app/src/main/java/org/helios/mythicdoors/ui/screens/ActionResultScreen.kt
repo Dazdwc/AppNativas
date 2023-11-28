@@ -1,7 +1,10 @@
 package org.helios.mythicdoors.ui.screens
 
 import android.content.Context
+import android.content.ContextWrapper
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -32,12 +36,14 @@ import org.helios.mythicdoors.viewmodel.ActionResultScreenViewModel
 import org.helios.mythicdoors.viewmodel.GameResults
 import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun ActionResultScreen(navController: NavController) {
     val controller: ActionResultScreenViewModel = (MainActivity.viewModelsMap[ACTION_RESULT_SCREEN_VIEWMODEL] as ActionResultScreenViewModel).apply { setNavController(navController) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val context: Context = LocalContext.current
+    val activity = context.findActivity() as MainActivity
 
     val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel)
         .apply { loadSoundsIfNeeded() }
@@ -63,6 +69,13 @@ fun ActionResultScreen(navController: NavController) {
         BoxWithConstraints {
 
             val maxWidth = constraints.maxWidth
+
+            if (gameCurrentStats.getIsPlayerWinner()) {
+                controller.makeScreenshot(
+                    view = LocalView.current,
+                    activity = activity
+                )
+            }
 
             Column {
                 Text(
@@ -217,4 +230,15 @@ fun ActionResultScreen(navController: NavController) {
             }
         }
     }
+}
+
+private fun Context.findActivity(): MainActivity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is MainActivity) {
+            return context
+        }
+        context = context.baseContext
+    }
+    return null
 }
