@@ -79,8 +79,6 @@ dependencies {
 
     // SQLite Helper -> Database implementation and management
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
-    // LottieFiles -> Animation management by JSON
-    //implementation("com.airbnb-android:lottie:6.1.0")
 
     // Google Material Icons
     implementation("com.google.android.material:material:1.10.0")
@@ -97,6 +95,11 @@ dependencies {
 
     // Loc -> Location services
     implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // LottieFiles -> Animation management by JSON
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
+
+
 }
 
 class Versions {

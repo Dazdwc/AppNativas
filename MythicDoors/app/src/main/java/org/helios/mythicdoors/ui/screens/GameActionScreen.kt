@@ -21,9 +21,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.ui.theme.DarkBlue
 import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.AVERAGE_DOOR
 import org.helios.mythicdoors.utils.AppConstants.EASY_DOOR
@@ -65,11 +71,17 @@ fun GameActionScreen(navController: NavController) {
 
     controller.initialLoad()
     soundManager.playSound(R.raw.wolf)
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fondogameaction) )
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
 
     Surface(
         modifier = Modifier
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background) {
+        LottieAnimation(composition = composition, progress = {progress})
       BoxWithConstraints {
           controller.loadPlayerData()
           val maxWidth = constraints.maxWidth
@@ -226,7 +238,8 @@ fun GameActionScreen(navController: NavController) {
                               keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                           )
                       }
-                      Button(onClick = {
+                      Button(
+                            onClick = {
                             soundManager.stopPlayingSounds().also { soundManager.playSound(R.raw.door_open) }
                             controller.updateValuesOnPlayerAction(playerBet, selectedDoorId)
                             scope.launch {
