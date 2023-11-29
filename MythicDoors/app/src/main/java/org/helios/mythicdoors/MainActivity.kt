@@ -57,6 +57,7 @@ import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 import java.util.Locale
 
 @AndroidEntryPoint
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class MainActivity : ComponentActivity() {
     companion object {
         private lateinit var appContext: Context
@@ -215,6 +216,7 @@ private fun Activity.openAppSettings() {
     ).also(::startActivity)
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun startLocationService() {
     try {
         Intent(MainActivity.getContext(), LocationService::class.java).also {
