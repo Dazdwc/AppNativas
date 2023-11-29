@@ -1,6 +1,8 @@
 package org.helios.mythicdoors.viewmodel
 
+import android.os.Build.VERSION_CODES.TIRAMISU
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +17,7 @@ import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.viewmodel.gamelogic.GameLogicViewModel
 
+@RequiresApi(TIRAMISU)
 class GameActionScreenViewModel (
     private val dataController: DataController
 ): ViewModel() {

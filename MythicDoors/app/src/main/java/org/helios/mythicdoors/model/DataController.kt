@@ -1,12 +1,15 @@
 package org.helios.mythicdoors.model
 
 import org.helios.mythicdoors.model.entities.Game
+import org.helios.mythicdoors.model.entities.Location
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.services.GameServiceImp
+import org.helios.mythicdoors.services.LocationServiceImp
 import org.helios.mythicdoors.services.UserServiceImp
 import org.helios.mythicdoors.services.interfaces.IGameService
+import org.helios.mythicdoors.services.interfaces.ILocationService
 import org.helios.mythicdoors.services.interfaces.IUserService
-import org.helios.mythicdoors.utils.Connection
+import org.helios.mythicdoors.utils.connection.Connection
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,6 +19,7 @@ class DataController @Inject constructor(
 ) {
     private val userService: IUserService = UserServiceImp(dbHelper)
     private val gameService: IGameService = GameServiceImp(dbHelper)
+    private val locationService: ILocationService = LocationServiceImp(dbHelper)
 
     /*
      * Aplicamos un patrón Singleton para crear el controlador de datos.
@@ -37,8 +41,7 @@ class DataController @Inject constructor(
 
     fun getUserService(): IUserService { return userService }
     fun getGameService(): IGameService { return gameService }
-
-    // suspend fun initDataLoader(): Boolean { return defaultDataLoader(dbHelper) }
+    fun getLocationService(): ILocationService { return locationService }
 
     suspend fun getAllUsers(): List<User>? { return userService.getUsers() }
 
@@ -52,7 +55,7 @@ class DataController @Inject constructor(
 
     suspend fun countUsers(): Int { return userService.countUsers() }
 
-    /* ... */
+
     suspend fun getAllGames(): List<Game>? { return gameService.getGames() }
 
     suspend fun getGame(id: Long): Game? { return gameService.getGame(id) }
@@ -64,4 +67,8 @@ class DataController @Inject constructor(
     suspend fun deleteGame(id: Long): Boolean { return gameService.deleteGame(id) }
 
     suspend fun countGames(): Int { return gameService.countGames() }
+
+
+    suspend fun saveLocation(location: Location): Boolean { return locationService.saveLocation(location) }
+    suspend fun getLastLocation(): Location? { return locationService.getLastLocation() }
 }

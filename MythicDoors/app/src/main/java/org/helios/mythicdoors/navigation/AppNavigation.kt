@@ -24,6 +24,7 @@ fun AppNavigation() {
         composable(AppDestination.GameAction.route)  { GameActionScreen(navController = navController) }
         composable(AppDestination.ActionResult.route) { ActionResultScreen(navController = navController) }
         composable(AppDestination.Scores.route) { ScoresScreen(navController = navController) }
+        composable(AppDestination.GameGuideWebView.route) { GameGuideWebView (navController = navController) }
     }
 }
 

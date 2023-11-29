@@ -80,6 +80,14 @@ class GameOptsScreenViewModel(
         }
     }
 
+    fun navigateToGameGuideWebView(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+        try {
+            navFunctions.navigateGameGuideWebViewScreen(scope, snackbarHostState)
+        } catch (e: Exception) {
+            Log.e("GameOptsScreenViewModel", "Error navigating to GameGuideWebView: ${e.message}")
+        }
+    }
+
     private fun navigateToLoginScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         try {
             navFunctions.navigateToLoginScreen(scope, snackbarHostState)

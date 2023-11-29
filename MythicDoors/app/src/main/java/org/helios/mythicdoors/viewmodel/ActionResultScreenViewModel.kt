@@ -1,19 +1,38 @@
 package org.helios.mythicdoors.viewmodel
 
+import android.annotation.SuppressLint
+import android.app.Application
+import android.content.Context
+import android.os.Build
 import android.util.Log
+import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.ui.platform.LocalView
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import dagger.hilt.android.internal.Contexts.getApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.helios.mythicdoors.MainActivity
+import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Game
+import org.helios.mythicdoors.model.entities.Location
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.utils.AppConstants
+import org.helios.mythicdoors.utils.AppConstants.NotificationChannels
+import org.helios.mythicdoors.utils.calendar.CalendarService
+import org.helios.mythicdoors.utils.extenssions.hasPostNotificationPermission
+import org.helios.mythicdoors.utils.notifications.NotificationFabric
+import org.helios.mythicdoors.utils.screenshot.ScreenshotService
 
 class ActionResultScreenViewModel(
     private val dataController: DataController
@@ -33,9 +52,21 @@ class ActionResultScreenViewModel(
     var playerData: User? = null
     var gameResultsData: GameResults? = null
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun initialLoad() {
         playerData = loadPlayerData()
         gameResultsData = loadGameResults()
+
+        if (gameResultsData?.getIsPlayerWinner() == true) {
+            try{
+                NotificationFabric.create(NotificationChannels.GAMEWON_NOTIFICATION_CHANNEL)
+                    .also { notification ->
+                        NotificationFabric.send(notification)
+                    }
+            } catch (e: Exception) {
+                Log.e("GameActionScreenViewModel", "Notification sender: $e")
+            }
+        }
     }
 
     fun isEnoughCoins(): Boolean {
@@ -132,6 +163,31 @@ class ActionResultScreenViewModel(
             store.clearCombatData()
         } catch (e: Exception) {
             Log.e("GameActionScreenViewModel", "clearCombatData: $e")
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun makeScreenshot(
+        view: View,
+        activity: MainActivity
+    ) {
+        try {
+            viewModelScope.launch {
+                ScreenshotService.build(view, activity).takeScreenshot()
+                    .also { if (it) {
+                        try {
+                            NotificationFabric.create(NotificationChannels.IMAGES_NOTIFICATION_CHANNEL)
+                                .also { notification ->
+                                    NotificationFabric.send(notification)
+                                }
+                        } catch (e: Exception) {
+                            Log.e("GameActionScreenViewModel", "Notification sender: $e")
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("GameActionScreenViewModel", "makeScreenshot: $e")
         }
     }
 }
