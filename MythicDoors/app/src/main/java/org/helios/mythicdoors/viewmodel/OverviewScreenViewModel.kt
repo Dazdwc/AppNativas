@@ -1,12 +1,17 @@
 package org.helios.mythicdoors.viewmodel
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
+import org.helios.mythicdoors.model.entities.Location
+import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.navigation.navigateSingleTopTo

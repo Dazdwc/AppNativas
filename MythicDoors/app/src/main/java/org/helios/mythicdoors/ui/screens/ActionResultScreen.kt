@@ -1,206 +1,244 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.content.Context
+import android.content.ContextWrapper
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.User
+import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
+import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.ACTION_RESULT_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.ActionResultScreenViewModel
 import org.helios.mythicdoors.viewmodel.GameResults
+import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun ActionResultScreen(navController: NavController) {
     val controller: ActionResultScreenViewModel = (MainActivity.viewModelsMap[ACTION_RESULT_SCREEN_VIEWMODEL] as ActionResultScreenViewModel).apply { setNavController(navController) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context: Context = LocalContext.current
+    val activity = context.findActivity() as MainActivity
+
+    val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel)
+        .apply { loadSoundsIfNeeded() }
 
     val playerCurrentStats: User by lazy { controller.playerData ?: User.createEmptyUser() }
     val gameCurrentStats: GameResults by lazy { controller.gameResultsData ?: GameResults.create(false, null, 0, 0) }
 
     val isEnoughCoins: Boolean by lazy { controller.isEnoughCoins() }
 
-    controller.initialLoad()
-
-    Scaffold(
-        bottomBar = {
-            MenuBar(navController)
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+    DisposableEffect(Unit) {
+        onDispose {
+            soundManager.stopPlayingSounds()
         }
-    ) { contentPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
-            color = MaterialTheme.colorScheme.background) {
-            BoxWithConstraints {
+    }
 
-                val maxWidth = constraints.maxWidth
+    controller.initialLoad()
+    soundManager.playSound(R.raw.werewolf)
 
-                Column {
-                    Text(
-                        text = "Mythic Doors",
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier
-                            .padding(
-                                top = ScreenConstants.DOUBLE_PADDING.dp,
-                                bottom = ScreenConstants.DOUBLE_PADDING.dp
-                            )
-                            .fillMaxWidth()
-                            .wrapContentWidth(Alignment.CenterHorizontally),
-                    )
-                    Column(modifier = Modifier
+    Surface(
+        modifier = Modifier
+            .fillMaxSize(),
+        color = MaterialTheme.colorScheme.background) {
+        BoxWithConstraints {
+
+            val maxWidth = constraints.maxWidth
+
+            if (gameCurrentStats.getIsPlayerWinner()) {
+                controller.makeScreenshot(
+                    view = LocalView.current,
+                    activity = activity
+                )
+            }
+
+            Column {
+                Text(
+                    text = stringResource(id = R.string.app_name),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier
+                        .padding(
+                            top = ScreenConstants.DOUBLE_PADDING.dp,
+                            bottom = ScreenConstants.DOUBLE_PADDING.dp
+                        )
                         .fillMaxWidth()
-                        .padding(start = ScreenConstants.AVERAGE_PADDING.dp, end = ScreenConstants.AVERAGE_PADDING.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        gameCurrentStats.getIsPlayerWinner().let { isWinner ->
-                            if (isWinner) {
-                                Box(
-                                    modifier = Modifier
-                                        .wrapContentSize(Alignment.Center)
-                                        .background(MaterialTheme.colorScheme.primary)
-                                        .border(1.dp, MaterialTheme.colorScheme.tertiary)
-                                        .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "You won!".uppercase(),
-                                        style = MaterialTheme.typography.titleSmall,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                        modifier = Modifier
-                                            .wrapContentWidth(Alignment.CenterHorizontally)
-                                            .padding(ScreenConstants.AVERAGE_PADDING.dp)
-                                            .padding(bottom = 0.dp),
-                                    )
-                                }
-                            } else {
-                                Box(
-                                    modifier = Modifier
-                                        .wrapContentSize(Alignment.Center)
-                                        .background(MaterialTheme.colorScheme.primary)
-                                        .border(1.dp, MaterialTheme.colorScheme.tertiary)
-                                        .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(text = "You lost!".uppercase(),
-                                        style = MaterialTheme.typography.titleSmall,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                        modifier = Modifier
-                                            .wrapContentWidth(Alignment.CenterHorizontally)
-                                            .padding(ScreenConstants.AVERAGE_PADDING.dp)
-                                            .padding(bottom = 0.dp),
-                                    )
-                                }
-                            }
-                        }
-
-                        gameCurrentStats.getEnemy()?.getImage()?.let { painterResource(id = it) }
-                            ?.let { Image(painter = it,
-                                contentDescription = "Enemy image",
+                        .wrapContentWidth(Alignment.CenterHorizontally),
+                )
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = ScreenConstants.AVERAGE_PADDING.dp, end = ScreenConstants.AVERAGE_PADDING.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    gameCurrentStats.getIsPlayerWinner().let { isWinner ->
+                        if (isWinner) {
+                            Box(
                                 modifier = Modifier
-                                    .padding(top = ScreenConstants.AVERAGE_PADDING.dp, bottom = ScreenConstants.AVERAGE_PADDING.dp),
-                            ) }
-                            ?: Image(painter = painterResource(id = R.drawable.enemy_placeholder),
-                                contentDescription = "Enemy image",
-                                modifier = Modifier
-                                    .padding(top = ScreenConstants.AVERAGE_PADDING.dp, bottom = ScreenConstants.AVERAGE_PADDING.dp)
-                            )
-
-                        Row(Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)) {
-                            Icon(modifier = Modifier
-                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
-                                .size(40.dp, 40.dp),
-                                imageVector = ImageVector.vectorResource(R.drawable.actual_coins_500),
-                                contentDescription = "icon representing the user-s actual coins",
-                                tint = MaterialTheme.colorScheme.secondary
-                            )
-                            TextField(modifier = Modifier
-                                .background(MaterialTheme.colorScheme.primary)
-                                .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
-                                .weight(1f),
-                                value = playerCurrentStats.getCoins().coerceAtLeast(0).toString(),
-                                onValueChange = { playerCurrentStats.getCoins().toString() },
-                                label = { Text(text = "Current Coins") },
-                                readOnly = true,
-                            )
-                        }
-                        Row(Modifier.padding(bottom = 15.dp)) {
-                            Icon(modifier = Modifier
-                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
-                                .size(40.dp, 40.dp),
-                                imageVector = ImageVector.vectorResource(R.drawable.bet_500),
-                                contentDescription = "icon representing the user's actual coins",
-                                tint = MaterialTheme.colorScheme.secondary
-                            )
-                            TextField(modifier = Modifier
-                                .background(MaterialTheme.colorScheme.primary)
-                                .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
-                                .weight(1f),
-                                value = playerCurrentStats.getLevel().toString(),
-                                onValueChange = {playerCurrentStats.getLevel().toString() },
-                                label = { Text(text = "Current Level") },
-                                readOnly = true,
-                            )
-                        }
-                        Row(modifier = Modifier
-                            .width((maxWidth / 2).dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ){
-                            Button(onClick = { controller.returnToGameActionScreen(scope, snackbarHostState) },
-                                enabled = isEnoughCoins,
-                                elevation = ButtonDefaults.buttonElevation(2.dp),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                                    .wrapContentSize(Alignment.Center)
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .border(1.dp, MaterialTheme.colorScheme.tertiary)
+                                    .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Text(text = "CONTINUE",
-                                    style = MaterialTheme.typography.labelMedium,
+                                Text(
+                                    text = stringResource(id = R.string.game_won).uppercase(),
+                                    style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.onBackground,
+                                    modifier = Modifier
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
+                                        .padding(ScreenConstants.AVERAGE_PADDING.dp)
+                                        .padding(bottom = 0.dp),
                                 )
                             }
-                            Button(onClick = { controller.returnToGameOptionsScreen(scope, snackbarHostState) },
-                                elevation = ButtonDefaults.buttonElevation(2.dp),
+                        } else {
+                            Box(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
+                                    .wrapContentSize(Alignment.Center)
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .border(1.dp, MaterialTheme.colorScheme.tertiary)
+                                    .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Text(text = "EXIT",
-                                    style = MaterialTheme.typography.labelMedium,
+                                Text(
+                                    text = stringResource(id = R.string.game_lost).uppercase(),
+                                    style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.onBackground,
+                                    modifier = Modifier
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
+                                        .padding(ScreenConstants.AVERAGE_PADDING.dp)
+                                        .padding(bottom = 0.dp),
                                 )
                             }
                         }
-                        Spacer(modifier = Modifier.padding(top = ScreenConstants.AVERAGE_PADDING.dp))
-                        isEnoughCoins.takeIf { !it }?.let {
-                            Text(text = "You don't have enough coins to bet",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.error,
+                    }
+
+                    gameCurrentStats.getEnemy()?.getImage()?.let { painterResource(id = it) }
+                        ?.let { Image(painter = it,
+                            contentDescription = "Enemy image",
+                            modifier = Modifier
+                                .padding(top = ScreenConstants.AVERAGE_PADDING.dp, bottom = ScreenConstants.AVERAGE_PADDING.dp),
+                        ) }
+                        ?: Image(painter = painterResource(id = R.drawable.enemy_placeholder),
+                            contentDescription = "Enemy image",
+                            modifier = Modifier
+                                .padding(top = ScreenConstants.AVERAGE_PADDING.dp, bottom = ScreenConstants.AVERAGE_PADDING.dp)
+                        )
+
+                    Row(Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)) {
+                        Icon(modifier = Modifier
+                            .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                            .size(40.dp, 40.dp),
+                            imageVector = ImageVector.vectorResource(R.drawable.actual_coins_500),
+                            contentDescription = "icon representing the user's actual coins",
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.primary)
+                                .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                .weight(1f),
+                            value = playerCurrentStats.getCoins().coerceAtLeast(0).toString(),
+                            onValueChange = { playerCurrentStats.getCoins().toString() },
+                            label = { Text(text = stringResource(id = R.string.current_coins)) },
+                            readOnly = true,
+                        )
+                    }
+                    Row(Modifier.padding(bottom = 15.dp)) {
+                        Icon(modifier = Modifier
+                            .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                            .size(40.dp, 40.dp),
+                            imageVector = ImageVector.vectorResource(R.drawable.star_500),
+                            contentDescription = "icon representing the user's actual experience",
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.primary)
+                                .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                .weight(1f),
+                            value = playerCurrentStats.getLevel().toString(),
+                            onValueChange = { playerCurrentStats.getLevel().toString() },
+                            label = { Text(text = stringResource(id = R.string.current_level)) },
+                            readOnly = true,
+                        )
+                    }
+                    Row(modifier = Modifier
+                        .width((maxWidth / 2).dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ){
+                        Button(onClick = { controller.returnToGameActionScreen(scope, snackbarHostState) },
+                            enabled = isEnoughCoins,
+                            elevation = ButtonDefaults.buttonElevation(2.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.continue_opt).uppercase(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
                             )
                         }
+                        Button(onClick = { controller.returnToGameOptionsScreen(scope, snackbarHostState) },
+                            elevation = ButtonDefaults.buttonElevation(2.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.exit_opt).uppercase(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.padding(top = ScreenConstants.AVERAGE_PADDING.dp))
+                    isEnoughCoins.takeIf { !it }?.let {
+                        Text(
+                            text = stringResource(id = R.string.not_coins),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error,
+                        )
                     }
                 }
             }
         }
     }
+}
+
+private fun Context.findActivity(): MainActivity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is MainActivity) {
+            return context
+        }
+        context = context.baseContext
+    }
+    return null
 }

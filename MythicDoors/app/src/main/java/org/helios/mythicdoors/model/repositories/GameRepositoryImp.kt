@@ -7,8 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.model.entities.Game
 import org.helios.mythicdoors.model.entities.User
-import org.helios.mythicdoors.utils.Connection
-import org.helios.mythicdoors.utils.Contracts
+import org.helios.mythicdoors.utils.connection.Connection
+import org.helios.mythicdoors.utils.connection.Contracts
 import java.time.LocalDateTime
 
 class GameRepositoryImp(dbHelper: Connection):
