@@ -58,10 +58,17 @@
     <string name="locale_default_language_code">en</string>
     <string name="locale_default_language_name">English</string>
     <string name="locale_default_language_flag">us</string>
-    <string name="guide">Game Guide</string>
+    <string name="guide">Guía de Juego</string>
     <string name="win_notification_title">Mythic Doors</string>
-    <string name="win_notification_content">You has won a game!</string>
-    <string name="calendar_notification_title">Mythic Doors Calendar Event</string>
-    <string name="screenshot_notification_title">Mythic Doors Screenshots</string>
-    <string name="screenshot_notification_content">Mythic Doors has taken a screenshot of your victory</string>
+    <string name="win_notification_content">¡Has ganado un juego!</string>
+    <string name="calendar_notification_title">Mythic Doors Evento de Calendario</string>
+    <string name="screenshot_notification_title">Mythic Doors Captura de Pantalla</string>
+    <string name="screenshot_notification_content">Mythic Doors ha tomado una captura de pantalla de tu victoria</string>
+    <string name="location_notification_title">Localización en seguimiento...</string>
+    <string name="location_notification_content">El servicio de localización se encuentra en funcionamiento</string>
+    <string name="calendar_notification_content">Un evento de vistoria se ha creado en el calendario</string>
+    <string name="language_manager_title">Escoge un idioma</string>
+    <string name="close_button">Cerrar</string>
+    <string name="door_validator">¡Tienes que escoger una puerta!</string>
+    <string name="open_door">Abre</string>
 </resources>

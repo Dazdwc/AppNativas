@@ -1,11 +1,10 @@
 package org.helios.mythicdoors
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,33 +15,46 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.core.app.ActivityCompat.recreate
 import androidx.navigation.NavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.AppNavigation
 import org.helios.mythicdoors.services.location.LocationService
-import org.helios.mythicdoors.services.location.LocationServiceReceiver
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.*
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
+import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels
 import org.helios.mythicdoors.utils.permissions.AppPermissionsRequests
 import org.helios.mythicdoors.utils.connection.Connection
 import org.helios.mythicdoors.utils.permissions.PermissionsTextProviders
+import org.helios.mythicdoors.utils.typeclass.Language
 import org.helios.mythicdoors.viewmodel.*
 import org.helios.mythicdoors.viewmodel.tools.AudioPlayerViewModel
 import org.helios.mythicdoors.viewmodel.tools.GameMediaPlayer
 import org.helios.mythicdoors.viewmodel.tools.LanguageManagerViewModel
 import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
+import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -96,13 +108,14 @@ class MainActivity : ComponentActivity() {
         StoreManager.getInstance()
     }
 
+    private val activity = this
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContext(applicationContext)
-
-        storeManager.setContext(applicationContext)
+        setContext(context = applicationContext)
+        storeManager.setContext(context = applicationContext)
         storeManager.updateActualUser(User.createEmptyUser())
 
         startLocationService()
@@ -151,12 +164,13 @@ class MainActivity : ComponentActivity() {
                 Scaffold(topBar = {
                     Row(modifier = Modifier
                         .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         AudioPlayer()
+                        Spacer(modifier = Modifier.width(8.dp))
+                        LanguageManager(activity = activity, activityContext = activity.baseContext)
                     }
-
                 },
                     bottomBar = {
                         MenuBar(navController)

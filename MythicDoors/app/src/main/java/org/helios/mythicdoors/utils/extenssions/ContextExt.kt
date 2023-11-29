@@ -31,12 +31,8 @@ fun Context.hasForegroundPermission(): Boolean {
 fun Context.hasCalendarPermission(): Boolean {
     return ContextCompat.checkSelfPermission(
         this,
-        Manifest.permission.READ_CALENDAR
-    ) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_CALENDAR
-            ) == PackageManager.PERMISSION_GRANTED
+        Manifest.permission.WRITE_CALENDAR
+    ) == PackageManager.PERMISSION_GRANTED
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -47,7 +43,7 @@ fun Context.hasPostNotificationPermission(): Boolean {
     ) == PackageManager.PERMISSION_GRANTED
 }
 
-// TODO: Check if this is the correct permission
+// TODO: Check if this is a necessary permission
 fun Context.hasStoragePermission(): Boolean {
     return ContextCompat.checkSelfPermission(
         this,

@@ -8,7 +8,9 @@ import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Location
 import org.helios.mythicdoors.model.entities.Song
 import org.helios.mythicdoors.model.entities.User
+import org.helios.mythicdoors.utils.AppConstants.Languages
 import org.helios.mythicdoors.utils.AppConstants.GameMode
+import org.helios.mythicdoors.utils.typeclass.Language
 import java.lang.ref.WeakReference
 
 data class AppStore(
@@ -33,7 +35,8 @@ data class AppStore(
         R.raw.rain,
         R.raw.scores_screen_sound,
         R.raw.door_select,
-    )
+    ),
+    val languages: Map<String, Language> = LanguagesMap,
 )
 
 data class CombatResults(
@@ -54,6 +57,13 @@ data class PlayerInitialStats(
     var coins: Int = 0,
     var score: Int = 0
 )
+
+object LanguagesMap: Map<String, Language> by mapOf(
+    Languages.ENGLISH to Language.ENGLISH,
+    Languages.SPANISH to Language.SPANISH,
+    Languages.CATALAN to Language.CATALAN
+)
+
 
 class StoreManager {
     private var appStore: AppStore = AppStore()
@@ -138,4 +148,8 @@ class StoreManager {
         appStore.playerAction.bet = 0
         appStore.playerAction.selectedDoorId = ""
     }
+
+    fun getLanguage(languageName: String): Language? { return appStore.languages[languageName] }
+
+    fun getLanguages(): Map<String, Language> { return appStore.languages }
 }

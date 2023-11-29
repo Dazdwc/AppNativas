@@ -64,4 +64,10 @@
     <string name="calendar_notification_content">A win event has been created in your calendar</string>
     <string name="screenshot_notification_title">Mythic Doors Screenshots</string>
     <string name="screenshot_notification_content">Mythic Doors has taken a screenshot of your victory</string>
+    <string name="location_notification_title">Tracking your location...</string>
+    <string name="location_notification_content">Location service is running</string>
+    <string name="language_manager_title">Select a language</string>
+    <string name="close_button">Close</string>
+    <string name="door_validator">You must select a door!</string>
+    <string name="open_door">Open Door</string>
 </resources>

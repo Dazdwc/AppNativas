@@ -74,4 +74,10 @@ object AppConstants {
         const val BUTTON_WIDTH = 200
         const val MENU_HEIGHT = 100
     }
+
+    object Languages {
+        const val ENGLISH = "English"
+        const val SPANISH = "Español"
+        const val CATALAN = "Català"
+    }
 }

@@ -1,12 +1,11 @@
 package org.helios.mythicdoors.viewmodel.tools
 
+import android.app.Activity
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.util.Log
-import androidx.appcompat.content.res.AppCompatResources
+import android.content.SharedPreferences
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import org.helios.mythicdoors.utils.typeclass.Language
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.store.StoreManager
 import java.util.*
@@ -24,42 +23,41 @@ class LanguageManagerViewModel(): ViewModel() {
     }
 
     private val store: StoreManager by lazy { StoreManager.getInstance() }
-    private val context: Context by lazy { store.getContext() ?: throw Exception("Context is null") }
+    val languages: Map<String, Language> = store.getLanguages()
 
-    var languageName = context.getString(R.string.locale_default_language_name)
-    var languageFlag = R.drawable.ic_english_flag
-    var locale: Locale = Locale.ENGLISH
-
-    private val _languageChanged: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val languageChanged: StateFlow<Boolean> get() = _languageChanged
-
-    fun setLanguageChanged(value: Boolean) { _languageChanged.value = value }
-
-    fun changeLanguage(context: Context) {
-        try {
-            loadLanguage(context)
-        } catch (e: Exception) {
-            Log.e("LANGUAGE", "Error loading language")
-        }
-    }
-
-    fun setLanguage(
-        locale: Locale,
-        languageName: String,
-        languageFlag: Int
+    @Suppress("DEPRECATION")
+    fun changeLanguage(
+        language: Language,
+        activity: Activity,
+        activityContext: Context
     ) {
-        this.locale = locale
-        this.languageName = languageName
-        this.languageFlag = languageFlag
-        _languageChanged.value = true
-    }
-
-    private fun loadLanguage(context: Context) {
+        val locale = language.languageLocale
         Locale.setDefault(locale)
 
-        val newLocale: Locale = locale
-        val newConfiguration = context.resources.configuration.apply { setLocale(newLocale) }
+        val resources = activityContext.resources
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
 
-        context.createConfigurationContext(newConfiguration)
+        activityContext.createConfigurationContext(configuration)
+        resources.configuration.updateFrom(configuration)
+
+        /* This method is deprecated, but it must be a bug in SDK 34 because it doesn't work without it */
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+
+        SharedPreferences.Editor::class.java
+            .getMethod("apply")
+            .invoke(
+                activityContext.getSharedPreferences("settings", Context.MODE_PRIVATE).edit()
+                    .putString("language", language.languageCode)
+            )
+
+        ActivityCompat.recreate(activity)
+    }
+
+    fun setLanguageFlag(): Int {
+        val actualLocaleLanguage: String = Locale.getDefault().language
+
+        return languages.filter { it.value.languageLocale.language == actualLocaleLanguage }.values.firstOrNull()?.languageFlag
+            ?: R.drawable.ic_english_flag
     }
 }

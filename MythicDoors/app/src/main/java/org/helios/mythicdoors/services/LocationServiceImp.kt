@@ -26,11 +26,10 @@ class LocationServiceImp(dbHelper: Connection): ILocationService {
     override suspend fun saveLocation(location: Location): Boolean = withContext(Dispatchers.IO) {
         try {
             location.takeIf { it.isValid() }?.let {
-                Log.w("LocationServiceImp", "Saving location: ${it.toString()}")
                 return@withContext repository.insertOne(location) > 0
             } ?: false
         } catch (e: Exception) {
-            Log.e("LocationServiceImp", "Error saving location: ${e.message}\n${e.cause}")
+            Log.e("LocationServiceImp", "Error saving location: $e")
             return@withContext false
         }
     }

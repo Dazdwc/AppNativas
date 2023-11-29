@@ -1,6 +1,8 @@
 package org.helios.mythicdoors.ui.screens
 
 import android.content.Context
+import android.os.Build.VERSION_CODES.TIRAMISU
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,6 +41,7 @@ import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.GAME_ACTION_S
 import org.helios.mythicdoors.viewmodel.GameActionScreenViewModel
 import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
+@RequiresApi(TIRAMISU)
 @Composable
 fun GameActionScreen(navController: NavController) {
     val controller: GameActionScreenViewModel = (MainActivity.viewModelsMap[GAME_ACTION_SCREEN_VIEWMODEL] as GameActionScreenViewModel).apply { setNavController(navController) }
@@ -201,7 +204,7 @@ fun GameActionScreen(navController: NavController) {
                               .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                               .size(40.dp, 40.dp),
                               imageVector = ImageVector.vectorResource(R.drawable.actual_coins_500),
-                              contentDescription = "icon representing the user-s actual coins",
+                              contentDescription = "icon representing the user's actual coins",
                               tint = MaterialTheme.colorScheme.secondary
                           )
                           TextField(
@@ -250,7 +253,7 @@ fun GameActionScreen(navController: NavController) {
                           enabled = isBetValid && isDoorSelected,
                           elevation = ButtonDefaults.buttonElevation(2.dp),
                       ) {
-                          Text(text = "OPEN DOOR",
+                          Text(text = stringResource(id = R.string.open_door).uppercase(),
                               style = MaterialTheme.typography.labelMedium,
                               color = MaterialTheme.colorScheme.onBackground,
                           )
@@ -264,7 +267,8 @@ fun GameActionScreen(navController: NavController) {
                             )
                       }
                       isDoorSelected.takeIf { !it }?.let {
-                          Text(text = "You must select a door",
+                          Text(
+                              text = stringResource(id = R.string.door_validator),
                               style = MaterialTheme.typography.labelSmall,
                               color = MaterialTheme.colorScheme.error,
                           )
@@ -276,6 +280,7 @@ fun GameActionScreen(navController: NavController) {
     }
 }
 
+@RequiresApi(TIRAMISU)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GameActionScreenPreview() {

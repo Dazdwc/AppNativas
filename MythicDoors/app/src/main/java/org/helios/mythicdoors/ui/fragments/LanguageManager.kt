@@ -1,95 +1,128 @@
 package org.helios.mythicdoors.ui.fragments
 
 import android.app.Activity
-import android.content.res.Configuration
-import android.util.Log
+import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import org.helios.mythicdoors.MainActivity
-import org.helios.mythicdoors.utils.typeclass.Language.Companion.languages
+import org.helios.mythicdoors.R
+import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.LANGUAGE_MANAGER_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.utils.typeclass.Language
 import org.helios.mythicdoors.viewmodel.tools.LanguageManagerViewModel
-import java.util.Locale
 
 @Composable
 fun LanguageManager(
-    activity: MainActivity
+    activity: MainActivity,
+    activityContext: Context
 ) {
     val controller: LanguageManagerViewModel = (MainActivity.viewModelsMap[LANGUAGE_MANAGER_SCREEN_VIEWMODEL] as LanguageManagerViewModel)
 
-    var selectedLocale: Locale = remember { controller.locale }
-    var selectedLanguageName: String = remember { controller.languageName }
-    var selectedLanguageFlag: Int = remember { controller.languageFlag }
+    val languages: Map<String, Language> = remember { controller.languages }
+    val selectedLanguageFlag: Int = remember { controller.setLanguageFlag() }
 
-    val languageChangesListener by controller.languageChanged.collectAsState()
-    if (languageChangesListener) {
-        val newLocale = controller.locale
-        Locale.setDefault(newLocale)
-        val newConfiguration = Configuration(activity.resources.configuration)
-        newConfiguration.setLocale(newLocale)
-        activity.baseContext.createConfigurationContext(newConfiguration)
-
-        val context = LocalContext.current
-        if (context is Activity) context.recreate()
-
-        controller.setLanguageChanged(false)
-    }
-
-    var isMenuExpanded by remember { mutableStateOf(false) }
+    val openDialog = rememberSaveable { mutableStateOf(false) }
 
     Surface {
         Column {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { isMenuExpanded = !isMenuExpanded },
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Icon(
-                    painter = painterResource(id = selectedLanguageFlag),
-                    contentDescription = "Icon for the actual language.",
-                    modifier = Modifier.size(20.dp)
-                )
-                IconButton(onClick = { isMenuExpanded = !isMenuExpanded }) {
+                IconButton(onClick = { openDialog.value = !openDialog.value }) {
                     Icon(
                         painter = painterResource(id = android.R.drawable.arrow_down_float),
                         contentDescription = "Arrow down icon for the language selector.",
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(15.dp)
                     )
                 }
             }
-            DropdownMenu(
-                expanded = isMenuExpanded,
-                onDismissRequest = { isMenuExpanded = false } ) {
-                languages.forEach() { language ->
-                    DropdownMenuItem(
-                        text = { Row {
-                            Icon(
-                                painter = painterResource(id = language.languageFlag),
-                                contentDescription = "Icon for the actual language.",
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Text(text = language.languageName)
-                        } },
-                        onClick = {
-                            isMenuExpanded = false
+        }
+    }
+    CreateLanguageDialog(
+        openDialog = openDialog,
+        activity = activity,
+        activityContext = activityContext,
+        controller = controller,
+        languages = languages
+    )
+}
 
-                            controller.setLanguage(
-                                language.languageLocale,
-                                language.languageName,
-                                language.languageFlag)
+@Composable
+fun CreateLanguageDialog(
+    openDialog: MutableState<Boolean>,
+    activity: Activity,
+    activityContext: Context,
+    controller: LanguageManagerViewModel,
+    languages: Map<String, Language>
+) {
+    val languageNames: List<String> = languages.values.map { it.languageName }
 
-                            selectedLocale = controller.locale
-                            selectedLanguageName = controller.languageName
-                            selectedLanguageFlag = controller.languageFlag
-                    })
+    if (openDialog.value) {
+        Dialog(
+            onDismissRequest = {  },
+            properties = DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(AppConstants.ScreenConstants.AVERAGE_PADDING.dp)
+            ) {
+                Text(text = stringResource(id = R.string.language_manager_title))
+                Spacer(modifier = Modifier.height(8.dp))
+                languageNames.forEach { languageName ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ClickableText(
+                            text = AnnotatedString.Builder(languageName)
+                                .apply {
+                                    addStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colorScheme.onBackground
+                                        ),
+                                        start = 0,
+                                        end = languageName.length
+                                    )
+                                }
+                                .toAnnotatedString(),
+                            onClick = {
+                                controller.changeLanguage(
+                                    languages[languageName] ?: Language.ENGLISH,
+                                    activity,
+                                    activityContext
+                                )
+                                openDialog.value = false
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+                TextButton(
+                    onClick = { openDialog.value = false }) {
+                    Text(text = stringResource(id = R.string.close_button))
                 }
             }
         }

@@ -14,10 +14,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.model.entities.Location
-import org.helios.mythicdoors.store.AppStore
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.LOCATION_NOTIFICATION_CHANNEL
+import org.helios.mythicdoors.utils.notifications.NotificationFabric
 
 class LocationService(): Service() {
 
@@ -36,6 +36,7 @@ class LocationService(): Service() {
     private val store: StoreManager by lazy { StoreManager.getInstance() }
 
     private lateinit var locationCoordinates: Map<String, Double>
+
     private var _locationLiveData = MutableLiveData<Map<String, Double>>()
     val locationLiveData get() = _locationLiveData
 
@@ -67,7 +68,7 @@ class LocationService(): Service() {
     }
 
     private fun start() {
-        val notification = createNotification()
+        val notification = NotificationFabric.createNotificationBuilder(LOCATION_NOTIFICATION_CHANNEL)
 
         locationClient.getLocationUpdates(1000L)
             .catch { e ->
@@ -81,8 +82,6 @@ class LocationService(): Service() {
                 _locationLiveData.postValue(locationCoordinates)
                 locationCallback?.onLocationUpdate(locationCoordinates)
 
-                stopSelf()
-
                 updateNotification(notification)
             }
             .launchIn(serviceScope)
@@ -91,7 +90,7 @@ class LocationService(): Service() {
     }
 
     private fun stop() {
-        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopForeground(STOP_FOREGROUND_DETACH)
         stopSelf()
     }
 
@@ -103,7 +102,9 @@ class LocationService(): Service() {
                 store.getAppStore().actualUser ?: return@launch,
                 locationCoordinates["latitude"] ?: 0.0,
                 locationCoordinates["longitude"] ?: 0.0
-            ).also { dataController.saveLocation(it) }
+            ).also {
+                dataController.saveLocation(it)
+            }
 
             // TODO: Este bloque es simplemente para que el profe lo vea en el LOG
             val location = dataController.getLastLocation()
@@ -111,16 +112,8 @@ class LocationService(): Service() {
         }
     }
 
-    private fun createNotification(): NotificationCompat.Builder {
-        return NotificationCompat.Builder(this, LOCATION_NOTIFICATION_CHANNEL)
-            .setContentTitle("Tracking your location...")
-            .setContentText("Location Service is running")
-            .setSmallIcon(android.R.drawable.ic_menu_mylocation)
-            .setOngoing(true)
-    }
-
     private fun updateNotification(notification: NotificationCompat.Builder) {
-        val updatedNotification = notification.setContentText("Your location has been set to: ${locationCoordinates?.get("latitude")}, ${locationCoordinates?.get("longitude")}")
+        val updatedNotification = notification.setContentText("Your location has been set to: ${locationCoordinates["latitude"]}, ${locationCoordinates["longitude"]}")
 
         val notificationManager: NotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(AppConstants.NotificationIds.LOCATION_NOTIFICATION_ID, updatedNotification.build())

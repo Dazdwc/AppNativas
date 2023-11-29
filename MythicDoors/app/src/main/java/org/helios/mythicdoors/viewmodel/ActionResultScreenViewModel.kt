@@ -28,8 +28,10 @@ import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.utils.AppConstants
+import org.helios.mythicdoors.utils.AppConstants.NotificationChannels
 import org.helios.mythicdoors.utils.calendar.CalendarService
 import org.helios.mythicdoors.utils.extenssions.hasPostNotificationPermission
+import org.helios.mythicdoors.utils.notifications.NotificationFabric
 import org.helios.mythicdoors.utils.screenshot.ScreenshotService
 
 class ActionResultScreenViewModel(
@@ -56,7 +58,14 @@ class ActionResultScreenViewModel(
         gameResultsData = loadGameResults()
 
         if (gameResultsData?.getIsPlayerWinner() == true) {
-            sendOnWinNotification()
+            try{
+                NotificationFabric.create(NotificationChannels.GAMEWON_NOTIFICATION_CHANNEL)
+                    .also { notification ->
+                        NotificationFabric.send(notification)
+                    }
+            } catch (e: Exception) {
+                Log.e("GameActionScreenViewModel", "Notification sender: $e")
+            }
         }
     }
 
@@ -165,52 +174,21 @@ class ActionResultScreenViewModel(
         try {
             viewModelScope.launch {
                 ScreenshotService.build(view, activity).takeScreenshot()
-                    .also { if (it) sendOnScreenshotNotification() }
+                    .also { if (it) {
+                        try {
+                            NotificationFabric.create(NotificationChannels.IMAGES_NOTIFICATION_CHANNEL)
+                                .also { notification ->
+                                    NotificationFabric.send(notification)
+                                }
+                        } catch (e: Exception) {
+                            Log.e("GameActionScreenViewModel", "Notification sender: $e")
+                        }
+                    }
+                }
             }
         } catch (e: Exception) {
             Log.e("GameActionScreenViewModel", "makeScreenshot: $e")
         }
-    }
-
-    /* We can suppress the Missing Permission Check because we have externalized the logic in a util */
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    @SuppressLint("MissingPermission")
-    private fun sendOnWinNotification() {
-        val context = store.getContext() ?: MainActivity.getContext()
-        if (!context.hasPostNotificationPermission()) throw Exception("Post notification permission not granted")
-
-        val notification = createOnWinNotification()
-        NotificationManagerCompat.from(context).notify(AppConstants.NotificationIds.GAMEWON_NOTIFICATION_ID, notification.build())
-    }
-
-    private fun createOnWinNotification(): NotificationCompat.Builder {
-        val context = store.getContext() ?: MainActivity.getContext()
-
-        return NotificationCompat.Builder(context, AppConstants.NotificationChannels.GAMEWON_NOTIFICATION_CHANNEL)
-            .setContentTitle(context.getString(R.string.win_notification_title))
-            .setContentText(context.getString(R.string.win_notification_content))
-            .setSmallIcon(R.mipmap.ic_launcher_round)
-            .setOngoing(true)
-    }
-
-    @SuppressLint("MissingPermission")
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun sendOnScreenshotNotification() {
-        val context = store.getContext() ?: MainActivity.getContext()
-        if (!context.hasPostNotificationPermission()) throw Exception("Post notification permission not granted")
-
-        val notification = createOnScreenshotNotification()
-        NotificationManagerCompat.from(context).notify(AppConstants.NotificationIds.IMAGES_NOTIFICATION_ID, notification.build())
-    }
-
-    private fun createOnScreenshotNotification(): NotificationCompat.Builder {
-        val context = store.getContext() ?: MainActivity.getContext()
-
-        return NotificationCompat.Builder(context, AppConstants.NotificationChannels.IMAGES_NOTIFICATION_CHANNEL)
-            .setContentTitle(context.getString(R.string.screenshot_notification_title))
-            .setContentText(context.getString(R.string.screenshot_notification_content))
-            .setSmallIcon(R.mipmap.ic_launcher_round)
-            .setOngoing(true)
     }
 }
 
