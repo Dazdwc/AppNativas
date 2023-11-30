@@ -2,6 +2,8 @@ package org.helios.mythicdoors.ui.screens
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -26,6 +28,7 @@ import org.helios.mythicdoors.viewmodel.OverviewScreenViewModel
 import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun OverviewScreen(navController: NavController) {
     val controller: OverviewScreenViewModel = (MainActivity.viewModelsMap[OVERVIEW_SCREEN_VIEWMODEL] as OverviewScreenViewModel).apply { setNavController(navController) }
@@ -87,10 +90,4 @@ fun OverviewScreen(navController: NavController) {
     painter = painterResource(id = R.drawable.castillotest4),
     contentDescription = "Main image of the game app, a gothic castle.",
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun OverviewScreenPreview() {
-    OverviewScreen(navController = NavController(LocalContext.current))
 }

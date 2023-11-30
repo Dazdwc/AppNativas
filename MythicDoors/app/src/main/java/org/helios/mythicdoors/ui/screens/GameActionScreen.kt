@@ -280,11 +280,4 @@ fun GameActionScreen(navController: NavController) {
     }
 }
 
-@RequiresApi(TIRAMISU)
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun GameActionScreenPreview() {
-    GameActionScreen(navController = NavController(LocalContext.current))
-}
-
 private fun setSelectedDoorBorder(selectedDoorId: String, doorOption: String): Int { return if (selectedDoorId == doorOption) 3 else -1 }

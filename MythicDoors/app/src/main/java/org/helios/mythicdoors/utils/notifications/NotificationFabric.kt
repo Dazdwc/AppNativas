@@ -12,6 +12,7 @@ import org.helios.mythicdoors.utils.AppConstants.NotificationChannels
 import org.helios.mythicdoors.utils.AppConstants.NotificationIds
 import org.helios.mythicdoors.utils.extenssions.hasPostNotificationPermission
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class NotificationFabric {
     companion object: INotificationFabric {
         override fun create(channel: String): Notification {
@@ -50,6 +51,7 @@ class NotificationFabric {
 /* We can suppress the Missing Permission Check because we have externalized the logic in a util */
 class LocationNotification() {
     companion object {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         fun createNotification(): NotificationCompat.Builder {
             val context = MainActivity.getContext()
 
@@ -73,6 +75,7 @@ class LocationNotification() {
 
 class CalendarNotification {
     companion object {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         fun createNotification(): NotificationCompat.Builder {
             val context = MainActivity.getContext()
 
@@ -96,6 +99,7 @@ class CalendarNotification {
 
 class ImagesNotification {
     companion object {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         fun createNotification(): NotificationCompat.Builder {
             val context = MainActivity.getContext()
 
@@ -119,6 +123,7 @@ class ImagesNotification {
 
 class GameWonNotification {
     companion object {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         fun createNotification(): NotificationCompat.Builder {
             val context = MainActivity.getContext()
 

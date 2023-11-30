@@ -44,6 +44,10 @@ fun LanguageManager(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
+                Text(
+                    text = stringResource(id = R.string.language_icon_title),
+                    style = MaterialTheme.typography.labelSmall
+                )
                 IconButton(onClick = { openDialog.value = !openDialog.value }) {
                     Icon(
                         painter = painterResource(id = android.R.drawable.arrow_down_float),
