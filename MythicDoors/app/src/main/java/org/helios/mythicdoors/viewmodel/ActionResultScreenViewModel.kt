@@ -1,36 +1,29 @@
 package org.helios.mythicdoors.viewmodel
 
-import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Picture
 import android.os.Build
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.ui.platform.LocalView
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import dagger.hilt.android.internal.Contexts.getApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
-import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Game
-import org.helios.mythicdoors.model.entities.Location
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels
-import org.helios.mythicdoors.utils.calendar.CalendarService
-import org.helios.mythicdoors.utils.extenssions.hasPostNotificationPermission
 import org.helios.mythicdoors.utils.notifications.NotificationFabric
 import org.helios.mythicdoors.utils.screenshot.ScreenshotService
 
@@ -166,28 +159,21 @@ class ActionResultScreenViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    fun makeScreenshot(
-        view: View,
-        activity: MainActivity
+    fun createImageFile(
+        context: Context,
+        activity: MainActivity,
+        bitmap: Bitmap
     ) {
         try {
             viewModelScope.launch {
-                ScreenshotService.build(view, activity).takeScreenshot()
-                    .also { if (it) {
-                        try {
-                            NotificationFabric.create(NotificationChannels.IMAGES_NOTIFICATION_CHANNEL)
-                                .also { notification ->
-                                    NotificationFabric.send(notification)
-                                }
-                        } catch (e: Exception) {
-                            Log.e("GameActionScreenViewModel", "Notification sender: $e")
-                        }
-                    }
-                }
+                ScreenshotService.makeScreenshotFile(
+                    context = context,
+                    activity = activity,
+                    bitmap = bitmap
+                )
             }
         } catch (e: Exception) {
-            Log.e("GameActionScreenViewModel", "makeScreenshot: $e")
+            Log.e("GameActionScreenViewModel", "createImageFile: $e")
         }
     }
 }

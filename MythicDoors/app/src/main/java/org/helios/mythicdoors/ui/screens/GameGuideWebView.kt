@@ -1,8 +1,10 @@
 package org.helios.mythicdoors.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.webkit.WebView
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,6 +25,7 @@ import org.helios.mythicdoors.viewmodel.GameGuideWebViewViewModel
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun GameGuideWebView(navController: NavController) {
     val controller: GameGuideWebViewViewModel = (MainActivity.viewModelsMap[GAME_GUIDE_SCREEN_VIEWMODEL] as GameGuideWebViewViewModel).apply { setNavController(navController) }

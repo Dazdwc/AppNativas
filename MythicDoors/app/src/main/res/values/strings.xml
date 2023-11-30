@@ -70,4 +70,9 @@
     <string name="close_button">Close</string>
     <string name="door_validator">You must select a door!</string>
     <string name="open_door">Open Door</string>
+    <string name="screenshot_dialog_title">Victory Screenshot</string>
+    <string name="screenshot_dialog_text">Do you want to take a Screenshot of your Victory?</string>
+    <string name="screenshot_dialog_confirm">Take</string>
+    <string name="screenshot_dialog_cancel">Cancel</string>
+    <string name="language_icon_title">lan</string>
 </resources>

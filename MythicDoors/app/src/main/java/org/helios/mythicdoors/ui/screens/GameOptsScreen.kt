@@ -1,6 +1,8 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +27,7 @@ import org.helios.mythicdoors.utils.AppConstants.GameMode
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.GAME_OPTS_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.GameOptsScreenViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun GameOptsScreen(navController: NavController) {
     val controller: GameOptsScreenViewModel = (MainActivity.viewModelsMap[GAME_OPTS_SCREEN_VIEWMODEL] as GameOptsScreenViewModel).apply { setNavController(navController) }
@@ -226,10 +229,4 @@ fun GameOptsScreen(navController: NavController) {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GameOptsScreenPreview() {
-    GameActionScreen(navController = NavController(LocalContext.current))
 }

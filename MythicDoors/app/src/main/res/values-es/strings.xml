@@ -71,4 +71,9 @@
     <string name="close_button">Cerrar</string>
     <string name="door_validator">¡Tienes que escoger una puerta!</string>
     <string name="open_door">Abre</string>
+    <string name="screenshot_dialog_title">Victory Screenshot</string>
+    <string name="screenshot_dialog_text">¿Quieres tomar una captura de pantalla de tu Victoria?</string>
+    <string name="screenshot_dialog_confirm">Tomar</string>
+    <string name="screenshot_dialog_cancel">Cancelar</string>
+    <string name="language_icon_title">lan</string>
 </resources>

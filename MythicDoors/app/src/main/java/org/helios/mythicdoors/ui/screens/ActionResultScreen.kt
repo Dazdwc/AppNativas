@@ -2,23 +2,20 @@ package org.helios.mythicdoors.ui.screens
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.graphics.Bitmap
+import android.graphics.Bitmap.createBitmap
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -27,8 +24,6 @@ import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.User
-import org.helios.mythicdoors.ui.fragments.AudioPlayer
-import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.ACTION_RESULT_SCREEN_VIEWMODEL
@@ -42,16 +37,20 @@ fun ActionResultScreen(navController: NavController) {
     val controller: ActionResultScreenViewModel = (MainActivity.viewModelsMap[ACTION_RESULT_SCREEN_VIEWMODEL] as ActionResultScreenViewModel).apply { setNavController(navController) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val scrollState = rememberScrollState()
     val context: Context = LocalContext.current
     val activity = context.findActivity() as MainActivity
+    val density = LocalDensity.current.density
 
     val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel)
         .apply { loadSoundsIfNeeded() }
 
     val playerCurrentStats: User by lazy { controller.playerData ?: User.createEmptyUser() }
-    val gameCurrentStats: GameResults by lazy { controller.gameResultsData ?: GameResults.create(false, null, 0, 0) }
+    val gameCurrentStats: GameResults = controller.gameResultsData ?: GameResults.create(false, null, 0, 0)
 
     val isEnoughCoins: Boolean by lazy { controller.isEnoughCoins() }
+
+    val captured = remember { mutableStateOf<Bitmap?>(null) }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -66,18 +65,27 @@ fun ActionResultScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize(),
         color = MaterialTheme.colorScheme.background) {
-        BoxWithConstraints {
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            val width = constraints.maxWidth
+            val height = constraints.maxHeight
+            val maxWidth = ((width).toInt()).minus(10)
 
-            val maxWidth = constraints.maxWidth
+            captured.value = takeScreenShot(context, width, height)
 
-            if (gameCurrentStats.getIsPlayerWinner()) {
-                controller.makeScreenshot(
-                    view = LocalView.current,
-                    activity = activity
-                )
-            }
+            val isPlayerWon: Boolean = gameCurrentStats.getIsPlayerWinner()
+            val onShowScreenshotDialogState = rememberSaveable { mutableStateOf(isPlayerWon) }
 
-            Column {
+            ScreenshotAlertDialog(
+                controller = controller,
+                context = context,
+                activity = activity,
+                bitmap = captured.value ?: takeScreenShot(context, maxWidth, height),
+                onShowScreenshotDialog = onShowScreenshotDialogState)
+
+            Column(modifier = Modifier.verticalScroll(scrollState)) {
                 Text(
                     text = stringResource(id = R.string.app_name),
                     style = MaterialTheme.typography.headlineLarge,
@@ -88,7 +96,7 @@ fun ActionResultScreen(navController: NavController) {
                             bottom = ScreenConstants.DOUBLE_PADDING.dp
                         )
                         .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally),
+                        .wrapContentWidth(Alignment.CenterHorizontally)
                 )
                 Column(modifier = Modifier
                     .fillMaxWidth()
@@ -188,6 +196,7 @@ fun ActionResultScreen(navController: NavController) {
                             readOnly = true,
                         )
                     }
+                    Spacer(modifier = Modifier.padding(top = ScreenConstants.AVERAGE_PADDING.dp))
                     Row(modifier = Modifier
                         .width((maxWidth / 2).dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -232,6 +241,59 @@ fun ActionResultScreen(navController: NavController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@Composable
+private fun ScreenshotAlertDialog(
+    controller: ActionResultScreenViewModel,
+    context: Context,
+    activity: MainActivity,
+    bitmap: Bitmap,
+    onShowScreenshotDialog: MutableState<Boolean>
+) {
+    if (onShowScreenshotDialog.value) {
+        AlertDialog(
+            onDismissRequest = { onShowScreenshotDialog.value = false },
+            title = { Text(text = stringResource(id = R.string.screenshot_dialog_title).uppercase()) },
+            text = { Text(text = stringResource(id = R.string.screenshot_dialog_text)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        controller.createImageFile(
+                            context = context,
+                            activity = activity,
+                            bitmap = bitmap
+                        )
+                        onShowScreenshotDialog.value = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimaryContainer)
+                ) {
+                    Text(text = stringResource(id = R.string.screenshot_dialog_confirm).uppercase())
+                }
+            },
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.secondary),
+            dismissButton = {
+                Button(
+                    onClick = { onShowScreenshotDialog.value = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimaryContainer)
+                ) {
+                    Text(text = stringResource(id = R.string.screenshot_dialog_cancel).uppercase())
+                }
+            },
+            icon = {
+                Icon(
+                    painter = painterResource(id = android.R.drawable.ic_menu_camera),
+                    contentDescription = "screenshot icon",
+                    modifier = Modifier
+                        .size(40.dp, 40.dp)
+                        .padding(end = ScreenConstants.AVERAGE_PADDING.dp),
+                    tint = MaterialTheme.colorScheme.secondary
+                )
+            }
+        )
+    }
+}
+
 private fun Context.findActivity(): MainActivity? {
     var context = this
     while (context is ContextWrapper) {
@@ -241,4 +303,8 @@ private fun Context.findActivity(): MainActivity? {
         context = context.baseContext
     }
     return null
+}
+
+private fun takeScreenShot(context: Context, width: Int, height: Int): Bitmap {
+    return createBitmap(width, height, Bitmap.Config.ARGB_8888)
 }

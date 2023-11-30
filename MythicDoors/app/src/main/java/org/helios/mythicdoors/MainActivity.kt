@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -34,8 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.ActivityCompat.recreate
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.AppNavigation
@@ -48,6 +51,7 @@ import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels
 import org.helios.mythicdoors.utils.permissions.AppPermissionsRequests
 import org.helios.mythicdoors.utils.connection.Connection
 import org.helios.mythicdoors.utils.permissions.PermissionsTextProviders
+import org.helios.mythicdoors.utils.screenshot.ScreenshotService
 import org.helios.mythicdoors.utils.typeclass.Language
 import org.helios.mythicdoors.viewmodel.*
 import org.helios.mythicdoors.viewmodel.tools.AudioPlayerViewModel

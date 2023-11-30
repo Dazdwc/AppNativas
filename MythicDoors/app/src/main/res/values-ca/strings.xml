@@ -72,4 +72,9 @@
     <string name="close_button">Tancar</string>
     <string name="door_validator">Has d\'escollir una porta!</string>
     <string name="open_door">Obre</string>
+    <string name="screenshot_dialog_title">Victory Screenshot</string>
+    <string name="screenshot_dialog_text">Vols pendre una captura de pantalla de la teva Victòria?</string>
+    <string name="screenshot_dialog_confirm">Prendre</string>
+    <string name="screenshot_dialog_cancel">Cancelar</string>
+    <string name="language_icon_title">lan</string>
 </resources>
