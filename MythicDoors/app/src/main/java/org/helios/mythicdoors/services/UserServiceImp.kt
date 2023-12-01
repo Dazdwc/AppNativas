@@ -7,7 +7,7 @@ import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.model.repositories.IRepository
 import org.helios.mythicdoors.model.repositories.UserRepositoryImp
 import org.helios.mythicdoors.services.interfaces.IUserService
-import org.helios.mythicdoors.utils.Connection
+import org.helios.mythicdoors.utils.connection.Connection
 
 class UserServiceImp(dbHelper: Connection): IUserService {
     private val repository: IRepository<User>

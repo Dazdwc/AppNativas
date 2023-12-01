@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mythic Doors</string>
+    <string name="play_button">JUGAR</string>
+    <string name="game_won">Has guanyat!</string>
+    <string name="game_lost">Has perdut!</string>
+    <string name="current_coins">Monedes Actuals</string>
+    <string name="current_level">Nivell Actual</string>
+    <string name="continue_opt">Continuar</string>
+    <string name="exit_opt">Soritr</string>
+    <string name="not_coins">No tens suficient monedes per poder continuar!</string>
+    <string name="current_player_level">Nivell Actual:</string>
+    <string name="playing_main_helper">Fes una Aposta i escull una Porta</string>
+    <string name="player_coins">Monedes Actuals</string>
+    <string name="bet">Aposta</string>
+    <string name="bet_message">Has apostat %1$s monedes a la porta %2$s</string>
+    <string name="bet_validator">No pots apostar més monedes de les que disposes</string>
+    <string name="game_opts">Opcions</string>
+    <string name="single_player">Un jugador</string>
+    <string name="multi_player">Multijugador</string>
+    <string name="ladder">Millors Puntuacions</string>
+    <string name="logout">Logout</string>
+    <string name="login">Login</string>
+    <string name="email">Correu</string>
+    <string name="email_helper">La teva direcicó de correu</string>
+    <string name="email_validator">Sisplau, introdueix una direcció de correu vàlida</string>
+    <string name="password">Contrasenya</string>
+    <string name="password_requirements">
+        <![CDATA[
+        Sisplau, introdueix una contrassenya vàlida:
+        |Almenys 6 caracters
+        |Almenys una xifra
+        |Almenys una lletra majúscula
+        |Almenys un caràcter especial
+        ]]>
+    </string>
+    <string name="new_user">Nou usuari</string>
+    <string name="cancel">Cancelar</string>
+    <string name="register_new">Registrar Nou Jugador</string>
+    <string name="pl_name">Nom</string>
+    <string name="name_helper">Un nom pel nou jugador</string>
+    <string name="password_helper">Introdueix una contrasenya</string>
+    <string name="password_retype">Torna a introduir la contrasenya</string>
+    <string name="password_retype_validator">Les contrasenyes son diferents!</string>
+    <string name="register">Registrar</string>
+    <string name="back">Enrere</string>
+    <string name="single_player_stats">Estadístiques del Jugador</string>
+    <string name="ladder_hd_player">Jugador</string>
+    <string name="ladder_hd_level">Nivell</string>
+    <string name="ladder_hd_score">Puntuació</string>
+    <string name="loading_indicator_msg">Carregant…</string>
+    <string name="main_btn">Inici</string>
+    <string name="exit_btn">Sortir</string>
+    <string name="permission_dlg_required">Permís necessari</string>
+    <string name="settings_btn">Opcions</string>
+    <string name="ok_btn">Ok</string>
+    <string name="locale_default_language_key">en</string>
+    <string name="locale_default_language_code">en</string>
+    <string name="locale_default_language_name">English</string>
+    <string name="locale_default_language_flag">us</string>
+    <string name="guide">Guia del Joc</string>
+    <string name="win_notification_title">Mythic Doors</string>
+    <string name="win_notification_content">Has guanyat un joc!</string>
+    <string name="calendar_notification_title">Mythic Doors Event de Calendari</string>
+    <string name="screenshot_notification_title">Mythic Doors Captura de Pantalla</string>
+    <string name="screenshot_notification_content">Mythic Doors a fet una captura de pantalla de la teva victòria
+    </string>
+    <string name="location_notification_title">Localización en seguimiento...</string>
+    <string name="location_notification_content">El servei de localització está en funcionament</string>
+    <string name="calendar_notification_content">Un event de victòria s\'ha creat al calendari</string>
+    <string name="language_manager_title">Escull un idioma</string>
+    <string name="close_button">Tancar</string>
+    <string name="door_validator">Has d\'escollir una porta!</string>
+    <string name="open_door">Obre</string>
+    <string name="screenshot_dialog_title">Victory Screenshot</string>
+    <string name="screenshot_dialog_text">Vols pendre una captura de pantalla de la teva Victòria?</string>
+    <string name="screenshot_dialog_confirm">Prendre</string>
+    <string name="screenshot_dialog_cancel">Cancelar</string>
+    <string name="language_icon_title">lan</string>
+</resources>

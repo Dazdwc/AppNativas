@@ -7,8 +7,8 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.model.entities.User
-import org.helios.mythicdoors.utils.Connection
-import org.helios.mythicdoors.utils.Contracts
+import org.helios.mythicdoors.utils.connection.Connection
+import org.helios.mythicdoors.utils.connection.Contracts
 import java.time.LocalDate
 
 /* Autoclasable permite que la conexión a la base de datos se cierre automáticamente sin tener que manejarlo manualmente y nos ahorra código además de que es más seguro

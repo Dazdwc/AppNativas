@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mythic Doors</string>
+    <string name="play_button">JUGAR</string>
+    <string name="game_won">¡Has ganado!</string>
+    <string name="game_lost">¡Has perdido!</string>
+    <string name="current_coins">Monedas Actuales</string>
+    <string name="current_level">Nivel Actual</string>
+    <string name="continue_opt">Continuar</string>
+    <string name="exit_opt">Salir</string>
+    <string name="not_coins">¡No tienes suficientes monedas para continuar!</string>
+    <string name="current_player_level">Nivel Actual:</string>
+    <string name="playing_main_helper">Haz una Apuesta y escoge una Puerta</string>
+    <string name="player_coins">Monedas Actuales</string>
+    <string name="bet">Apuesta</string>
+    <string name="bet_message">Has apostado %1$s monedas en la puerta %2$s</string>
+    <string name="bet_validator">No puedes apostar más monedas de las que dispones</string>
+    <string name="game_opts">Opciones</string>
+    <string name="single_player">Un Jugador</string>
+    <string name="multi_player">Multijugador</string>
+    <string name="ladder">Mejores Puntuaciones</string>
+    <string name="logout">Logout</string>
+    <string name="login">Login</string>
+    <string name="email">Correo</string>
+    <string name="email_helper">Tu dirección de correo</string>
+    <string name="email_validator">Por favor, introduce una dirección de correo válida</string>
+    <string name="password">Contraseña</string>
+    <string name="password_requirements">
+        <![CDATA[
+        Por favor, introduce una contraseña válida
+        |Al menos 6 caracteres
+        |Al menos un número
+        |Al menos una letra mayúscula
+        |Al menos un carácter especial
+        ]]>
+    </string>
+    <string name="new_user">Nuevo Usuario</string>
+    <string name="cancel">Cancelar</string>
+    <string name="register_new">Registrar Nuevo Jugador</string>
+    <string name="pl_name">Nombre</string>
+    <string name="name_helper">Un nombre para el nuevo jugador</string>
+    <string name="password_helper">Introduce una contraseñá</string>
+    <string name="password_retype">Reintroduce tu contraseña</string>
+    <string name="password_retype_validator">¡Las contraseñas no coinciden!</string>
+    <string name="register">Registrar</string>
+    <string name="back">Atrás</string>
+    <string name="single_player_stats">Estadísticas del Jugador</string>
+    <string name="ladder_hd_player">Jugador</string>
+    <string name="ladder_hd_level">Nivel</string>
+    <string name="ladder_hd_score">Puntuación</string>
+    <string name="loading_indicator_msg">Cargando…</string>
+    <string name="main_btn">Inicio</string>
+    <string name="exit_btn">Salir</string>
+    <string name="permission_dlg_required">Permiso necesario</string>
+    <string name="settings_btn">Opciones</string>
+    <string name="ok_btn">Ok</string>
+    <string name="locale_default_language_key">en</string>
+    <string name="locale_default_language_code">en</string>
+    <string name="locale_default_language_name">English</string>
+    <string name="locale_default_language_flag">us</string>
+    <string name="guide">Guía de Juego</string>
+    <string name="win_notification_title">Mythic Doors</string>
+    <string name="win_notification_content">¡Has ganado un juego!</string>
+    <string name="calendar_notification_title">Mythic Doors Evento de Calendario</string>
+    <string name="screenshot_notification_title">Mythic Doors Captura de Pantalla</string>
+    <string name="screenshot_notification_content">Mythic Doors ha tomado una captura de pantalla de tu victoria</string>
+    <string name="location_notification_title">Localización en seguimiento...</string>
+    <string name="location_notification_content">El servicio de localización se encuentra en funcionamiento</string>
+    <string name="calendar_notification_content">Un evento de vistoria se ha creado en el calendario</string>
+    <string name="language_manager_title">Escoge un idioma</string>
+    <string name="close_button">Cerrar</string>
+    <string name="door_validator">¡Tienes que escoger una puerta!</string>
+    <string name="open_door">Abre</string>
+    <string name="screenshot_dialog_title">Victory Screenshot</string>
+    <string name="screenshot_dialog_text">¿Quieres tomar una captura de pantalla de tu Victoria?</string>
+    <string name="screenshot_dialog_confirm">Tomar</string>
+    <string name="screenshot_dialog_cancel">Cancelar</string>
+    <string name="language_icon_title">lan</string>
+</resources>
