@@ -7,17 +7,14 @@
 <!--    Notifications services -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
-        <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 <!--    Internet connection -->
     <uses-permission android:name="android.permission.INTERNET"/>
 <!--    External data reading and writing -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-<!--    <uses-permission android:name="android.permission.WRITE_MEDIA_IMAGES"/>-->
-<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"-->
-<!--                     android:maxSdkVersion="29"/>-->
-<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"-->
-<!--                     android:maxSdkVersion="28"/>-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+                     android:maxSdkVersion="28"/>
 <!--    Camera -->
 <!--    <uses-feature android:name="android.hardware.camera" android:required="false"/>-->
 <!--    <uses-permission android:name="android.permission.CAMERA"/>-->
@@ -42,14 +39,6 @@
             tools:targetApi="33">
         <service android:name=".services.location.LocationService" android:foregroundServiceType="location" />
 
-        <!--&lt;!&ndash;<receiver
-            android:name=".services.location.LocationServiceReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="org.helios.mythicdoors.services.location.ACTION_LOCATION_UPDATE" />
-            </intent-filter>
-        </receiver>-->
-
         <receiver
             android:name=".services.location.LocationServiceReceiver"
             android:exported="false">
@@ -57,6 +46,15 @@
                 <action android:name="org.helios.mythicdoors.services.location.ACTION_LOCATION_UPDATE" />
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                       android:resource="@xml/file_paths"/>
+        </provider>
 
         <activity
                 android:name=".MainActivity"

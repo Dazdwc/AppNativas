@@ -1,18 +1,25 @@
 package org.helios.mythicdoors.viewmodel.gamelogic
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.google.android.gms.tasks.Tasks.await
+import kotlinx.coroutines.*
 import org.helios.mythicdoors.MainActivity
+import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.Door
 import org.helios.mythicdoors.model.entities.Enemy
@@ -22,8 +29,13 @@ import org.helios.mythicdoors.services.location.ILocationCallback
 import org.helios.mythicdoors.services.location.LocationService
 import org.helios.mythicdoors.services.location.LocationServiceReceiver
 import org.helios.mythicdoors.store.StoreManager
+import org.helios.mythicdoors.utils.AppConstants
+import org.helios.mythicdoors.utils.calendar.CalendarService
+import org.helios.mythicdoors.utils.extenssions.hasPostNotificationPermission
+import org.helios.mythicdoors.utils.notifications.NotificationFabric
 import kotlin.properties.Delegates
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class GameLogicViewModel(private val dataController: DataController): ViewModel() {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val storeManager: StoreManager by lazy { StoreManager.getInstance() }
@@ -39,14 +51,21 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
     private val locationService: LocationService
         get() = LocationService.instance
     private val locationServiceObserver: Observer<Map<String, Double>> = Observer { location ->
-        Log.e("GameLogicViewModel", "locationServiceObserver: $location")
-        handleLocationUpdate(location)
+        scope.launch { handleLocationUpdate(location) }
     }
 
     private val callback: ILocationCallback = object : ILocationCallback {
         override fun onLocationUpdate(location: Map<String, Double>) {
             Log.e("GameLogicViewModel", "onLocationUpdate: $location")
-            LocationService.instance.updateLocation()
+
+            scope.launch {
+                LocationService.instance.updateLocation()
+                dataController.getLastLocation()?.let { actLocation ->
+                    Log.e("GameLogicViewModel", "onLocationUpdate: $actLocation")
+                    insertEventOnCalendar(actLocation)
+                }
+                stopLocationService()
+            }
         }
     }
 
@@ -207,12 +226,12 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
     }
 
     private fun startLocationService() {
-        val context = storeManager.getContext()
+        val context = MainActivity.getContext()
 
         try {
             Intent(context, LocationService::class.java).apply {
                 action = LocationService.ACTION_START
-                context?.startService(this)
+                context.startService(this)
             }
 
             LocationService.instance.locationCallback = callback
@@ -222,14 +241,19 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
     }
 
     private fun handleLocationUpdate(location: Map<String, Double>) {
+        Log.e("GameLogicViewModel", "handleLocationUpdate: $location")
         try {
-            viewModelScope.launch {
-                Location.create(
-                    player,
-                    location["latitude"] ?: 0.0,
-                    location["longitude"] ?: 0.0
-                ).also { dataController.saveLocation(it) }
-            }
+                scope.launch {
+                    val currentLocation = Location.create(
+                        player,
+                        location["latitude"] ?: 0.0,
+                        location["longitude"] ?: 0.0
+                    )
+                    currentLocation.apply {
+                        stopLocationService()
+                    }
+                }
+
         } catch (e: Exception) {
             Log.e("GameLogicViewModel", "handleLocationUpdate: ${e.message}")
         }
@@ -241,6 +265,26 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
         Intent(context, LocationService::class.java).apply {
             action = LocationService.ACTION_STOP
             context?.startService(this)
+        }
+    }
+
+    private fun insertEventOnCalendar(location: Location) {
+        val context = MainActivity.getContext()
+        val calendarService = CalendarService(context, location)
+
+        viewModelScope.launch {
+            calendarService.insertEvent().let {
+                if (it) {
+                    try {
+                        NotificationFabric.create(AppConstants.NotificationChannels.CALENDAR_NOTIFICATION_CHANNEL)
+                            .also { notification ->
+                                NotificationFabric.send(notification)
+                            }
+                    } catch (e: Exception) {
+                        Log.e("GameLogicViewModel", "Notification sender: $e")
+                    }
+                }
+            }
         }
     }
 }

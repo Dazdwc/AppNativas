@@ -1,6 +1,8 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +27,7 @@ import org.helios.mythicdoors.utils.AppConstants.GameMode
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.GAME_OPTS_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.GameOptsScreenViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun GameOptsScreen(navController: NavController) {
     val controller: GameOptsScreenViewModel = (MainActivity.viewModelsMap[GAME_OPTS_SCREEN_VIEWMODEL] as GameOptsScreenViewModel).apply { setNavController(navController) }
@@ -191,13 +194,39 @@ fun GameOptsScreen(navController: NavController) {
                         }
                     }
                 }
+                Row {
+                    Column(modifier = Modifier
+                        .padding(
+                            top = ScreenConstants.AVERAGE_PADDING.dp,
+                            bottom = ScreenConstants.DOUBLE_PADDING.dp,
+                            end = ScreenConstants.AVERAGE_PADDING.dp
+                        )
+                        .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(painterResource(id = R.drawable.clapwub),
+                            contentDescription = "Game Guide image",
+                            Modifier.size(200.dp, 200.dp))
+                        Button(onClick = { controller.navigateToGameGuideWebView(scope, snackbarHostState) },
+                            modifier = Modifier
+                                .padding(
+                                    top = ScreenConstants.DOUBLE_PADDING.dp,
+                                    bottom = ScreenConstants.DOUBLE_PADDING.dp
+                                )
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally),
+                            elevation = ButtonDefaults.buttonElevation(2.dp),
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.guide).uppercase(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                    }
+                }
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GameOptsScreenPreview() {
-    GameActionScreen(navController = NavController(LocalContext.current))
 }

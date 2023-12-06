@@ -58,4 +58,23 @@
     <string name="locale_default_language_code">en</string>
     <string name="locale_default_language_name">English</string>
     <string name="locale_default_language_flag">us</string>
+    <string name="guide">Guia del Joc</string>
+    <string name="win_notification_title">Mythic Doors</string>
+    <string name="win_notification_content">Has guanyat un joc!</string>
+    <string name="calendar_notification_title">Mythic Doors Event de Calendari</string>
+    <string name="screenshot_notification_title">Mythic Doors Captura de Pantalla</string>
+    <string name="screenshot_notification_content">Mythic Doors a fet una captura de pantalla de la teva victòria
+    </string>
+    <string name="location_notification_title">Localización en seguimiento...</string>
+    <string name="location_notification_content">El servei de localització está en funcionament</string>
+    <string name="calendar_notification_content">Un event de victòria s\'ha creat al calendari</string>
+    <string name="language_manager_title">Escull un idioma</string>
+    <string name="close_button">Tancar</string>
+    <string name="door_validator">Has d\'escollir una porta!</string>
+    <string name="open_door">Obre</string>
+    <string name="screenshot_dialog_title">Victory Screenshot</string>
+    <string name="screenshot_dialog_text">Vols pendre una captura de pantalla de la teva Victòria?</string>
+    <string name="screenshot_dialog_confirm">Prendre</string>
+    <string name="screenshot_dialog_cancel">Cancelar</string>
+    <string name="language_icon_title">lan</string>
 </resources>

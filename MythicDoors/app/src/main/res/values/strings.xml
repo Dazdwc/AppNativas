@@ -57,4 +57,22 @@
     <string name="locale_default_language_code">en</string>
     <string name="locale_default_language_name">English</string>
     <string name="locale_default_language_flag">us</string>
+    <string name="guide">Game Guide</string>
+    <string name="win_notification_title">Mythic Doors</string>
+    <string name="win_notification_content">You has won a game!</string>
+    <string name="calendar_notification_title">Mythic Doors Calendar Event</string>
+    <string name="calendar_notification_content">A win event has been created in your calendar</string>
+    <string name="screenshot_notification_title">Mythic Doors Screenshots</string>
+    <string name="screenshot_notification_content">Mythic Doors has taken a screenshot of your victory</string>
+    <string name="location_notification_title">Tracking your location...</string>
+    <string name="location_notification_content">Location service is running</string>
+    <string name="language_manager_title">Select a language</string>
+    <string name="close_button">Close</string>
+    <string name="door_validator">You must select a door!</string>
+    <string name="open_door">Open Door</string>
+    <string name="screenshot_dialog_title">Victory Screenshot</string>
+    <string name="screenshot_dialog_text">Do you want to take a Screenshot of your Victory?</string>
+    <string name="screenshot_dialog_confirm">Take</string>
+    <string name="screenshot_dialog_cancel">Cancel</string>
+    <string name="language_icon_title">lan</string>
 </resources>

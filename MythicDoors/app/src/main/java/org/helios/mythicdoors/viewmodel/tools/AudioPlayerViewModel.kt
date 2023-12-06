@@ -137,8 +137,6 @@ class GameMediaPlayer(
 
         fun resetMediaPlayer() {
             instance?.reset()
-            instance?.release()
-            instance = null
         }
     }
 

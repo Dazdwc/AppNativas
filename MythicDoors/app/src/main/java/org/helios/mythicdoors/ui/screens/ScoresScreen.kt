@@ -1,5 +1,7 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -41,6 +43,7 @@ import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 /*
 * Habilitamos la API ExperimentalFoundationApi para poder usar el encabezado fijo de LazyColumn
 */
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScoresScreen(navController: NavController) {
@@ -263,10 +266,4 @@ private fun LoadingIndicator(controller: ScoresScreenViewModel) {
                 .wrapContentSize()
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ScoresScreenPreview() {
-    ScoresScreen(navController = NavController(LocalContext.current))
 }

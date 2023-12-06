@@ -1,6 +1,8 @@
 package org.helios.mythicdoors.viewmodel
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
@@ -12,6 +14,7 @@ import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
 import kotlin.system.exitProcess
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class MenuViewModel(
     private val dataController: DataController
 ): ViewModel() {

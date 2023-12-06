@@ -2,10 +2,12 @@ package org.helios.mythicdoors.utils.extenssions
 
 import android.Manifest
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import org.helios.mythicdoors.MainActivity
 
 fun Context.hasLocationPermission(): Boolean {
     return ContextCompat.checkSelfPermission(
@@ -29,15 +31,19 @@ fun Context.hasForegroundPermission(): Boolean {
 fun Context.hasCalendarPermission(): Boolean {
     return ContextCompat.checkSelfPermission(
         this,
-        Manifest.permission.READ_CALENDAR
-    ) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_CALENDAR
-            ) == PackageManager.PERMISSION_GRANTED
+        Manifest.permission.WRITE_CALENDAR
+    ) == PackageManager.PERMISSION_GRANTED
 }
 
-// TODO: Check if this is the correct permission
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+fun Context.hasPostNotificationPermission(): Boolean {
+    return ContextCompat.checkSelfPermission(
+        this,
+        Manifest.permission.POST_NOTIFICATIONS
+    ) == PackageManager.PERMISSION_GRANTED
+}
+
+// TODO: Check if this is a necessary permission
 fun Context.hasStoragePermission(): Boolean {
     return ContextCompat.checkSelfPermission(
         this,

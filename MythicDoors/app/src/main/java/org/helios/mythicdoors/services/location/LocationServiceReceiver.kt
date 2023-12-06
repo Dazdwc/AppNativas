@@ -30,13 +30,6 @@ class LocationServiceReceiver : BroadcastReceiver() {
                     lastLocation?.let {
                         Log.e("GameLogicViewModel", "onReceive: $lastLocation")
                         scope.launch {
-                            dataController.saveLocation(
-                                Location.create(
-                                    player,
-                                    lastLocation["latitude"]!!,
-                                    lastLocation["longitude"]!!
-                                )
-                            )
                         }
                     }
 
