@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -22,11 +25,14 @@ import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.User
+import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
+import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.ACTION_RESULT_SCREEN_VIEWMODEL
+import org.helios.mythicdoors.utils.lenguage
 import org.helios.mythicdoors.viewmodel.ActionResultScreenViewModel
 import org.helios.mythicdoors.viewmodel.GameResults
 import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
@@ -54,6 +60,20 @@ fun ActionResultScreen(navController: NavController) {
 
     controller.initialLoad()
     soundManager.playSound(R.raw.werewolf)
+    var currentLanguage by remember { mutableStateOf("en") }
+    val storeManager = StoreManager.getInstance()
+
+    DisposableEffect(Unit) {
+        val observer: LanguageChangeListener = object : LanguageChangeListener {
+            override fun onLanguageChanged(newLanguage: String) {
+                currentLanguage = newLanguage
+            }
+        }
+        storeManager.addObserver(observer)
+        onDispose {
+            storeManager.removeObserver(observer)
+        }
+    }
 
     Surface(
         modifier = Modifier
@@ -93,7 +113,7 @@ fun ActionResultScreen(navController: NavController) {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "You won!".uppercase(),
+                                    text = lenguage["win_$currentLanguage"]?:"You won!".uppercase(),
                                     style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.onBackground,
                                     modifier = Modifier
@@ -111,7 +131,7 @@ fun ActionResultScreen(navController: NavController) {
                                     .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(text = "You lost!".uppercase(),
+                                Text(text = lenguage["lose_$currentLanguage"]?:"You lost!".uppercase(),
                                     style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.onBackground,
                                     modifier = Modifier
@@ -149,7 +169,7 @@ fun ActionResultScreen(navController: NavController) {
                             .weight(1f),
                             value = playerCurrentStats.getCoins().coerceAtLeast(0).toString(),
                             onValueChange = { playerCurrentStats.getCoins().toString() },
-                            label = { Text(text = "Current Coins") },
+                            label = { Text(text = lenguage["currentcoins_$currentLanguage"]?:"Current Coins") },
                             readOnly = true,
                         )
                     }
@@ -167,7 +187,7 @@ fun ActionResultScreen(navController: NavController) {
                             .weight(1f),
                             value = playerCurrentStats.getLevel().toString(),
                             onValueChange = {playerCurrentStats.getLevel().toString() },
-                            label = { Text(text = "Current Level") },
+                            label = { Text(text = lenguage["currentlvl_$currentLanguage"]?:"Current Level") },
                             readOnly = true,
                         )
                     }
@@ -182,7 +202,7 @@ fun ActionResultScreen(navController: NavController) {
                                 .weight(1f)
                                 .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                         ) {
-                            Text(text = "CONTINUE",
+                            Text(text = lenguage["continue_$currentLanguage"]?:"CONTINUE",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -193,7 +213,7 @@ fun ActionResultScreen(navController: NavController) {
                                 .weight(1f)
                                 .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
                         ) {
-                            Text(text = "EXIT",
+                            Text(text = lenguage["exit_$currentLanguage"]?:"EXIT",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -201,7 +221,7 @@ fun ActionResultScreen(navController: NavController) {
                     }
                     Spacer(modifier = Modifier.padding(top = ScreenConstants.AVERAGE_PADDING.dp))
                     isEnoughCoins.takeIf { !it }?.let {
-                        Text(text = "You don't have enough coins to bet",
+                        Text(text = lenguage["nocoins_$currentLanguage"]?:"You don't have enough coins to bet",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.error,
                         )

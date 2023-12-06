@@ -3,7 +3,32 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="org.helios.mythicdoors">
 
+<!--    PERMISSIONS: UNCOMMENT THE ONES NEEDED IN FUTURE IMPLEMENTATIONS -->
+<!--    Notifications services -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+<!--    Internet connection -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+<!--    External data reading and writing -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+<!--    <uses-permission android:name="android.permission.WRITE_MEDIA_IMAGES"/>-->
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"-->
+<!--                     android:maxSdkVersion="29"/>-->
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"-->
+<!--                     android:maxSdkVersion="28"/>-->
+<!--    Camera -->
+<!--    <uses-feature android:name="android.hardware.camera" android:required="false"/>-->
+<!--    <uses-permission android:name="android.permission.CAMERA"/>-->
+<!--    Location -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<!--    Calendar -->
+<!--    <uses-permission android:name="android.permission.READ_CALENDAR"/>-->
+    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+
     <application
+            android:name=".App"
             android:allowBackup="true"
             android:dataExtractionRules="@xml/data_extraction_rules"
             android:fullBackupContent="@xml/backup_rules"
@@ -12,7 +37,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.MythicDoors"
-            tools:targetApi="31">
+            android:enableOnBackInvokedCallback="true"
+            tools:targetApi="33">
+        <service android:name=".services.location.LocationService" android:foregroundServiceType="location" />
         <activity
                 android:name=".MainActivity"
                 android:exported="true"

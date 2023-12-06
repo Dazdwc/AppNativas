@@ -1,8 +1,5 @@
 package org.helios.mythicdoors.utils
 
-import org.helios.mythicdoors.R
-import org.helios.mythicdoors.navigation.AppDestination
-
 object AppConstants {
     const val APP_NAME = "Mythic Doors"
     const val DATABASE_NAME = "mythic_doors_db"
@@ -19,6 +16,13 @@ object AppConstants {
     const val ENEY_WOLFIE = "Wolfie"
 
     const val INITIAL_COINS_AMOUNT = 200
+
+    object NotificationChannels {
+        const val LOCATION_NOTIFICATION_CHANNEL = "location"
+        const val CALENDAR_NOTIFICATION_CHANNEL = "calendar"
+        const val IMAGES_NOTIFICATION_CHANNEL = "images"
+    }
+
 
     object Screens {
         const val OVERVIEW_SCREEN = "overview_screen"

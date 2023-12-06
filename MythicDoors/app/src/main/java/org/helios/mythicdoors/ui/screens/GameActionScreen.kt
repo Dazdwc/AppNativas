@@ -23,6 +23,8 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
+import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants
@@ -31,6 +33,7 @@ import org.helios.mythicdoors.utils.AppConstants.EASY_DOOR
 import org.helios.mythicdoors.utils.AppConstants.HARD_DOOR
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.GAME_ACTION_SCREEN_VIEWMODEL
+import org.helios.mythicdoors.utils.lenguage
 import org.helios.mythicdoors.viewmodel.GameActionScreenViewModel
 import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
@@ -66,6 +69,20 @@ fun GameActionScreen(navController: NavController) {
 
     controller.initialLoad()
     soundManager.playSound(R.raw.wolf)
+    var currentLanguage by remember { mutableStateOf("en") }
+    val storeManager = StoreManager.getInstance()
+
+    DisposableEffect(Unit) {
+        val observer: LanguageChangeListener = object : LanguageChangeListener {
+            override fun onLanguageChanged(newLanguage: String) {
+                currentLanguage = newLanguage
+            }
+        }
+        storeManager.addObserver(observer)
+        onDispose {
+            storeManager.removeObserver(observer)
+        }
+    }
 
     Surface(
         modifier = Modifier
@@ -99,7 +116,7 @@ fun GameActionScreen(navController: NavController) {
                       contentAlignment = Alignment.Center
                   ) {
                       Text(
-                          text = "Current Player Level: ${controller.getPlayerLevel()}",
+                          text = lenguage["currentlevelplayer_$currentLanguage"]+" ${controller.getPlayerLevel()}",
                           style = MaterialTheme.typography.titleSmall,
                           color = MaterialTheme.colorScheme.onBackground,
                           modifier = Modifier.padding(ScreenConstants.AVERAGE_PADDING.dp),
@@ -162,7 +179,7 @@ fun GameActionScreen(navController: NavController) {
                               )
                       )
                   }
-                  Text(text = "Make a Bet And Choose a Door",
+                  Text(text = lenguage["selectbet_$currentLanguage"]?:"Make a Bet And Choose a Door",
                       style = MaterialTheme.typography.titleSmall,
                       color = MaterialTheme.colorScheme.onBackground,
                       modifier = Modifier
@@ -192,7 +209,7 @@ fun GameActionScreen(navController: NavController) {
                               .weight(1f),
                               value = controller.getPlayerCoins().toString(),
                               onValueChange = { controller.getPlayerCoins() },
-                              label = { Text(text = "Player Coins") },
+                              label = { Text(text = lenguage["coinsplayer_$currentLanguage"]?:"Player Coins") },
                               readOnly = true,
                           )
                       }
@@ -213,7 +230,7 @@ fun GameActionScreen(navController: NavController) {
                                   playerBet = it
                                   isBetValid = controller.validateBet(it)
                               },
-                              label = { Text(text = "Bet") },
+                              label = { Text(lenguage["bet_$currentLanguage"]?:"Bet") },
                               isError = !isBetValid,
                               keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                           )
@@ -222,26 +239,26 @@ fun GameActionScreen(navController: NavController) {
                             soundManager.stopPlayingSounds().also { soundManager.playSound(R.raw.door_open) }
                             controller.updateValuesOnPlayerAction(playerBet, selectedDoorId)
                             scope.launch {
-                               snackbarHostState.showSnackbar("You have bet $playerBet coins on the $selectedDoorId door")
+                               snackbarHostState.showSnackbar(lenguage["youhave_$currentLanguage"] + playerBet+ lenguage["coinson_$currentLanguage"] +selectedDoorId+ lenguage["door_$currentLanguage"])
                            }
                       },
                           enabled = isBetValid && isDoorSelected,
                           elevation = ButtonDefaults.buttonElevation(2.dp),
                       ) {
-                          Text(text = "OPEN DOOR",
+                          Text(text = lenguage["opendoor_$currentLanguage"]?:"OPEN DOOR",
                               style = MaterialTheme.typography.labelMedium,
                               color = MaterialTheme.colorScheme.onBackground,
                           )
                       }
                       Spacer(modifier = Modifier.padding(top = ScreenConstants.AVERAGE_PADDING.dp))
                       isBetValid.takeIf { !it }?.let {
-                            Text(text = "You can only bet up to your current coins",
+                            Text(text = lenguage["incorrectbet_$currentLanguage"]?:"You can only bet up to your current coins",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error,
                             )
                       }
                       isDoorSelected.takeIf { !it }?.let {
-                          Text(text = "You must select a door",
+                          Text(text = lenguage["nodoorselect_$currentLanguage"]?:"You must select a door",
                               style = MaterialTheme.typography.labelSmall,
                               color = MaterialTheme.colorScheme.error,
                           )

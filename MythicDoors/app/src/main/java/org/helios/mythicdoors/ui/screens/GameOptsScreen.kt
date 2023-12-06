@@ -17,11 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
+import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.GameMode
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.GAME_OPTS_SCREEN_VIEWMODEL
+import org.helios.mythicdoors.utils.lenguage
 import org.helios.mythicdoors.viewmodel.GameOptsScreenViewModel
 
 @Composable
@@ -36,6 +39,20 @@ fun GameOptsScreen(navController: NavController) {
         if (isGameStarted) {
             snackbarHostState.currentSnackbarData?.dismiss().run { controller.navigateToGameActionScreen(scope, snackbarHostState) }
             controller.resetIsGameStarted()
+        }
+    }
+    var currentLanguage by remember { mutableStateOf("en") }
+    val storeManager = StoreManager.getInstance()
+
+    DisposableEffect(Unit) {
+        val observer: LanguageChangeListener = object : LanguageChangeListener {
+            override fun onLanguageChanged(newLanguage: String) {
+                currentLanguage = newLanguage
+            }
+        }
+        storeManager.addObserver(observer)
+        onDispose {
+            storeManager.removeObserver(observer)
         }
     }
 
@@ -54,7 +71,7 @@ fun GameOptsScreen(navController: NavController) {
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.CenterHorizontally),
             )
-            Text(text = "Game Options",
+            Text(text = lenguage["gameoptions_$currentLanguage"]?:"Game Options",
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
@@ -90,7 +107,7 @@ fun GameOptsScreen(navController: NavController) {
                                 .wrapContentWidth(Alignment.CenterHorizontally),
                             elevation = ButtonDefaults.buttonElevation(2.dp),
                         ) {
-                            Text(text = "SINGLE PLAYER",
+                            Text(text = lenguage["singleplayer_$currentLanguage"]?:"SINGLE PLAYER",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -120,7 +137,7 @@ fun GameOptsScreen(navController: NavController) {
                             enabled = false,
                             onClick = { controller.startGame(GameMode.MULTI_PLAYER.toString()) },
                         ) {
-                            Text(text = "MULTIPLAYER",
+                            Text(text = lenguage["multiplayer_$currentLanguage"]?:"MULTIPLAYER",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -151,7 +168,7 @@ fun GameOptsScreen(navController: NavController) {
                                 .wrapContentWidth(Alignment.CenterHorizontally),
                             elevation = ButtonDefaults.buttonElevation(2.dp),
                         ) {
-                            Text(text = "SCORES LADDER",
+                            Text(text = lenguage["score_$currentLanguage"]?:"SCORES LADDER",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -180,7 +197,7 @@ fun GameOptsScreen(navController: NavController) {
                             elevation = ButtonDefaults.buttonElevation(2.dp),
                             onClick = { controller.logout(scope, snackbarHostState) },
                         ) {
-                            Text(text = "LOGOUT",
+                            Text(text = lenguage["logout_$currentLanguage"]?:"LOGOUT",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )

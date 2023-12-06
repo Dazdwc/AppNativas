@@ -29,11 +29,14 @@ import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.Game
+import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
+import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.SCORES_SCREEN_VIEWMODEL
+import org.helios.mythicdoors.utils.lenguage
 import org.helios.mythicdoors.viewmodel.ScoresScreenViewModel
 import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 
@@ -67,6 +70,21 @@ fun ScoresScreen(navController: NavController) {
     }
 
     soundManager.playSound(R.raw.scores_screen_sound)
+    var currentLanguage by remember { mutableStateOf("en") }
+    val storeManager = StoreManager.getInstance()
+
+    DisposableEffect(Unit) {
+        val observer: LanguageChangeListener = object : LanguageChangeListener {
+            override fun onLanguageChanged(newLanguage: String) {
+                currentLanguage = newLanguage
+            }
+        }
+        storeManager.addObserver(observer)
+        onDispose {
+            storeManager.removeObserver(observer)
+        }
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -98,7 +116,7 @@ fun ScoresScreen(navController: NavController) {
                         .wrapContentWidth(Alignment.CenterHorizontally),
                 )
                 Text(
-                    text = "Scores Ladder",
+                    text = lenguage["scoresLadder_$currentLanguage"]?:"Scores Ladder",
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
@@ -113,7 +131,7 @@ fun ScoresScreen(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = "Single Player Stats",
+                        text = lenguage["singleslayerstats_$currentLanguage"]?:"Single Player Stats",
                         style = TextStyle(
                             fontFamily = FontFamily.Default,
                             fontWeight = FontWeight.Normal,
@@ -165,7 +183,7 @@ fun ScoresScreen(navController: NavController) {
                         modifier = Modifier
                             .width(ScreenConstants.BUTTON_WIDTH.dp)
                     ) {
-                        Text(text = "CONTINUE",
+                        Text(text = lenguage["continue_$currentLanguage"]?:"CONTINUE",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -178,6 +196,20 @@ fun ScoresScreen(navController: NavController) {
 
 @Composable
 fun Header() {
+    var currentLanguage by remember { mutableStateOf("en") }
+    val storeManager = StoreManager.getInstance()
+
+    DisposableEffect(Unit) {
+        val observer: LanguageChangeListener = object : LanguageChangeListener {
+            override fun onLanguageChanged(newLanguage: String) {
+                currentLanguage = newLanguage
+            }
+        }
+        storeManager.addObserver(observer)
+        onDispose {
+            storeManager.removeObserver(observer)
+        }
+    }
     Row(modifier = Modifier
         .fillMaxWidth()
         .background(MaterialTheme.colorScheme.primary)
@@ -186,21 +218,21 @@ fun Header() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "Player",
+        Text(text = lenguage["player_$currentLanguage"]?:"Player",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .weight(1f)
                 .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
         )
-        Text(text = "Level",
+        Text(text = lenguage["level_$currentLanguage"]?:"Level",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .weight(1f)
                 .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
         )
-        Text(text = "Score",
+        Text(text = lenguage["score_$currentLanguage"]?:"Score",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
@@ -212,6 +244,9 @@ fun Header() {
 
 @Composable
 fun ItemRow(item: Game?){
+
+
+
     Row(modifier = Modifier
         .fillMaxWidth()
         .background(MaterialTheme.colorScheme.primary)
@@ -246,6 +281,22 @@ fun ItemRow(item: Game?){
 
 @Composable
 private fun LoadingIndicator(controller: ScoresScreenViewModel) {
+
+    var currentLanguage by remember { mutableStateOf("en") }
+    val storeManager = StoreManager.getInstance()
+
+    DisposableEffect(Unit) {
+        val observer: LanguageChangeListener = object : LanguageChangeListener {
+            override fun onLanguageChanged(newLanguage: String) {
+                currentLanguage = newLanguage
+            }
+        }
+        storeManager.addObserver(observer)
+        onDispose {
+            storeManager.removeObserver(observer)
+        }
+    }
+
     val isLoading by controller.loading.observeAsState(false)
 
     if (isLoading) {
@@ -255,7 +306,7 @@ private fun LoadingIndicator(controller: ScoresScreenViewModel) {
                 .padding(ScreenConstants.AVERAGE_PADDING.dp),
             color = MaterialTheme.colorScheme.secondary,
         )
-        Text(text = "Loading...",
+        Text(text = lenguage["loading_$currentLanguage"]?:"Loading...",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier

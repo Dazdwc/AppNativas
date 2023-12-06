@@ -21,10 +21,13 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
+import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.LOGIN_SCREEN_VIEWMODEL
+import org.helios.mythicdoors.utils.lenguage
 import org.helios.mythicdoors.viewmodel.LoginScreenViewModel
 
 @Composable
@@ -50,6 +53,20 @@ fun LoginScreen(navController: NavController) {
         if (loginSuccessful) {
             snackbarHostState.currentSnackbarData?.dismiss().run { controller.navigateToGameOptsScreen(scope, snackbarHostState) }
             controller.resetLoginSuccessful()
+        }
+    }
+    var currentLanguage by remember { mutableStateOf("en") }
+    val storeManager = StoreManager.getInstance()
+
+    DisposableEffect(Unit) {
+        val observer: LanguageChangeListener = object : LanguageChangeListener {
+            override fun onLanguageChanged(newLanguage: String) {
+                currentLanguage = newLanguage
+            }
+        }
+        storeManager.addObserver(observer)
+        onDispose {
+            storeManager.removeObserver(observer)
         }
     }
 
@@ -102,6 +119,7 @@ fun LoginScreen(navController: NavController) {
                         contentDescription = "User account icon",
                         tint = MaterialTheme.colorScheme.secondary,
                     )
+<<<<<<< HEAD
                     TextField(
                         modifier = Modifier
                             .padding(end = 48.dp)
@@ -121,6 +139,13 @@ fun LoginScreen(navController: NavController) {
                             )
                         },
                         isError = !isEmailValid,
+=======
+                    Text(
+                        text = lenguage["login_$currentLanguage"]?:"Login",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(bottom = 50.dp)
+>>>>>>> ba1b62bf32fc7c0a2ed6bab98a51b52ccd7bb1e3
                     )
                 }
                 isEmailValid.takeIf { !it }?.run { Text(
@@ -137,6 +162,7 @@ fun LoginScreen(navController: NavController) {
                 ) {
                     Icon(
                         modifier = Modifier
+<<<<<<< HEAD
                             .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                             .size(40.dp, 40.dp),
                         imageVector = ImageVector.vectorResource(id = R.drawable.key_500),
@@ -170,6 +196,88 @@ fun LoginScreen(navController: NavController) {
                 }
                 isPasswordValid.takeIf { !it }?.run { Text(
                     text = """Please enter a valid password:
+=======
+                            .fillMaxWidth()
+                            .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                                .size(40.dp, 40.dp),
+                            imageVector = ImageVector.vectorResource(id = R.drawable.user_check_500),
+                            contentDescription = "User account icon",
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .padding(end = 48.dp)
+                                .background(MaterialTheme.colorScheme.primary)
+                                .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                .weight(1f),
+                            value = userEmail,
+                            onValueChange = {
+                                userEmail = it
+                                isEmailValid = controller.validateEmail(userEmail)
+                            },
+                            label = { Text(lenguage["mail_$currentLanguage"]?:"Email") },
+                            placeholder = {
+                                Text(
+                                    lenguage["yourmail_$currentLanguage"]?:"Your Email",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            },
+                            isError = !isEmailValid,
+                        )
+                    }
+                    isEmailValid.takeIf { !it }?.run { Text(
+                        text = lenguage["errorvalidmail_$currentLanguage"]?:"Please enter a valid email address",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    ) }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                                .size(40.dp, 40.dp),
+                            imageVector = ImageVector.vectorResource(id = R.drawable.key_500),
+                            contentDescription = "Key icon",
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                        TextField(
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.primary)
+                                .border(1.dp, MaterialTheme.colorScheme.tertiary, MaterialTheme.shapes.small)
+                                .weight(1f),
+                            value = password,
+                            onValueChange = {
+                                password = it
+                                isPasswordValid = controller.validatePassword(password)
+                            },
+                            label = { Text(lenguage["password_$currentLanguage"]?:"Password") },
+                            visualTransformation = passwordVisibilityOption.takeIf { it }
+                                ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
+                            isError = !isPasswordValid,
+                        )
+                        Icon(
+                            modifier = Modifier
+                                .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
+                                .size(40.dp, 40.dp)
+                                .clickable { passwordVisibilityOption = !passwordVisibilityOption },
+                            imageVector = passwordVisibilityIcon,
+                            contentDescription = "Eye icon",
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
+                    isPasswordValid.takeIf { !it }?.run { Text(
+                        text = lenguage["messagevalidpassword_$currentLanguage"]?:"""Please enter a valid password:
+>>>>>>> ba1b62bf32fc7c0a2ed6bab98a51b52ccd7bb1e3
                                 |At least 6 characters
                                 |At least one number
                                 |At least one uppercase letter
@@ -229,8 +337,13 @@ fun LoginScreen(navController: NavController) {
                             .weight(1f)
                     ) {
                         Text(
+<<<<<<< HEAD
                             text = "LOGIN",
                             style = MaterialTheme.typography.labelMedium,
+=======
+                            text = lenguage["newuser_$currentLanguage"]?:"New User",
+                            style = MaterialTheme.typography.bodyLarge,
+>>>>>>> ba1b62bf32fc7c0a2ed6bab98a51b52ccd7bb1e3
                             color = MaterialTheme.colorScheme.onBackground,
                         )
                     }
@@ -241,11 +354,43 @@ fun LoginScreen(navController: NavController) {
                             .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
                             .weight(1f)
                     ) {
+<<<<<<< HEAD
                         Text(
                             text = "CANCEL",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground
                         )
+=======
+                        Button(
+                            onClick = {
+                                scope.launch { controller.login(userEmail, password, scope, snackbarHostState) }
+                            },
+                            enabled = isEmailValid && isPasswordValid,
+                            elevation = ButtonDefaults.buttonElevation(2.dp),
+                            modifier = Modifier
+                                .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = lenguage["login_$currentLanguage"]?:"LOGIN",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                        Button(
+                            onClick = { controller.navigateToOverviewScreen(scope, snackbarHostState) },
+                            elevation = ButtonDefaults.buttonElevation(2.dp),
+                            modifier = Modifier
+                                .padding(start = ScreenConstants.AVERAGE_PADDING.dp)
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = lenguage["cancel_$currentLanguage"]?:"CANCEL",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+>>>>>>> ba1b62bf32fc7c0a2ed6bab98a51b52ccd7bb1e3
                     }
                 }
             }

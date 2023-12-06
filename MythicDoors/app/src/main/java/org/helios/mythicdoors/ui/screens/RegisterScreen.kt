@@ -22,10 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
+import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.REGISTER_SCREEN_VIEWMODEL
+import org.helios.mythicdoors.utils.lenguage
 import org.helios.mythicdoors.viewmodel.RegisterScreenViewModel
 
 @Composable
@@ -53,6 +56,20 @@ fun RegisterScreen(navController: NavController) {
     LaunchedEffect(registerSuccessful) {
         if (registerSuccessful) controller.navigateToGameOptsScreen(scope, snackbarHostState)
         controller.resetRegisterSuccessful()
+    }
+    var currentLanguage by remember { mutableStateOf("en") }
+    val storeManager = StoreManager.getInstance()
+
+    DisposableEffect(Unit) {
+        val observer: LanguageChangeListener = object : LanguageChangeListener {
+            override fun onLanguageChanged(newLanguage: String) {
+                currentLanguage = newLanguage
+            }
+        }
+        storeManager.addObserver(observer)
+        onDispose {
+            storeManager.removeObserver(observer)
+        }
     }
 
     Surface(
@@ -90,7 +107,7 @@ fun RegisterScreen(navController: NavController) {
                         .wrapContentWidth(Alignment.CenterHorizontally),
                 )
                 Text(
-                    text = "Register New Player",
+                    text = lenguage["registernewplayer_$currentLanguage"]?:"Register New Player",
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(bottom = 50.dp)
@@ -117,10 +134,10 @@ fun RegisterScreen(navController: NavController) {
                             .weight(1f),
                         value = userName,
                         onValueChange = { userName = it },
-                        label = { Text("Name") },
+                        label = { Text(lenguage["name_$currentLanguage"]?:"Name") },
                         placeholder = {
                             Text(
-                                "A name for the new player",
+                                lenguage["namenewplayer_$currentLanguage"]?:"A name for the new player",
                                 style = MaterialTheme.typography.bodySmall
                             )
                         },
@@ -152,10 +169,10 @@ fun RegisterScreen(navController: NavController) {
                             userEmail = it
                             isEmailValid = controller.validateEmail(userEmail)
                         },
-                        label = { Text("Email") },
+                        label = { Text(lenguage["mail_$currentLanguage"]?:"Email") },
                         placeholder = {
                             Text(
-                                "Insert your email address",
+                                lenguage["insertmail_$currentLanguage"]?:"Insert your email address",
                                 style = MaterialTheme.typography.bodySmall
                             )
                         },
@@ -163,7 +180,7 @@ fun RegisterScreen(navController: NavController) {
                     )
                 }
                 isEmailValid.takeIf { !it }?.run { Text(
-                    text = "Please enter a valid email address",
+                    text = lenguage["errorvalidmail_$currentLanguage"]?:"Please enter a valid email address",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
@@ -192,7 +209,7 @@ fun RegisterScreen(navController: NavController) {
                             password = it
                             isPasswordValid = controller.validatePassword(password)
                         },
-                        label = { Text("Insert a password") },
+                        label = { Text(lenguage["insertpass_$currentLanguage"]?:"Insert a password") },
                         visualTransformation = passwordVisibilityOption.takeIf { it }
                             ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
                         isError = !isPasswordValid,
@@ -208,7 +225,7 @@ fun RegisterScreen(navController: NavController) {
                     )
                 }
                 isPasswordValid.takeIf { !it }?.run { Text(
-                    text = """Please enter a valid password:
+                    text = lenguage["messagevalidpassword_$currentLanguage"]?:"""Please enter a valid password:
                                 |At least 6 characters
                                 |At least one number
                                 |At least one uppercase letter
@@ -239,7 +256,7 @@ fun RegisterScreen(navController: NavController) {
                             .weight(1f),
                         value = retypedPassword,
                         onValueChange = { retypedPassword = it },
-                        label = { Text("Retype your password") },
+                        label = { Text(lenguage["retrypass_$currentLanguage"]?:"Retype your password") },
                         visualTransformation = passwordVisibilityOption.takeIf { it }
                             ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
                         isError = !this.equals(password),
@@ -255,7 +272,7 @@ fun RegisterScreen(navController: NavController) {
                     )
                 }
                 isPasswordValid.takeIf { !it }?.run { Text(
-                    text = """The password and the retyped password are different.""".trimMargin(),
+                    text = lenguage["diferentpass_$currentLanguage"]?:"""The password and the retyped password are different.""".trimMargin(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
@@ -279,7 +296,7 @@ fun RegisterScreen(navController: NavController) {
                             .weight(1f)
                     ) {
                         Text(
-                            text = "REGISTER",
+                            text = lenguage["register_$currentLanguage"]?:"REGISTER",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -292,7 +309,7 @@ fun RegisterScreen(navController: NavController) {
                             .weight(1f)
                     ) {
                         Text(
-                            text = "BACK",
+                            text = lenguage["back_$currentLanguage"]?:"BACK",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground
                         )

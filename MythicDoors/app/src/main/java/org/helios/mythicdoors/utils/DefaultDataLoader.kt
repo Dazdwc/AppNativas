@@ -5,6 +5,7 @@ import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.services.UserServiceImp
 import org.helios.mythicdoors.services.interfaces.IUserService
+import org.helios.mythicdoors.utils.connection.Connection
 
 suspend fun defaultDataLoader(dbHelper: Connection): Boolean = withContext(Dispatchers.IO) {
     val userService: IUserService = UserServiceImp(dbHelper)
