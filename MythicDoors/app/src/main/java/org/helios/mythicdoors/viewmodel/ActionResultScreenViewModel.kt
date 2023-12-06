@@ -1,11 +1,20 @@
 package org.helios.mythicdoors.viewmodel
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Picture
+import android.os.Build
 import android.util.Log
+import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Game
@@ -14,6 +23,9 @@ import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.utils.AppConstants
+import org.helios.mythicdoors.utils.AppConstants.NotificationChannels
+import org.helios.mythicdoors.utils.notifications.NotificationFabric
+import org.helios.mythicdoors.utils.screenshot.ScreenshotService
 
 class ActionResultScreenViewModel(
     private val dataController: DataController
@@ -34,9 +46,21 @@ class ActionResultScreenViewModel(
     var playerData: User? = null
     var gameResultsData: GameResults? = null
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun initialLoad() {
         playerData = loadPlayerData()
         gameResultsData = loadGameResults()
+
+        if (gameResultsData?.getIsPlayerWinner() == true) {
+            try{
+                NotificationFabric.create(NotificationChannels.GAMEWON_NOTIFICATION_CHANNEL)
+                    .also { notification ->
+                        NotificationFabric.send(notification)
+                    }
+            } catch (e: Exception) {
+                Log.e("GameActionScreenViewModel", "Notification sender: $e")
+            }
+        }
     }
 
     fun isEnoughCoins(): Boolean {
@@ -133,6 +157,24 @@ class ActionResultScreenViewModel(
             store.clearCombatData()
         } catch (e: Exception) {
             Log.e("GameActionScreenViewModel", "clearCombatData: $e")
+        }
+    }
+
+    fun createImageFile(
+        context: Context,
+        activity: MainActivity,
+        bitmap: Bitmap
+    ) {
+        try {
+            viewModelScope.launch {
+                ScreenshotService.makeScreenshotFile(
+                    context = context,
+                    activity = activity,
+                    bitmap = bitmap
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("GameActionScreenViewModel", "createImageFile: $e")
         }
     }
 }

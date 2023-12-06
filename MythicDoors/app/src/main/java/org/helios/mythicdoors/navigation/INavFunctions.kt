@@ -11,4 +11,5 @@ interface INavFunctions {
     fun navigateGameActionScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState)
     fun navigateActionResultScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState)
     fun navigateScoresScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState)
+    fun navigateGameGuideWebViewScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState)
 }

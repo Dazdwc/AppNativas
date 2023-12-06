@@ -1,8 +1,6 @@
 package org.helios.mythicdoors.utils.calendar
 
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 data class Event(
     private val title: String,
@@ -28,12 +26,13 @@ data class Event(
             description: String,
             location: String,
         ): Event {
+            val zoneOffSet = LocalDateTime.now().atZone(java.time.ZoneId.systemDefault()).offset
             return Event(
                 title,
                 description,
                 location,
-                LocalDateTime.now().toEpochSecond(null),
-                LocalDateTime.now().plusMinutes(1).toEpochSecond(null)
+                LocalDateTime.now().toEpochSecond(zoneOffSet),
+                LocalDateTime.now().plusMinutes(1).toEpochSecond(zoneOffSet)
             )
         }
     }

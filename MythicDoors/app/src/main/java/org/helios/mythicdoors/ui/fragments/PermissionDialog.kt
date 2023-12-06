@@ -10,8 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
+import org.helios.mythicdoors.R
 
 @Composable
 fun PermissionDialog(
@@ -32,7 +34,7 @@ fun PermissionDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Permission required",
+                text = stringResource(id = R.string.permission_dlg_required),
                 style = MaterialTheme.typography.titleMedium
             )
         },
@@ -49,7 +51,7 @@ fun PermissionDialog(
                 }
             ) {
                 Text(
-                    text = if (isPermanentlyDecline) "Settings" else "OK",
+                    text = if (isPermanentlyDecline) stringResource(id = R.string.settings_btn) else stringResource(id = R.string.ok_btn),
                     style = MaterialTheme.typography.labelSmall
                 )
             }
@@ -59,7 +61,7 @@ fun PermissionDialog(
                 onClick = onDismiss
             ) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(id = R.string.cancel),
                     style = MaterialTheme.typography.labelSmall
                 )
             }
@@ -89,6 +91,12 @@ class CalendarPermissionTextProvider: IPermissionTextProvider {
 }
 
 class ForegroundServicePermissionTextProvider: IPermissionTextProvider {
+    override fun getDescription(isPermanentlyDecline: Boolean): String {
+        return if (isPermanentlyDecline) "This app needs to access your notifications service in order to show your usage notifications. You can change this in the settings" else "This app needs to access your notifications service in order to show you usage notifications"
+    }
+}
+
+class PostNotificationsPermissionTextProvider: IPermissionTextProvider {
     override fun getDescription(isPermanentlyDecline: Boolean): String {
         return if (isPermanentlyDecline) "This app needs to access your notifications service in order to show your usage notifications. You can change this in the settings" else "This app needs to access your notifications service in order to show you usage notifications"
     }

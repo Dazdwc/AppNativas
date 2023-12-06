@@ -102,4 +102,15 @@ class NavFunctionsImp(
             }
         }
     }
+
+    override fun navigateGameGuideWebViewScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
+        try {
+            navController.navigateSingleTopTo(Screens.GAME_GUIDE_WEBVIEW_SCREEN)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            scope.launch {
+                snackbarHostState.showSnackbar("Error: Impossible to navigate to Game Guide WebView Screen")
+            }
+        }
+    }
 }

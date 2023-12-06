@@ -1,5 +1,7 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +19,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +46,7 @@ import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 /*
 * Habilitamos la API ExperimentalFoundationApi para poder usar el encabezado fijo de LazyColumn
 */
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScoresScreen(navController: NavController) {
@@ -104,7 +108,7 @@ fun ScoresScreen(navController: NavController) {
 
             Column {
                 Text(
-                    text = "Mythic Doors",
+                    text = stringResource(id = R.string.app_name),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
@@ -116,7 +120,11 @@ fun ScoresScreen(navController: NavController) {
                         .wrapContentWidth(Alignment.CenterHorizontally),
                 )
                 Text(
+<<<<<<< HEAD
                     text = lenguage["scoresLadder_$currentLanguage"]?:"Scores Ladder",
+=======
+                    text = stringResource(id = R.string.ladder),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
@@ -131,7 +139,11 @@ fun ScoresScreen(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
+<<<<<<< HEAD
                         text = lenguage["singleslayerstats_$currentLanguage"]?:"Single Player Stats",
+=======
+                        text = stringResource(id = R.string.single_player_stats),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                         style = TextStyle(
                             fontFamily = FontFamily.Default,
                             fontWeight = FontWeight.Normal,
@@ -183,7 +195,11 @@ fun ScoresScreen(navController: NavController) {
                         modifier = Modifier
                             .width(ScreenConstants.BUTTON_WIDTH.dp)
                     ) {
+<<<<<<< HEAD
                         Text(text = lenguage["continue_$currentLanguage"]?:"CONTINUE",
+=======
+                        Text(text = stringResource(id = R.string.back),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -218,21 +234,33 @@ fun Header() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+<<<<<<< HEAD
         Text(text = lenguage["player_$currentLanguage"]?:"Player",
+=======
+        Text(text = stringResource(id = R.string.ladder_hd_player),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .weight(1f)
                 .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
         )
+<<<<<<< HEAD
         Text(text = lenguage["level_$currentLanguage"]?:"Level",
+=======
+        Text(text = stringResource(id = R.string.ladder_hd_level),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .weight(1f)
                 .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
         )
+<<<<<<< HEAD
         Text(text = lenguage["score_$currentLanguage"]?:"Score",
+=======
+        Text(text = stringResource(id = R.string.ladder_hd_score),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
@@ -306,17 +334,15 @@ private fun LoadingIndicator(controller: ScoresScreenViewModel) {
                 .padding(ScreenConstants.AVERAGE_PADDING.dp),
             color = MaterialTheme.colorScheme.secondary,
         )
+<<<<<<< HEAD
         Text(text = lenguage["loading_$currentLanguage"]?:"Loading...",
+=======
+        Text(text = stringResource(id = R.string.loading_indicator_msg),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .wrapContentSize()
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ScoresScreenPreview() {
-    ScoresScreen(navController = NavController(LocalContext.current))
 }

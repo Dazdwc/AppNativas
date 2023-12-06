@@ -1,5 +1,7 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -21,15 +24,19 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+<<<<<<< HEAD
 import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
+=======
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.LOGIN_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.utils.lenguage
 import org.helios.mythicdoors.viewmodel.LoginScreenViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun LoginScreen(navController: NavController) {
     val controller: LoginScreenViewModel = (MainActivity.viewModelsMap[LOGIN_SCREEN_VIEWMODEL] as LoginScreenViewModel).apply { setNavController(navController) }
@@ -111,6 +118,7 @@ fun LoginScreen(navController: NavController) {
                         .padding(bottom = ScreenConstants.AVERAGE_PADDING.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+<<<<<<< HEAD
                     Icon(
                         modifier = Modifier
                             .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
@@ -118,6 +126,19 @@ fun LoginScreen(navController: NavController) {
                         imageVector = ImageVector.vectorResource(id = R.drawable.user_check_500),
                         contentDescription = "User account icon",
                         tint = MaterialTheme.colorScheme.secondary,
+=======
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier
+                            .padding(
+                                top = ScreenConstants.DOUBLE_PADDING.dp,
+                                bottom = ScreenConstants.DOUBLE_PADDING.dp
+                            )
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                     )
 <<<<<<< HEAD
                     TextField(
@@ -141,7 +162,11 @@ fun LoginScreen(navController: NavController) {
                         isError = !isEmailValid,
 =======
                     Text(
+<<<<<<< HEAD
                         text = lenguage["login_$currentLanguage"]?:"Login",
+=======
+                        text = stringResource(id = R.string.login),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(bottom = 50.dp)
@@ -220,10 +245,17 @@ fun LoginScreen(navController: NavController) {
                                 userEmail = it
                                 isEmailValid = controller.validateEmail(userEmail)
                             },
+<<<<<<< HEAD
                             label = { Text(lenguage["mail_$currentLanguage"]?:"Email") },
                             placeholder = {
                                 Text(
                                     lenguage["yourmail_$currentLanguage"]?:"Your Email",
+=======
+                            label = { Text(stringResource(id = R.string.email)) },
+                            placeholder = {
+                                Text(
+                                    stringResource(id = R.string.email_helper),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             },
@@ -231,7 +263,11 @@ fun LoginScreen(navController: NavController) {
                         )
                     }
                     isEmailValid.takeIf { !it }?.run { Text(
+<<<<<<< HEAD
                         text = lenguage["errorvalidmail_$currentLanguage"]?:"Please enter a valid email address",
+=======
+                        text = stringResource(id = R.string.email_validator),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(bottom = 10.dp)
@@ -260,7 +296,11 @@ fun LoginScreen(navController: NavController) {
                                 password = it
                                 isPasswordValid = controller.validatePassword(password)
                             },
+<<<<<<< HEAD
                             label = { Text(lenguage["password_$currentLanguage"]?:"Password") },
+=======
+                            label = { Text(stringResource(id = R.string.password)) },
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                             visualTransformation = passwordVisibilityOption.takeIf { it }
                                 ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
                             isError = !isPasswordValid,
@@ -276,6 +316,7 @@ fun LoginScreen(navController: NavController) {
                         )
                     }
                     isPasswordValid.takeIf { !it }?.run { Text(
+<<<<<<< HEAD
                         text = lenguage["messagevalidpassword_$currentLanguage"]?:"""Please enter a valid password:
 >>>>>>> ba1b62bf32fc7c0a2ed6bab98a51b52ccd7bb1e3
                                 |At least 6 characters
@@ -335,13 +376,33 @@ fun LoginScreen(navController: NavController) {
                         modifier = Modifier
                             .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
                             .weight(1f)
+=======
+                        text =  stringResource(id = R.string.password_requirements).trimMargin(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
+                    ) }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = ScreenConstants.AVERAGE_PADDING.dp,
+                                bottom = ScreenConstants.DOUBLE_PADDING.dp
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                     ) {
                         Text(
+<<<<<<< HEAD
 <<<<<<< HEAD
                             text = "LOGIN",
                             style = MaterialTheme.typography.labelMedium,
 =======
                             text = lenguage["newuser_$currentLanguage"]?:"New User",
+=======
+                            text = stringResource(id = R.string.new_user),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                             style = MaterialTheme.typography.bodyLarge,
 >>>>>>> ba1b62bf32fc7c0a2ed6bab98a51b52ccd7bb1e3
                             color = MaterialTheme.colorScheme.onBackground,
@@ -372,7 +433,11 @@ fun LoginScreen(navController: NavController) {
                                 .weight(1f)
                         ) {
                             Text(
+<<<<<<< HEAD
                                 text = lenguage["login_$currentLanguage"]?:"LOGIN",
+=======
+                                text = stringResource(id = R.string.login).uppercase(),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
@@ -385,7 +450,11 @@ fun LoginScreen(navController: NavController) {
                                 .weight(1f)
                         ) {
                             Text(
+<<<<<<< HEAD
                                 text = lenguage["cancel_$currentLanguage"]?:"CANCEL",
+=======
+                                text = stringResource(id = R.string.cancel).uppercase(),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
@@ -397,9 +466,12 @@ fun LoginScreen(navController: NavController) {
         }
     }
 }
+<<<<<<< HEAD
 
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
     LoginScreen(navController = NavController(LocalContext.current))
 }
+=======
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67

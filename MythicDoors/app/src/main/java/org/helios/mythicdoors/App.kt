@@ -4,8 +4,10 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.util.Log
 import dagger.hilt.android.HiltAndroidApp
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.CALENDAR_NOTIFICATION_CHANNEL
+import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.GAMEWON_NOTIFICATION_CHANNEL
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.IMAGES_NOTIFICATION_CHANNEL
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.LOCATION_NOTIFICATION_CHANNEL
 
@@ -22,7 +24,8 @@ class App(): Application() {
         val channelsList: List<String> = listOf(
             LOCATION_NOTIFICATION_CHANNEL,
             CALENDAR_NOTIFICATION_CHANNEL,
-            IMAGES_NOTIFICATION_CHANNEL
+            IMAGES_NOTIFICATION_CHANNEL,
+            GAMEWON_NOTIFICATION_CHANNEL
         )
         channelsList.forEach { channel -> createNotificationChannel(channel) }
     }

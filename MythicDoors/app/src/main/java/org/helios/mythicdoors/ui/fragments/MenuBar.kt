@@ -9,12 +9,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
+<<<<<<< HEAD
 import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
 import org.helios.mythicdoors.store.StoreManager
+=======
+import org.helios.mythicdoors.R
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.MENU_BAR_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.lenguage
@@ -70,7 +75,12 @@ fun MenuBar(navController: NavController) {
                     Button(
                         onClick = { controller.navigateToOverview(scope, snackbarHostState) },
                         elevation = ButtonDefaults.buttonElevation(2.dp),) {
+<<<<<<< HEAD
                         Text(text = lenguage["main_$currentLanguage"]?: "Main",
+=======
+                        Text(
+                            text = stringResource(id = R.string.main_btn),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -78,7 +88,12 @@ fun MenuBar(navController: NavController) {
                     Button(
                         onClick = { controller.closeApp() },
                         elevation = ButtonDefaults.buttonElevation(2.dp),) {
+<<<<<<< HEAD
                         Text(text = lenguage["exit_$currentLanguage"]?: "Exit",
+=======
+                        Text(
+                            text = stringResource(id = R.string.exit_btn),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )

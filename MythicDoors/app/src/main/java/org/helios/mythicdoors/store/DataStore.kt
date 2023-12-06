@@ -5,10 +5,16 @@ import android.content.Context
 import android.net.Uri
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.Enemy
+import org.helios.mythicdoors.model.entities.Location
 import org.helios.mythicdoors.model.entities.Song
 import org.helios.mythicdoors.model.entities.User
+<<<<<<< HEAD
 import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
+=======
+import org.helios.mythicdoors.utils.AppConstants.Languages
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
 import org.helios.mythicdoors.utils.AppConstants.GameMode
+import org.helios.mythicdoors.utils.typeclass.Language
 import java.lang.ref.WeakReference
 
 data class AppStore(
@@ -19,6 +25,7 @@ data class AppStore(
     var actualUser: User? = null,
     var gameMode: GameMode = GameMode.SINGLE_PLAYER,
     var gameScore: Int = 0,
+    var userLocation: Location = Location.createEmptyLocation(),
     val gameSongsList: List<Song> = listOf(
         Song.create(R.raw.guardians_of_the_sword, "Guardians of The Sword", "Dark Fantasy Studio", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.guardians_of_the_sword)),
         Song.create(R.raw.the_girl_and_the_sword, "The Girl and The Sword", "Dark Fantasy Studio", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.the_girl_and_the_sword)),
@@ -32,7 +39,8 @@ data class AppStore(
         R.raw.rain,
         R.raw.scores_screen_sound,
         R.raw.door_select,
-    )
+    ),
+    val languages: Map<String, Language> = LanguagesMap,
 )
 
 data class CombatResults(
@@ -53,6 +61,13 @@ data class PlayerInitialStats(
     var coins: Int = 0,
     var score: Int = 0
 )
+
+object LanguagesMap: Map<String, Language> by mapOf(
+    Languages.ENGLISH to Language.ENGLISH,
+    Languages.SPANISH to Language.SPANISH,
+    Languages.CATALAN to Language.CATALAN
+)
+
 
 class StoreManager {
     private var appStore: AppStore = AppStore()
@@ -129,11 +144,16 @@ class StoreManager {
 
     fun resetPlayerCoins() { appStore.actualUser?.setCoins(100) }
 
+    fun getLocation(): Location { return appStore.userLocation }
+
+    fun setLocation(location: Location) { appStore.userLocation = location }
+
     private fun clearPlayerAction() {
         appStore.playerAction.bet = 0
         appStore.playerAction.selectedDoorId = ""
     }
 
+<<<<<<< HEAD
     private val languageObservers = mutableListOf<LanguageChangeListener>()
 
     fun addObserver(observer: LanguageChangeListener) {
@@ -149,4 +169,9 @@ class StoreManager {
             it.onLanguageChanged(newLanguage)
         }
     }
+=======
+    fun getLanguage(languageName: String): Language? { return appStore.languages[languageName] }
+
+    fun getLanguages(): Map<String, Language> { return appStore.languages }
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
 }

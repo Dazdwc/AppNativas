@@ -19,7 +19,7 @@ class DataController @Inject constructor(
 ) {
     private val userService: IUserService = UserServiceImp(dbHelper)
     private val gameService: IGameService = GameServiceImp(dbHelper)
-    private val lcationService: ILocationService = LocationServiceImp(dbHelper)
+    private val locationService: ILocationService = LocationServiceImp(dbHelper)
 
     /*
      * Aplicamos un patrón Singleton para crear el controlador de datos.
@@ -41,7 +41,7 @@ class DataController @Inject constructor(
 
     fun getUserService(): IUserService { return userService }
     fun getGameService(): IGameService { return gameService }
-    fun getLocationService(): ILocationService { return lcationService }
+    fun getLocationService(): ILocationService { return locationService }
 
     suspend fun getAllUsers(): List<User>? { return userService.getUsers() }
 
@@ -69,6 +69,6 @@ class DataController @Inject constructor(
     suspend fun countGames(): Int { return gameService.countGames() }
 
 
-    suspend fun saveLocation(location: Location): Boolean { return lcationService.saveLocation(location) }
-    suspend fun getLastLcoation(): Location? { return lcationService.getLastLocation() }
+    suspend fun saveLocation(location: Location): Boolean { return locationService.saveLocation(location) }
+    suspend fun getLastLocation(): Location? { return locationService.getLastLocation() }
 }

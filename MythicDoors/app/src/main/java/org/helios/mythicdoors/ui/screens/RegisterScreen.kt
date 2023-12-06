@@ -1,5 +1,7 @@
 package org.helios.mythicdoors.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -22,15 +25,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+<<<<<<< HEAD
 import org.helios.mythicdoors.services.interfaces.LanguageChangeListener
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
 import org.helios.mythicdoors.ui.fragments.MenuBar
+=======
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.REGISTER_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.utils.lenguage
 import org.helios.mythicdoors.viewmodel.RegisterScreenViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun RegisterScreen(navController: NavController) {
     val controller: RegisterScreenViewModel = (MainActivity.viewModelsMap[REGISTER_SCREEN_VIEWMODEL] as RegisterScreenViewModel).apply { setNavController(navController) }
@@ -95,7 +102,7 @@ fun RegisterScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Mythic Doors",
+                    text = stringResource(id = R.string.app_name),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
@@ -107,7 +114,11 @@ fun RegisterScreen(navController: NavController) {
                         .wrapContentWidth(Alignment.CenterHorizontally),
                 )
                 Text(
+<<<<<<< HEAD
                     text = lenguage["registernewplayer_$currentLanguage"]?:"Register New Player",
+=======
+                    text = stringResource(id = R.string.register_new),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(bottom = 50.dp)
@@ -134,10 +145,17 @@ fun RegisterScreen(navController: NavController) {
                             .weight(1f),
                         value = userName,
                         onValueChange = { userName = it },
+<<<<<<< HEAD
                         label = { Text(lenguage["name_$currentLanguage"]?:"Name") },
                         placeholder = {
                             Text(
                                 lenguage["namenewplayer_$currentLanguage"]?:"A name for the new player",
+=======
+                        label = { Text(stringResource(id = R.string.pl_name)) },
+                        placeholder = {
+                            Text(
+                                stringResource(id = R.string.name_helper),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                                 style = MaterialTheme.typography.bodySmall
                             )
                         },
@@ -169,10 +187,17 @@ fun RegisterScreen(navController: NavController) {
                             userEmail = it
                             isEmailValid = controller.validateEmail(userEmail)
                         },
+<<<<<<< HEAD
                         label = { Text(lenguage["mail_$currentLanguage"]?:"Email") },
                         placeholder = {
                             Text(
                                 lenguage["insertmail_$currentLanguage"]?:"Insert your email address",
+=======
+                        label = { Text(stringResource(id = R.string.email)) },
+                        placeholder = {
+                            Text(
+                                stringResource(id = R.string.email_helper),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                                 style = MaterialTheme.typography.bodySmall
                             )
                         },
@@ -180,7 +205,11 @@ fun RegisterScreen(navController: NavController) {
                     )
                 }
                 isEmailValid.takeIf { !it }?.run { Text(
+<<<<<<< HEAD
                     text = lenguage["errorvalidmail_$currentLanguage"]?:"Please enter a valid email address",
+=======
+                    text = stringResource(id = R.string.email_validator),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
@@ -209,7 +238,11 @@ fun RegisterScreen(navController: NavController) {
                             password = it
                             isPasswordValid = controller.validatePassword(password)
                         },
+<<<<<<< HEAD
                         label = { Text(lenguage["insertpass_$currentLanguage"]?:"Insert a password") },
+=======
+                        label = { Text(stringResource(id = R.string.password_helper)) },
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                         visualTransformation = passwordVisibilityOption.takeIf { it }
                             ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
                         isError = !isPasswordValid,
@@ -225,12 +258,16 @@ fun RegisterScreen(navController: NavController) {
                     )
                 }
                 isPasswordValid.takeIf { !it }?.run { Text(
+<<<<<<< HEAD
                     text = lenguage["messagevalidpassword_$currentLanguage"]?:"""Please enter a valid password:
                                 |At least 6 characters
                                 |At least one number
                                 |At least one uppercase letter
                                 |At least one special character
                             """.trimMargin(),
+=======
+                    text = stringResource(id = R.string.password_requirements).trimMargin(),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
@@ -256,7 +293,11 @@ fun RegisterScreen(navController: NavController) {
                             .weight(1f),
                         value = retypedPassword,
                         onValueChange = { retypedPassword = it },
+<<<<<<< HEAD
                         label = { Text(lenguage["retrypass_$currentLanguage"]?:"Retype your password") },
+=======
+                        label = { Text(stringResource(id = R.string.password_retype)) },
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                         visualTransformation = passwordVisibilityOption.takeIf { it }
                             ?.let { VisualTransformation.None } ?: PasswordVisualTransformation(),
                         isError = !this.equals(password),
@@ -272,7 +313,11 @@ fun RegisterScreen(navController: NavController) {
                     )
                 }
                 isPasswordValid.takeIf { !it }?.run { Text(
+<<<<<<< HEAD
                     text = lenguage["diferentpass_$currentLanguage"]?:"""The password and the retyped password are different.""".trimMargin(),
+=======
+                    text = stringResource(id = R.string.password_retype_validator).trimMargin(),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
@@ -296,7 +341,11 @@ fun RegisterScreen(navController: NavController) {
                             .weight(1f)
                     ) {
                         Text(
+<<<<<<< HEAD
                             text = lenguage["register_$currentLanguage"]?:"REGISTER",
+=======
+                            text = stringResource(id = R.string.register).uppercase(),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -309,7 +358,11 @@ fun RegisterScreen(navController: NavController) {
                             .weight(1f)
                     ) {
                         Text(
+<<<<<<< HEAD
                             text = lenguage["back_$currentLanguage"]?:"BACK",
+=======
+                            text = stringResource(id = R.string.back).uppercase(),
+>>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground
                         )
@@ -318,10 +371,4 @@ fun RegisterScreen(navController: NavController) {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreenPreview() {
-    RegisterScreen(navController = NavController(LocalContext.current))
 }

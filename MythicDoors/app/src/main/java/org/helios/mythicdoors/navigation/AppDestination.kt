@@ -19,6 +19,7 @@ sealed class AppDestination(
     data object GameAction: AppDestination(route = Screens.GAME_ACTION_SCREEN, screenName = "Game Action")
     data object ActionResult: AppDestination(route = Screens.ACTION_RESULT_SCREEN, screenName = "Action Result")
     data object Scores: AppDestination(route = Screens.SCORES_SCREEN, screenName = "Scores")
+    data object GameGuideWebView: AppDestination(route = Screens.GAME_GUIDE_WEBVIEW_SCREEN, screenName = "Game Guide")
 }
 
 val appDestinations = listOf(
@@ -28,5 +29,6 @@ val appDestinations = listOf(
     AppDestination.GameOpts,
     AppDestination.GameAction,
     AppDestination.ActionResult,
-    AppDestination.Scores
+    AppDestination.Scores,
+    AppDestination.GameGuideWebView
 )

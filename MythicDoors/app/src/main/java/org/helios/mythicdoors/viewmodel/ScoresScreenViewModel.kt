@@ -47,7 +47,6 @@ class ScoresScreenViewModel(
                     ?.sortedByDescending { it.getScore() }
                     ?: listOf()
             }.join()
-            Log.e("ScoresScreenViewModel", "ladUserGamesList: ${userGamesList.value}")
         } catch (e: Exception) {
             Log.e("ScoresScreenViewModel", "ladUserGamesList: $e")
             userGamesList.value = listOf()

@@ -25,9 +25,11 @@ class LocationServiceImp(dbHelper: Connection): ILocationService {
 
     override suspend fun saveLocation(location: Location): Boolean = withContext(Dispatchers.IO) {
         try {
-            location.takeIf { it.isValid() }?.let { return@withContext repository.insertOne(location) > 0 } ?: false
+            location.takeIf { it.isValid() }?.let {
+                return@withContext repository.insertOne(location) > 0
+            } ?: false
         } catch (e: Exception) {
-            Log.e("GameServiceImp", "Error saving game: ${e.message}")
+            Log.e("LocationServiceImp", "Error saving location: $e")
             return@withContext false
         }
     }
@@ -36,7 +38,7 @@ class LocationServiceImp(dbHelper: Connection): ILocationService {
         try {
             return@withContext repository.getLast().takeIf { !it.isEmpty() }
         } catch(e: Exception) {
-            Log.e("GameServiceImp", "Error getting last game: ${e.message}")
+            Log.e("LocationServiceImp", "Error getting last location: ${e.stackTrace}")
             return@withContext null
         }
     }

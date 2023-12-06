@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.Song
 import org.helios.mythicdoors.store.StoreManager
+import java.util.concurrent.CountDownLatch
 
 class AudioPlayerViewModel(
     dataController: DataController
@@ -39,20 +40,14 @@ class AudioPlayerViewModel(
     private val context: Context? by lazy { store.getContext() }
 
     private val gameSongsList: List<Song> by lazy { getSongList() }
-    private val player: GameMediaPlayer? by lazy { GameMediaPlayer.getInstance() }
 
-    private val audioManager: AudioManager by lazy { context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
+    private val audioManager: AudioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private val player: GameMediaPlayer? by lazy { GameMediaPlayer.getInstance(audioManager) }
 
     private val isPaused: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>(false) }
     private val isPlaying: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>(false) }
     val actualSong: MutableLiveData<Song> by lazy { MutableLiveData<Song>() }
 
-    init {
-        Log.e("AudioPlayerViewModel", "init: ${context.toString()}")
-        setupAudioFocusListener()
-    }
-
-    // Implementando recursividad podemos reproducir una lista de canciones en bucle
     fun playInGameMusic(context: Context, scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         if (gameSongsList.isEmpty()) makeSnackBar(scope, snackbarHostState, "No songs found").also { return }
 
@@ -60,17 +55,19 @@ class AudioPlayerViewModel(
 
         scope.launch {
             try {
-                player?.apply {
-                    setDataSource(context, gameSongsList[GameMediaPlayer.currentSongIndex].path)
-                    prepare()
-                    start()
-                }.let { isPlaying.value = true }
+                while (true) {
+                    player?.apply {
+                        setDataSource(context, gameSongsList[GameMediaPlayer.currentSongIndex].path)
+                        prepare()
+                        start()
+                    }.let { isPlaying.value = true }
 
-                player?.setOnCompletionListener {
-                    player?.reset()
-                    isPlaying.value = false
-                    GameMediaPlayer.currentSongIndex = (GameMediaPlayer.currentSongIndex + 1) % gameSongsList.size
-                    playInGameMusic(context, scope, snackbarHostState)
+                    player?.setOnCompletionListener {
+                        if (isPaused.value == true) return@setOnCompletionListener
+                        player?.reset()
+                        isPlaying.value = false
+                        GameMediaPlayer.currentSongIndex = (GameMediaPlayer.currentSongIndex + 1) % gameSongsList.size
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("AudioPlayerViewModel", "playInGameMusic: ${e.printStackTrace()}")
@@ -80,9 +77,12 @@ class AudioPlayerViewModel(
     }
 
     fun pauseMusic() {
-        if (isPlaying.value == true) {
+        try {
+            (player?.isPlaying == true)
             player?.pause()
             isPaused.value = true
+        } catch (e: Exception) {
+            Log.e("AudioPlayerViewModel", "pauseMusic: ${e.printStackTrace()}")
         }
     }
 
@@ -114,56 +114,60 @@ class AudioPlayerViewModel(
         super.onCleared()
         player?.release()
     }
+}
+
+// Inner class -> Solo la usmos aquí, por eso la ponemos como inner
+class GameMediaPlayer(
+    private val audioManager: AudioManager
+): MediaPlayer() {
+    companion object {
+        @Volatile
+        private var instance : GameMediaPlayer? = null
+        var currentSongIndex: Int = 0
+
+        fun getInstance(audioManager: AudioManager): GameMediaPlayer {
+            return instance ?: synchronized(this) {
+                instance ?: buildGameMediaPlayer(audioManager = audioManager).also { instance = it }
+            }
+        }
+
+        private fun buildGameMediaPlayer(audioManager: AudioManager): GameMediaPlayer {
+            return GameMediaPlayer(audioManager = audioManager)
+        }
+
+        fun resetMediaPlayer() {
+            instance?.reset()
+        }
+    }
+
+    init {
+        setupAudioFocusListener()
+    }
 
     private fun setupAudioFocusListener() {
         val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
             .setOnAudioFocusChangeListener { focusChange ->
                 when (focusChange) {
                     AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                        player?.setVolume(0.3f, 0.3f)
+                        setVolume(0.3f, 0.3f)
                     }
 
                     AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                        player?.pause()
+                        pause()
                     }
 
                     AudioManager.AUDIOFOCUS_GAIN -> {
-                        player?.setVolume(1f, 1f)
-                        player?.start()
+                        setVolume(1f, 1f)
+                        start()
                     }
 
                     AudioManager.AUDIOFOCUS_LOSS -> {
-                        player?.stop()
-                        player?.release()
+                        pause()
+                        release()
                     }
                 }
             }
             .build()
-
         audioManager.requestAudioFocus(audioFocusRequest)
     }
-}
-// Inner class -> Solo la usmos aquí, por eso la ponemos como inner
-class GameMediaPlayer: MediaPlayer() {
-    companion object {
-        @Volatile
-        private var instance : GameMediaPlayer? = null
-        var currentSongIndex: Int = 0
-
-        fun getInstance(): GameMediaPlayer {
-            return instance ?: synchronized(this) {
-                instance ?: buildGameMediaPlayer().also { instance = it }
-            }
-        }
-
-        private fun buildGameMediaPlayer(): GameMediaPlayer {
-            return GameMediaPlayer()
-        }
-
-        fun resetMediaPlayer() {
-                instance?.reset()
-                instance?.release()
-                instance = null
-            }
-        }
 }

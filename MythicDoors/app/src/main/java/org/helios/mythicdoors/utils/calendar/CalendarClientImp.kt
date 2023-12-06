@@ -16,15 +16,6 @@ class CalendarClientImp(
         if (!context.hasCalendarPermission()) throw ICalendarClient.CalendarException("Calendar permission not granted")
         assert(!event.isEmpty()) { "Event is empty" }
 
-//        val intent = Intent(Intent.ACTION_INSERT)
-//            .setData(CalendarContract.Events.CONTENT_URI)
-//            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getStartTime())
-//            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getEndTime())
-//            .putExtra(CalendarContract.Events.TITLE, event.getTitle())
-//            .putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription())
-//            .putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation())
-//            .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
-
         val contentValues: ContentValues = getContentValues(event)
 
         try {
