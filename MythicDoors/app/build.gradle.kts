@@ -57,6 +57,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics:${Versions.COMPOSE_VERSION}")
     implementation("androidx.compose.ui:ui-tooling-preview:${Versions.COMPOSE_VERSION}")
     implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("io.coil-kt:coil-compose:2.2.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -84,11 +85,14 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
 
     // Observe As State and LiveData management
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.0-beta01")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0-beta02")
 
-    // Dependency injection
+    // Dagger Hilt -> Dependency injection
     implementation("com.google.dagger:hilt-android:2.46.1")
     implementation("com.google.dagger:hilt-android-compiler:2.45")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    //kapt("com.google.dagger:hilt-android-compiler:2.46.1")
 
     // Text animations -> Accompanist
     implementation("com.google.accompanist:accompanist-pager:0.28.0")
@@ -96,15 +100,25 @@ dependencies {
     // Loc -> Location services
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
-<<<<<<< HEAD
-    // Lottie -> Animation Files
-    implementation("com.airbnb.android:lottie-compose:6.1.0")
-=======
     // LottieFiles -> Animation management by JSON
     implementation("com.airbnb.android:lottie-compose:6.1.0")
 
-
->>>>>>> cf39ee32cc3e08e3b52c21d1919e1a3f373d3f67
+    // Firebase -> Cloud services from Google
+    // -> BoM: With BoM (Bill of Materials) we can manage all the Firebase dependencies in one place
+    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    // -> Core
+    implementation("com.google.firebase:firebase-core:21.1.1")
+    // -> Auth
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    // -> Analytics
+    implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:18.6.0")
+    // -> Cloud Messaging
+    implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")
+    // -> Database
+    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
+    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
 }
 
 class Versions {
