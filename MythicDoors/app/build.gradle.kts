@@ -85,7 +85,7 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
 
     // Observe As State and LiveData management
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.0-beta01")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0-beta02")
 
     // Dagger Hilt -> Dependency injection
     implementation("com.google.dagger:hilt-android:2.46.1")
@@ -104,21 +104,21 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.1.0")
 
     // Firebase -> Cloud services from Google
-    // -> BoM: With BoM (Bill of Materials) we can manage all the Firebase dependencies in one place and we don't need to specify the version for each dependency.
+    // -> BoM: With BoM (Bill of Materials) we can manage all the Firebase dependencies in one place
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     // -> Core
-    implementation("com.google.firebase:firebase-services-ktx")
+    implementation("com.google.firebase:firebase-core:21.1.1")
     // -> Auth
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.android.gms:play-services-auth")
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
     // -> Analytics
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:18.6.0")
     // -> Cloud Messaging
-    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")
     // -> Database
-    implementation("com.google.firebase:firebase-database-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
+    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
 }
 
 class Versions {
