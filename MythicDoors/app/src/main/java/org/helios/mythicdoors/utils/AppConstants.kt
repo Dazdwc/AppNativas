@@ -1,8 +1,5 @@
 package org.helios.mythicdoors.utils
 
-import org.helios.mythicdoors.R
-import org.helios.mythicdoors.navigation.AppDestination
-
 object AppConstants {
     const val APP_NAME = "Mythic Doors"
     const val DATABASE_NAME = "mythic_doors_db"
@@ -19,6 +16,14 @@ object AppConstants {
     const val ENEY_WOLFIE = "Wolfie"
 
     const val INITIAL_COINS_AMOUNT = 200
+
+    object NotificationChannels {
+        const val LOCATION_NOTIFICATION_CHANNEL = "location"
+        const val CALENDAR_NOTIFICATION_CHANNEL = "calendar"
+        const val IMAGES_NOTIFICATION_CHANNEL = "images"
+        const val GAMEWON_NOTIFICATION_CHANNEL = "gamewon"
+    }
+
 
     object Screens {
         const val OVERVIEW_SCREEN = "overview_screen"
@@ -40,6 +45,9 @@ object AppConstants {
         const val ACTION_RESULT_SCREEN_VIEWMODEL = "action-result-screen-viewmodel"
         const val SCORES_SCREEN_VIEWMODEL = "scores-screen-viewmodel"
         const val MENU_BAR_SCREEN_VIEWMODEL = "menu-bar-screen-viewmodel"
+        const val AUDIO_PLAYER_SCREEN_VIEWMODEL = "audio-player-screen-viewmodel"
+        const val SOUND_MANAGEMENT_SCREEN_VIEWMODEL = "sound-management-screen-viewmodel"
+        const val LANGUAGE_MANAGER_SCREEN_VIEWMODEL = "language-manager-screen-viewmodel"
     }
 
     enum class GameMode {
