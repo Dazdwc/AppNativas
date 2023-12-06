@@ -77,4 +77,7 @@
     <string name="screenshot_dialog_confirm">Prendre</string>
     <string name="screenshot_dialog_cancel">Cancelar</string>
     <string name="language_icon_title">lan</string>
+    <string name="google_webclient_auth_id">336864039883-ef1t6uq6mhb529cd7tq2svqo3u7aeidp.apps.googleusercontent.com
+    </string>
+    <string name="sign_in_with_google">Sign in with Google</string>
 </resources>
