@@ -5,13 +5,17 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
+import org.helios.mythicdoors.presentation.sign_in.FirebaseBaseAuthClient
+import org.helios.mythicdoors.presentation.sign_in.IFirebaseBaseAuthClient
 import org.helios.mythicdoors.store.StoreManager
+import org.helios.mythicdoors.utils.AppConstants
 
 class RegisterScreenViewModel(
     private val dataController: DataController
@@ -26,6 +30,7 @@ class RegisterScreenViewModel(
     }
 
     private val store: StoreManager by lazy { StoreManager.getInstance() }
+    private val firebaseAuth: IFirebaseBaseAuthClient by lazy { FirebaseBaseAuthClient.getInstance(FirebaseAuth.getInstance()) }
 
     private val passwordPattern: Regex = Regex("^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{6,}$")
 
@@ -40,12 +45,21 @@ class RegisterScreenViewModel(
         snackbarHostState: SnackbarHostState) {
         try {
             scope.launch {
-                dataController.saveUser(User.create(name, email, password))
-                    .takeIf { it }?.let {
-                    registerSuccessful.postValue(true)
-                    store.updateActualUser(dataController.getLastUser() ?: throw Exception("Error getting last user"))
-                    snackbarHostState.showSnackbar("Register successful!")
-                } ?: snackbarHostState.showSnackbar("Register failed!")
+                // TODO - Remove old logic
+//                dataController.saveUser(User.create(name, email, password))
+//                    .takeIf { it }?.let {
+//                    registerSuccessful.postValue(true)
+//                    store.updateActualUser(dataController.getLastUser() ?: throw Exception("Error getting last user"))
+//                    snackbarHostState.showSnackbar("Register successful!")
+//                } ?: snackbarHostState.showSnackbar("Register failed!")
+                firebaseAuth.registerWithEmailAndPassword(
+                    email = email,
+                    password = password,
+                    name = name).data?.let {   Log.e("RegisterScreenViewModel", "register: ${it.name}").also { registerSuccessful.postValue(true) } } ?: Log.e("RegisterScreenViewModel", "register: ${firebaseAuth.registerWithEmailAndPassword(email = email, password = password, name = name).errorMessage}")
+                        .also {
+                            store.setAuthType(AppConstants.AuthType.BASE)
+                            registerSuccessful.postValue(false)
+                        }
             }
         } catch (e: Exception) {
             Log.e("RegisterScreenViewModel", "register: ${e.message}").also { registerSuccessful.postValue(false) }

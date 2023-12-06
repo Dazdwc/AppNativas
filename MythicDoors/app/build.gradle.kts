@@ -1,6 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.kapt")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -113,6 +116,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     // -> Analytics
     implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:18.6.0")
+    // Crashlytics -> Native crash reporting
     implementation("com.google.firebase:firebase-crashlytics-ktx:18.6.0")
     // -> Cloud Messaging
     implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")
