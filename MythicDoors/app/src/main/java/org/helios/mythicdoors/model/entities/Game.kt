@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 
 data class Game(
     private val id: Long?,
+    private val documentId: String?,
     private val user: User,
     private val coin: Int,
     private val level: Int,
@@ -19,9 +20,12 @@ data class Game(
     fun getMaxEnemyLevel(): Int { return maxEnemyLevel}
     fun getDateTime(): LocalDateTime { return gameDateTime}
 
+    fun setDateTime(gameDateTime: LocalDateTime) { this.gameDateTime }
+
     companion object {
         fun createEmptyGame(): Game {
             return Game(
+                null,
                 null,
                 User.createEmptyUser(),
                 -1,
@@ -32,6 +36,7 @@ data class Game(
         }
 
         fun create(
+            documentId: String? = null,
             user: User,
             coin: Int,
             level: Int,
@@ -40,6 +45,7 @@ data class Game(
         ): Game {
             return Game(
                 null,
+                documentId,
                 user,
                 coin,
                 level,
