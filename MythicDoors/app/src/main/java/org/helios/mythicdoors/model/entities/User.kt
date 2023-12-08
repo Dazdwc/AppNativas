@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 data class User(
     private val id: Long?,
+    private val documentId: String?,
     private val name: String,
     private val email: String,
     private val password: String,
@@ -13,9 +14,10 @@ data class User(
     private var coins: Int,
     private var goldCoins: Int,
     private var isActive: Boolean,
-    private val createdAt: LocalDate
+    private var createdAt: LocalDate
 ) {
     fun getId(): Long? { return id }
+    fun getDocumentId(): String? { return documentId }
     fun getName(): String { return name }
     fun getEmail(): String { return email }
     fun getPassword(): String { return password }
@@ -33,11 +35,13 @@ data class User(
     fun setCoins(coins: Int) { this.coins = coins }
     fun setGoldCoins(goldCoins: Int) { this.goldCoins = goldCoins }
     fun setIsActive(isActive: Boolean) { this.isActive = isActive }
+    fun setCreatedAt(createdAt: LocalDate) { this.createdAt = createdAt }
 
     /* Implementación del patrón Fabric */
     companion object {
         fun createEmptyUser(): User {
             return User(
+                null,
                 null,
                 "",
                 "",
@@ -52,12 +56,14 @@ data class User(
         }
 
         fun create(
+            documentId: String? = null,
             name: String,
             email: String,
             password: String,
         ): User {
             return User(
                 null,
+                documentId,
                 name,
                 email,
                 password,
@@ -74,6 +80,7 @@ data class User(
         fun createDummyUser(): User {
             return User(
                 9999999999,
+                null,
                 "Jane Doe",
                 "janedoe@dummy.com",
                 "1234",

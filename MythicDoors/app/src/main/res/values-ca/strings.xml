@@ -80,4 +80,8 @@
     <string name="google_webclient_auth_id">336864039883-ef1t6uq6mhb529cd7tq2svqo3u7aeidp.apps.googleusercontent.com
     </string>
     <string name="sign_in_with_google">Registrate con Google</string>
+    <string name="register_error">It has been a error registrating your user account, sorry</string>
+    <string name="register_successful">New user account created</string>
+    <string name="login_successful">Login successful!</string>
+    <string name="login_failed">Sorry, login failed!</string>
 </resources>

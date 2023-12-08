@@ -8,8 +8,10 @@ import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Location
 import org.helios.mythicdoors.model.entities.Song
 import org.helios.mythicdoors.model.entities.User
+import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.Languages
 import org.helios.mythicdoors.utils.AppConstants.GameMode
+import org.helios.mythicdoors.utils.AppConstants.AuthType
 import org.helios.mythicdoors.utils.typeclass.Language
 import java.lang.ref.WeakReference
 
@@ -22,6 +24,7 @@ data class AppStore(
     var gameMode: GameMode = GameMode.SINGLE_PLAYER,
     var gameScore: Int = 0,
     var userLocation: Location = Location.createEmptyLocation(),
+    var authType: AuthType = AuthType.DEFAULT,
     val gameSongsList: List<Song> = listOf(
         Song.create(R.raw.guardians_of_the_sword, "Guardians of The Sword", "Dark Fantasy Studio", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.guardians_of_the_sword)),
         Song.create(R.raw.the_girl_and_the_sword, "The Girl and The Sword", "Dark Fantasy Studio", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.the_girl_and_the_sword)),
@@ -152,4 +155,7 @@ class StoreManager {
     fun getLanguage(languageName: String): Language? { return appStore.languages[languageName] }
 
     fun getLanguages(): Map<String, Language> { return appStore.languages }
+
+    fun getAuthType(): AuthType { return appStore.authType }
+    fun setAuthType(authType: AuthType) { appStore.authType = authType }
 }

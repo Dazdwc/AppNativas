@@ -1,6 +1,7 @@
 package org.helios.mythicdoors.ui.screens
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +34,7 @@ import org.helios.mythicdoors.viewmodel.LoginScreenViewModel
 fun LoginScreen(navController: NavController) {
     val controller: LoginScreenViewModel = (MainActivity.viewModelsMap[LOGIN_SCREEN_VIEWMODEL] as LoginScreenViewModel).apply { setNavController(navController) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
     var userEmail: String by remember { mutableStateOf("") }
@@ -219,7 +221,23 @@ fun LoginScreen(navController: NavController) {
                     ) {
                         Button(
                             onClick = {
-                                scope.launch { controller.login(userEmail, password, scope, snackbarHostState) }
+                                scope.launch {
+                                    try {
+                                        controller.login(userEmail, password, scope, snackbarHostState).run {
+                                            Toast.makeText(
+                                                context,
+                                                context.getString(R.string.login_successful),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    } catch (e: Exception) {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.login_failed),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
                             },
                             enabled = isEmailValid && isPasswordValid,
                             elevation = ButtonDefaults.buttonElevation(2.dp),

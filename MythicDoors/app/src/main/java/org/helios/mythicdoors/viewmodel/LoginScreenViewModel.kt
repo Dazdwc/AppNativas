@@ -6,12 +6,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
+import org.helios.mythicdoors.presentation.sign_in.FirebaseBaseAuthClient
+import org.helios.mythicdoors.presentation.sign_in.IFirebaseBaseAuthClient
 import org.helios.mythicdoors.store.StoreManager
 
 class LoginScreenViewModel(
@@ -27,6 +30,7 @@ class LoginScreenViewModel(
     }
 
     private val store: StoreManager by lazy { StoreManager.getInstance() }
+    private val firebaseAuth: IFirebaseBaseAuthClient by lazy { FirebaseBaseAuthClient.getInstance(FirebaseAuth.getInstance()) }
 
     val loginSuccessful: MutableLiveData<Boolean> = MutableLiveData(false)
     fun resetLoginSuccessful() { loginSuccessful.value = false }
@@ -41,11 +45,25 @@ class LoginScreenViewModel(
     ) {
         try {
             scope.launch {
-                dataController.getAllUsers().orEmpty()
-                    .find { it.getEmail() == userEmail && it.getPassword() == userPassword }
-                    ?.let {
-                        loginSuccessful.value = true
-                        store.updateActualUser(it)
+                //TODO - Remove old logic
+//                dataController.getAllUsers().orEmpty()
+//                    .find { it.getEmail() == userEmail && it.getPassword() == userPassword }
+//                    ?.let {
+//                        loginSuccessful.value = true
+//                        store.updateActualUser(it)
+//                }
+                firebaseAuth.signInWithEmailAndPassword(
+                    email = userEmail,
+                    password = userPassword
+                ).let {result ->
+                    result.data?.let { user ->
+                        Log.e("LoginScreenViewModel", "login: ${user.name}")
+                        //user.let { store.updateActualUser(it) }
+                    .also {
+                        store.setAuthType(org.helios.mythicdoors.utils.AppConstants.AuthType.BASE)
+                        loginSuccessful.postValue(true) }
+                } ?: Log.e("LoginScreenViewModel", "login: ${result.errorMessage}")
+                    .also { loginSuccessful.postValue(false) }
                 }
             }.join()
         } catch (e: Exception) {

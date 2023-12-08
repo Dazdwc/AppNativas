@@ -4,8 +4,8 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.model.entities.User
-import org.helios.mythicdoors.model.repositories.IRepository
-import org.helios.mythicdoors.model.repositories.UserRepositoryImp
+import org.helios.mythicdoors.model.repositories.sqlite.IRepository
+import org.helios.mythicdoors.model.repositories.sqlite.UserRepositoryImp
 import org.helios.mythicdoors.services.interfaces.IUserService
 import org.helios.mythicdoors.utils.connection.Connection
 

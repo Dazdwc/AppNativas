@@ -60,11 +60,6 @@ object AppConstants {
         const val GAME_GUIDE_SCREEN_VIEWMODEL = "game-guide-screen-viewmodel"
     }
 
-    enum class GameMode {
-        SINGLE_PLAYER,
-        MULTI_PLAYER
-    }
-
     object ScreenConstants {
         const val IMAGE_HEIGHT = 90
         const val SMALL_IMAGE_HEIGHT = 90
@@ -79,5 +74,17 @@ object AppConstants {
         const val ENGLISH = "English"
         const val SPANISH = "Español"
         const val CATALAN = "Català"
+    }
+
+    enum class GameMode {
+        SINGLE_PLAYER,
+        MULTI_PLAYER
+    }
+
+    enum class AuthType {
+        DEFAULT,
+        BASE,
+        GOOGLE,
+        GITHUB
     }
 }

@@ -1,4 +1,4 @@
-package org.helios.mythicdoors.model.repositories
+package org.helios.mythicdoors.model.repositories.sqlite
 
 import android.content.ContentValues
 import android.database.Cursor

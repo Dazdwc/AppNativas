@@ -1,6 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.kapt")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -104,21 +107,32 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.1.0")
 
     // Firebase -> Cloud services from Google
-    // -> BoM: With BoM (Bill of Materials) we can manage all the Firebase dependencies in one place
+    // Coroutines for Firebase -> Threading management
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+    // -> BoM: With BoM (Bill of Materials) we can manage all the Firebase dependencies in one place and keep them up to date
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     // -> Core
     implementation("com.google.firebase:firebase-core:21.1.1")
     // -> Auth
-    implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
+    implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     // -> Analytics
-    implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
-    implementation("com.google.firebase:firebase-crashlytics-ktx:18.6.0")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    // Crashlytics -> Native crash reporting
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
     // -> Cloud Messaging
-    implementation("com.google.firebase:firebase-messaging-ktx:23.3.1")
+    implementation("com.google.firebase:firebase-messaging-ktx")
     // -> Database
-    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
-    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    // -> In-App Messaging
+    implementation("com.google.firebase:firebase-inappmessaging-display-ktx")
+    // -> Remote Config
+    implementation("com.google.firebase:firebase-config-ktx")
+    // -> Performance Monitoring
+    implementation("com.google.firebase:firebase-perf-ktx")
 }
 
 class Versions {
