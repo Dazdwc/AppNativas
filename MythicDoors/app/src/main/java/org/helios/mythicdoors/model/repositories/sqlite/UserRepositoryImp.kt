@@ -168,6 +168,7 @@ class UserRepositoryImp(dbHelper: Connection):
     private fun mapUser(cursor: Cursor): User {
         return User(
             cursor.getLong(cursor.getColumnIndexOrThrow(Contracts.UserTableContract.COLUMN_NAME_ID)),
+            null,
             cursor.getString(cursor.getColumnIndexOrThrow(Contracts.UserTableContract.COLUMN_NAME_NAME)),
             cursor.getString(cursor.getColumnIndexOrThrow(Contracts.UserTableContract.COLUMN_NAME_EMAIL)),
             cursor.getString(cursor.getColumnIndexOrThrow(Contracts.UserTableContract.COLUMN_NAME_PASSWORD)),

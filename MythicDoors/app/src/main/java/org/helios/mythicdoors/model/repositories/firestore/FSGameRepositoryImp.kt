@@ -31,9 +31,9 @@ class FSGameRepositoryImp(): IRepository<Game> {
         }
     }
 
-    override suspend fun getOne(email: String): Result<Game> = withContext(Dispatchers.IO) {
+    override suspend fun getOne(key: String): Result<Game> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val snapshot = gamesCollection.whereEqualTo(GamesDocumentContract.FIELD_NAME_USER, email).get().await()
+            val snapshot = gamesCollection.whereEqualTo(GamesDocumentContract.FIELD_NAME_ID, key).get().await()
             val game: Game = mapGame(snapshot.documents.first().data ?: throw GamesRepositoryException("Error getting game"))
             Result.success(game)
         } catch (e: Exception) {
@@ -44,7 +44,7 @@ class FSGameRepositoryImp(): IRepository<Game> {
 
     override suspend fun insertOne(item: Game): Result<Boolean> = withContext(Dispatchers.IO) {
         return@withContext try {
-            gamesCollection.document(item.getUser().toString()).set(buildGame(item)).await()
+            gamesCollection.document(item.getUser().getEmail()).set(buildGame(item)).await()
             Result.success(true)
         } catch (e: Exception) {
             Log.e("FSGameRepositoryImp", "Error inserting game: ${e.message}")
@@ -54,7 +54,7 @@ class FSGameRepositoryImp(): IRepository<Game> {
 
     override suspend fun updateOne(item: Game): Result<Boolean> = withContext(Dispatchers.IO) {
         return@withContext try {
-            gamesCollection.document(item.getUser().toString()).update(buildGame(item)).await()
+            gamesCollection.document(item.getUser().getEmail()).update(buildGame(item)).await()
             Result.success(true)
         } catch (e: Exception) {
             Log.e("FSGameRepositoryImp", "Error updating game: ${e.message}")
@@ -62,9 +62,9 @@ class FSGameRepositoryImp(): IRepository<Game> {
         }
     }
 
-    override suspend fun deleteOne(email: String): Result<Boolean> = withContext(Dispatchers.IO) {
+    override suspend fun deleteOne(key: String): Result<Boolean> = withContext(Dispatchers.IO) {
         return@withContext try {
-            gamesCollection.document(email).delete().await()
+            gamesCollection.document(key).delete().await()
             Result.success(true)
         } catch (e: Exception) {
             Log.e("FSGameRepositoryImp", "Error deleting game: ${e.message}")

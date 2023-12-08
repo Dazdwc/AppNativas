@@ -128,6 +128,7 @@ class ActionResultScreenViewModel(
             val lastGameResults = store.getAppStore().combatResults
 
             val actualGame: Game = Game.create(
+                null,
                 store.getAppStore().actualUser ?: throw Exception("User not found"),
                 lastGameResults.resultCoinAmount.minus(originalPlayerStats.coins).coerceAtLeast(0),
                 playerData?.getLevel() ?: 1,

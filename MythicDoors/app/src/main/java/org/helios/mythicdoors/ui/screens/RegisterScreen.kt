@@ -1,11 +1,10 @@
 package org.helios.mythicdoors.ui.screens
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.helios.mythicdoors.MainActivity
@@ -30,7 +28,10 @@ import org.helios.mythicdoors.viewmodel.RegisterScreenViewModel
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun RegisterScreen(navController: NavController) {
-    val controller: RegisterScreenViewModel = (MainActivity.viewModelsMap[REGISTER_SCREEN_VIEWMODEL] as RegisterScreenViewModel).apply { setNavController(navController) }
+    val controller: RegisterScreenViewModel =
+        (MainActivity.viewModelsMap[REGISTER_SCREEN_VIEWMODEL] as RegisterScreenViewModel).apply {
+            setNavController(navController)
+        }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
@@ -52,7 +53,20 @@ fun RegisterScreen(navController: NavController) {
 
     val registerSuccessful by controller.registerSuccessful.observeAsState(false)
     LaunchedEffect(registerSuccessful) {
-        if (registerSuccessful) controller.navigateToGameOptsScreen(scope, snackbarHostState)
+        if (registerSuccessful) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.register_successful),
+                Toast.LENGTH_LONG
+            ).show()
+            controller.navigateToGameOptsScreen(scope, snackbarHostState)
+        } else {
+            Toast.makeText(
+                context,
+                context.getString(R.string.register_error),
+                Toast.LENGTH_LONG
+            ).show()
+        }
         controller.resetRegisterSuccessful()
     }
 
@@ -163,12 +177,14 @@ fun RegisterScreen(navController: NavController) {
                         isError = !isEmailValid,
                     )
                 }
-                isEmailValid.takeIf { !it }?.run { Text(
-                    text = stringResource(id = R.string.email_validator),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
-                ) }
+                isEmailValid.takeIf { !it }?.run {
+                    Text(
+                        text = stringResource(id = R.string.email_validator),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -208,12 +224,14 @@ fun RegisterScreen(navController: NavController) {
                         tint = MaterialTheme.colorScheme.secondary,
                     )
                 }
-                isPasswordValid.takeIf { !it }?.run { Text(
-                    text = stringResource(id = R.string.password_requirements).trimMargin(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
-                ) }
+                isPasswordValid.takeIf { !it }?.run {
+                    Text(
+                        text = stringResource(id = R.string.password_requirements).trimMargin(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -250,12 +268,14 @@ fun RegisterScreen(navController: NavController) {
                         tint = MaterialTheme.colorScheme.secondary,
                     )
                 }
-                (password == retypedPassword).takeIf { !it }?.run { Text(
-                    text = stringResource(id = R.string.password_retype_validator).trimMargin(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
-                ) }
+                (password == retypedPassword).takeIf { !it }?.run {
+                    Text(
+                        text = stringResource(id = R.string.password_retype_validator).trimMargin(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -266,20 +286,9 @@ fun RegisterScreen(navController: NavController) {
                     Button(
                         onClick = {
                             try {
-                                controller.register(userName, userEmail, password, scope, snackbarHostState).run {
-                                    Toast.makeText(
-                                        context,
-                                        context.getString(R.string.register_successful),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                                // if (registerSuccessful) controller.navigateToGameOptsScreen(scope, snackbarHostState)
+                                controller.register(userName, userEmail, password, scope)
                             } catch (e: Exception) {
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.register_error),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                Log.e("RegisterScreen", "register: ${e.message}")
                             }
                         },
                         enabled = isEmailValid && isPasswordValid && password == retypedPassword,

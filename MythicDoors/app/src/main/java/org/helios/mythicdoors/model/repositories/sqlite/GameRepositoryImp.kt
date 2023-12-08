@@ -165,6 +165,7 @@ class GameRepositoryImp(dbHelper: Connection):
     private suspend fun mapGame(cursor: Cursor): Game {
         return Game(
             cursor.getLong(cursor.getColumnIndexOrThrow(Contracts.GameTableContract.COLUMN_NAME_ID)),
+            null,
             getUser(cursor.getLong(cursor.getColumnIndexOrThrow(Contracts.GameTableContract.COLUMN_NAME_ID_USER))),
             cursor.getInt(cursor.getColumnIndexOrThrow(Contracts.GameTableContract.COLUMN_NAME_COIN)),
             cursor.getInt(cursor.getColumnIndexOrThrow(Contracts.GameTableContract.COLUMN_NAME_LEVEL)),

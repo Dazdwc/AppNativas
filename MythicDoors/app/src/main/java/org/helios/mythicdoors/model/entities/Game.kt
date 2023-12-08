@@ -13,6 +13,7 @@ data class Game(
     private val gameDateTime: LocalDateTime,
 ) {
     fun getId(): Long? { return id }
+    fun getDocumentId(): String? { return documentId }
     fun getUser(): User { return user}
     fun getCoin(): Int { return coin}
     fun getLevel(): Int { return level}
@@ -56,6 +57,9 @@ data class Game(
     }
 
     fun isEmpty(): Boolean { return this.id == null }
+
+    fun isFirestoreEmpty(): Boolean { return this.documentId == null }
+
     fun isValid(): Boolean {
         return !this.user.isEmpty()
                 && this.coin >= 0
