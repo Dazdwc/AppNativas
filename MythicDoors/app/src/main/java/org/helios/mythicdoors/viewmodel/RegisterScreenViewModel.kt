@@ -14,6 +14,7 @@ import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
 import org.helios.mythicdoors.presentation.sign_in.FirebaseBaseAuthClient
 import org.helios.mythicdoors.presentation.sign_in.IFirebaseBaseAuthClient
+import org.helios.mythicdoors.presentation.sign_in.SignInResult
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.utils.AppConstants
 
@@ -41,25 +42,32 @@ class RegisterScreenViewModel(
         name: String,
         email: String,
         password: String,
-        scope: CoroutineScope,
-        snackbarHostState: SnackbarHostState) {
+        scope: CoroutineScope
+    ) {
         try {
             scope.launch {
-                // TODO - Remove old logic
-//                dataController.saveUser(User.create(name, email, password))
-//                    .takeIf { it }?.let {
-//                    registerSuccessful.postValue(true)
-//                    store.updateActualUser(dataController.getLastUser() ?: throw Exception("Error getting last user"))
-//                    snackbarHostState.showSnackbar("Register successful!")
-//                } ?: snackbarHostState.showSnackbar("Register failed!")
-                firebaseAuth.registerWithEmailAndPassword(
+                val result: SignInResult = firebaseAuth.registerWithEmailAndPassword(
                     email = email,
                     password = password,
-                    name = name).data?.let {   Log.e("RegisterScreenViewModel", "register: ${it.name}").also { registerSuccessful.postValue(true) } } ?: Log.e("RegisterScreenViewModel", "register: ${firebaseAuth.registerWithEmailAndPassword(email = email, password = password, name = name).errorMessage}")
-                        .also {
-                            store.setAuthType(AppConstants.AuthType.BASE)
-                            registerSuccessful.postValue(false)
-                        }
+                    name = name)
+
+                result.data?.run {
+                    dataController.saveOneFSUser(User.create(
+                        name = name,
+                        email = email,
+                        password = password
+                    ))
+
+                    store.updateActualUser(dataController.getLastUser() ?: throw Exception("Error getting last user"))
+                    store.setAuthType(AppConstants.AuthType.BASE)
+
+                    registerSuccessful.postValue(true)
+                }
+
+                result.errorMessage?.run {
+                    Log.e("RegisterScreenViewModel", "register: $this")
+                    registerSuccessful.postValue(false)
+                }
             }
         } catch (e: Exception) {
             Log.e("RegisterScreenViewModel", "register: ${e.message}").also { registerSuccessful.postValue(false) }

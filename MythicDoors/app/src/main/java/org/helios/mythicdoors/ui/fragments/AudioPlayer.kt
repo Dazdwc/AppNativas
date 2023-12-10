@@ -1,5 +1,7 @@
 package org.helios.mythicdoors.ui.fragments
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.MarqueeAnimationMode
 import androidx.compose.foundation.MarqueeSpacing
@@ -23,6 +25,7 @@ import org.helios.mythicdoors.model.entities.Song
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.AUDIO_PLAYER_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.tools.AudioPlayerViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AudioPlayer() {
@@ -68,16 +71,10 @@ fun AudioPlayer() {
                         spacing = MarqueeSpacing(10.dp),
                         velocity = 100.dp
                 ),
-                text = "${currentSong.value?.name} by ${currentSong.value?.artist}" ?: "No song selected",
+                text = "${currentSong.value?.name} by ${currentSong.value?.artist}",
                 style = MaterialTheme.typography.labelSmall,
             )
 
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AudioPlayerPreview() {
-    AudioPlayer()
 }

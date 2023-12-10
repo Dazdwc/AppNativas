@@ -97,6 +97,8 @@ data class User(
 
     fun isEmpty(): Boolean { return this.id == null }
 
+    fun isFirestoreEmpty(): Boolean { return this.documentId == null }
+
     fun isValid(): Boolean {
         return this.name.isNotEmpty()
                 && this.email.isNotEmpty()

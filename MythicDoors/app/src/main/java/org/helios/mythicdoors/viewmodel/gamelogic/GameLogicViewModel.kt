@@ -129,6 +129,7 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
     private fun getNewUserStaticsAfterBattle(): User {
         return User(
             player.getId(),
+            player.getDocumentId(),
             player.getName(),
             player.getEmail(),
             player.getPassword(),

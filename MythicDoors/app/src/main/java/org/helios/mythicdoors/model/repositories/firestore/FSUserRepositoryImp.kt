@@ -32,9 +32,9 @@ class FSUserRepositoryImp(): IRepository<User> {
         }
     }
 
-    override suspend fun getOne(email: String): Result<User> = withContext(Dispatchers.IO) {
+    override suspend fun getOne(key: String): Result<User> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val snapshot: QuerySnapshot = usersCollection.whereEqualTo(UsersDocumentContract.FIELD_NAME_EMAIL, email).get().await()
+            val snapshot: QuerySnapshot = usersCollection.whereEqualTo(UsersDocumentContract.FIELD_NAME_EMAIL, key).get().await()
             val user: User = mapUser(snapshot.documents.first().data ?: throw UsersRepositoryException("Error getting user"))
             success(user)
         } catch (e: Exception) {
@@ -67,9 +67,9 @@ class FSUserRepositoryImp(): IRepository<User> {
         }
     }
 
-    override suspend fun deleteOne(email: String): Result<Boolean> = withContext(Dispatchers.IO) {
+    override suspend fun deleteOne(key: String): Result<Boolean> = withContext(Dispatchers.IO) {
         return@withContext try {
-            usersCollection.document(email)
+            usersCollection.document(key)
                 .delete()
                 .await()
             success(true)
