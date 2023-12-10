@@ -170,8 +170,7 @@ class GameRepositoryImp(dbHelper: Connection):
             cursor.getInt(cursor.getColumnIndexOrThrow(Contracts.GameTableContract.COLUMN_NAME_LEVEL)),
             cursor.getInt(cursor.getColumnIndexOrThrow(Contracts.GameTableContract.COLUMN_NAME_SCORE)),
             cursor.getInt(cursor.getColumnIndexOrThrow(Contracts.GameTableContract.COLUMN_NAME_MAX_ENEMY_LEVEL)),
-            LocalDateTime.parse(cursor.getString(cursor.getColumnIndexOrThrow(Contracts.GameTableContract.COLUMN_NAME_GAME_DATE_TIME))),
-        )
+            LocalDateTime.parse(cursor.getString(cursor.getColumnIndexOrThrow(Contracts.GameTableContract.COLUMN_NAME_GAME_DATE_TIME))),)
     }
 
     private suspend fun getUser(id: Long): User {
