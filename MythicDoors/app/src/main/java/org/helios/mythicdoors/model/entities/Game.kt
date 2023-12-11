@@ -3,22 +3,18 @@ package org.helios.mythicdoors.model.entities
 import java.time.LocalDateTime
 
 data class Game(
-    private val id: Long?,
-    private val documentId: String?,
     private val user: User,
-    private val coin: Int,
-    private val level: Int,
-    private val score: Int,
-    private val maxEnemyLevel: Int,
+    private val coin: Long,
+    private val level: Long,
+    private val score: Long,
+    private val maxEnemyLevel: Long,
     private val gameDateTime: LocalDateTime,
 ) {
-    fun getId(): Long? { return id }
-    fun getDocumentId(): String? { return documentId }
     fun getUser(): User { return user}
-    fun getCoin(): Int { return coin}
-    fun getLevel(): Int { return level}
-    fun getScore(): Int { return score}
-    fun getMaxEnemyLevel(): Int { return maxEnemyLevel}
+    fun getCoin(): Long { return coin}
+    fun getLevel(): Long { return level}
+    fun getScore(): Long { return score}
+    fun getMaxEnemyLevel(): Long { return maxEnemyLevel}
     fun getDateTime(): LocalDateTime { return gameDateTime}
 
     fun setDateTime(gameDateTime: LocalDateTime) { this.gameDateTime }
@@ -26,8 +22,6 @@ data class Game(
     companion object {
         fun createEmptyGame(): Game {
             return Game(
-                null,
-                null,
                 User.createEmptyUser(),
                 -1,
                 -1,
@@ -37,16 +31,13 @@ data class Game(
         }
 
         fun create(
-            documentId: String? = null,
             user: User,
-            coin: Int,
-            level: Int,
-            score: Int,
-            maxEnemyLevel: Int,
+            coin: Long,
+            level: Long,
+            score: Long,
+            maxEnemyLevel: Long,
         ): Game {
             return Game(
-                null,
-                documentId,
                 user,
                 coin,
                 level,
@@ -56,12 +47,12 @@ data class Game(
         }
     }
 
-    fun isEmpty(): Boolean { return this.id == null }
+/*    fun isEmpty(): Boolean { return this.id == null }*/
 
-    fun isFirestoreEmpty(): Boolean { return this.documentId == null }
+    fun isFirestoreEmpty(): Boolean { return this.user.isFirestoreEmpty() }
 
     fun isValid(): Boolean {
-        return !this.user.isEmpty()
+        return !this.user.isFirestoreEmpty()
                 && this.coin >= 0
                 && this.level >= 0
                 && this.score >= 0

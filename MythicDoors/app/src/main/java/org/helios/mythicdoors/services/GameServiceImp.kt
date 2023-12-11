@@ -1,3 +1,4 @@
+/*
 package org.helios.mythicdoors.services
 
 import android.util.Log
@@ -67,4 +68,4 @@ class GameServiceImp(dbHelper: Connection): IGameService {
         }
         return@withContext -1
     }
-}
+}*/

@@ -51,18 +51,18 @@ class GameActionScreenViewModel (
         }
     }
 
-    fun getPlayerLevel(): Int {
+    fun getPlayerLevel(): Long {
         return try {
-            player?.getLevel() ?: 1
+            player?.getLevel() ?: 1L
         } catch (e: NumberFormatException) {
             Log.e("GameActionScreenViewModel", "getPlayerLevel: $e")
             1
         }
     }
 
-    fun getPlayerCoins(): Int {
+    fun getPlayerCoins(): Long {
         return try {
-            player?.getCoins() ?: 0
+            player?.getCoins() ?: 0L
         } catch (e: NumberFormatException) {
             Log.e("GameActionScreenViewModel", "getPlayerCoins: $e")
             0
@@ -121,7 +121,8 @@ class GameActionScreenViewModel (
     private fun updateStore() {
         try {
             viewModelScope.launch {
-                store.updateActualUser(dataController.getUser(player?.getId()?: throw Exception("User id not valid")) ?: throw Exception("User not found"))
+                store.updateActualUser(dataController.getOneFSUser(player?.getEmail() ?: throw Exception("User id not valid")) ?: throw Exception("User not found"))
+                // store.updateActualUser(dataController.getUser(player?.getId()?: throw Exception("User id not valid")) ?: throw Exception("User not found"))
                 player = loadPlayerData() ?: throw Exception("User not found")
             }
         } catch (e: Exception) {

@@ -3,9 +3,7 @@ package org.helios.mythicdoors.model
 import org.helios.mythicdoors.model.entities.Game
 import org.helios.mythicdoors.model.entities.Location
 import org.helios.mythicdoors.model.entities.User
-import org.helios.mythicdoors.services.GameServiceImp
 import org.helios.mythicdoors.services.LocationServiceImp
-import org.helios.mythicdoors.services.UserServiceImp
 import org.helios.mythicdoors.services.firestore.FSGameServiceImp
 import org.helios.mythicdoors.services.firestore.FSUserServiceImp
 import org.helios.mythicdoors.services.firestore.IDataService
@@ -20,8 +18,8 @@ import javax.inject.Singleton
 class DataController @Inject constructor(
     dbHelper: Connection
 ) {
-    private val userService: IUserService = UserServiceImp(dbHelper)
-    private val gameService: IGameService = GameServiceImp(dbHelper)
+    /*private val userService: IUserService = UserServiceImp(dbHelper)
+    private val gameService: IGameService = GameServiceImp(dbHelper)*/
     private val locationService: ILocationService = LocationServiceImp(dbHelper)
 
     private val fsUserServiceImp: IDataService<User> = FSUserServiceImp()
@@ -45,7 +43,7 @@ class DataController @Inject constructor(
         }
     }
 
-    suspend fun getAllUsers(): List<User>? { return userService.getUsers() }
+    /*suspend fun getAllUsers(): List<User>? { return userService.getUsers() }
 
     suspend fun getUser(id: Long): User? { return userService.getUser(id = id) }
 
@@ -68,7 +66,7 @@ class DataController @Inject constructor(
 
     suspend fun deleteGame(id: Long): Boolean { return gameService.deleteGame(id) }
 
-    suspend fun countGames(): Int { return gameService.countGames() }
+    suspend fun countGames(): Int { return gameService.countGames() }*/
 
 
     suspend fun saveLocation(location: Location): Boolean { return locationService.saveLocation(location) }

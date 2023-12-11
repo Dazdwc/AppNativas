@@ -30,7 +30,7 @@ class FSGameServiceImp(
 
     override suspend fun saveOne(item: Game): Result<Boolean> = withContext(Dispatchers.IO) {
         return@withContext try {
-            item.takeIf { !it.isValid() }?.run {
+            item.takeIf { it.isValid() }?.run {
                 if (isFirestoreEmpty()) checkIfGameExists(this).takeIf { !it }?.let { gameRepository.insertOne(this) } ?: success(false)
                 else gameRepository.updateOne(this)
             } ?: success(false)
@@ -61,7 +61,7 @@ class FSGameServiceImp(
 
     override suspend fun getLast(): Game? = withContext(Dispatchers.IO) {
         return@withContext try {
-            gameRepository.getLast().takeIf { !it.isFirestoreEmpty() }
+            gameRepository.getLast().getOrNull()
         } catch (e: Exception) {
             Log.e("FSGameServiceImp", "Error getting last game: ${e.message}")
             null
@@ -70,7 +70,7 @@ class FSGameServiceImp(
 
     private suspend fun checkIfGameExists(game: Game): Boolean = withContext(Dispatchers.IO) {
         return@withContext try {
-            gameRepository.getOne(game.getDocumentId() ?: return@withContext false).getOrNull() != null
+            gameRepository.getAll().takeIf { it.isNotEmpty() }?.contains(game) ?: false
         } catch (e: Exception) {
             false
         }

@@ -15,7 +15,7 @@ object AppConstants {
     const val ENEMY_REAPY = "The Reaper"
     const val ENEY_WOLFIE = "Wolfie"
 
-    const val INITIAL_COINS_AMOUNT = 200
+    const val INITIAL_COINS_AMOUNT = 200L
 
     const val WEB_GUIDE_URl = "https://danielboj.github.io/mythic-doors-webguide/"
 

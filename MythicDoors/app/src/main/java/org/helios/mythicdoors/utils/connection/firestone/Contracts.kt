@@ -2,7 +2,6 @@ package org.helios.mythicdoors.utils.connection.firestone
 
 class Contracts {
     object UsersDocumentContract {
-        const val FIELD_NAME_ID = "documentId"
         const val FIELD_NAME_NAME = "name"
         const val FIELD_NAME_EMAIL = "email"
         const val FIELD_NAME_PASSWORD = "password"
@@ -23,5 +22,9 @@ class Contracts {
         const val FIELD_NAME_SCORE = "score"
         const val FIELD_NAME_MAX_ENEMY_LEVEL = "maxEnemyLevel"
         const val FIELD_NAME_GAME_DATE_TIME = "gameDateTime"
+    }
+
+    object DateTimeFormatter {
+        const val DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
     }
 }

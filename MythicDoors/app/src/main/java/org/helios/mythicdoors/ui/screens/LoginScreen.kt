@@ -52,8 +52,14 @@ fun LoginScreen(navController: NavController) {
     val loginSuccessful by controller.loginSuccessful.observeAsState(false)
     LaunchedEffect(loginSuccessful, snackbarHostState) {
         if (loginSuccessful) {
-            snackbarHostState.currentSnackbarData?.dismiss().run { controller.navigateToGameOptsScreen(scope, snackbarHostState) }
+            Toast.makeText(
+                context,
+                context.getString(R.string.login_successful),
+                Toast.LENGTH_LONG
+            ).show()
+
             controller.resetLoginSuccessful()
+            controller.navigateToGameOptsScreen(scope, snackbarHostState)
         }
     }
 
@@ -223,13 +229,7 @@ fun LoginScreen(navController: NavController) {
                             onClick = {
                                 scope.launch {
                                     try {
-                                        controller.login(userEmail, password, scope, snackbarHostState).run {
-                                            Toast.makeText(
-                                                context,
-                                                context.getString(R.string.login_successful),
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        }
+                                        controller.login(userEmail, password, scope, snackbarHostState)
                                     } catch (e: Exception) {
                                         Toast.makeText(
                                             context,

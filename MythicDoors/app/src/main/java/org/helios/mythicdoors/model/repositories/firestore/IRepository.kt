@@ -7,5 +7,5 @@ interface IRepository<T> {
     suspend fun updateOne(item: T): Result<Boolean>
     suspend fun deleteOne(key: String): Result<Boolean>
     suspend fun count(): Int
-    suspend fun getLast(): T
+    suspend fun getLast(): Result<T>
 }

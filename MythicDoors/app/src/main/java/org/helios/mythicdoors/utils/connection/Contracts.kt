@@ -8,7 +8,7 @@ class Contracts: BaseColumns {
         const val DATABASE_VERSION = 1
     }
 
-    object UserTableContract {
+   /* object UserTableContract {
         const val TABLE_NAME = "user"
         const val COLUMN_NAME_ID = "id"
         const val COLUMN_NAME_NAME = "name"
@@ -63,7 +63,7 @@ class Contracts: BaseColumns {
                     ");"
 
         const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $TABLE_NAME"
-    }
+    }*/
 
     object LocationTableContract {
         const val TABLE_NAME = "location"
@@ -88,8 +88,8 @@ class Contracts: BaseColumns {
 
     companion object DatabaseTablesCreator {
         val dbTablesList: List<String> = listOf(
-            UserTableContract.SQL_CREATE_ENTRIES,
-            GameTableContract.SQL_CREATE_ENTRIES,
+//            UserTableContract.SQL_CREATE_ENTRIES,
+//            GameTableContract.SQL_CREATE_ENTRIES,
             LocationTableContract.SQL_CREATE_ENTRIES
         )
     }

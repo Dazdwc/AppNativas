@@ -42,10 +42,14 @@ class ScoresScreenViewModel(
         loading.value = true
         try {
             viewModelScope.launch {
-                userGamesList.value = dataController.getAllGames()
+                userGamesList.value = dataController.getAllFSGames()
                     ?.filter { it.getUser().getEmail() == actualPlayer.getEmail() }
                     ?.sortedByDescending { it.getScore() }
                     ?: listOf()
+                /*userGamesList.value = dataController.getAllGames()
+                    ?.filter { it.getUser().getEmail() == actualPlayer.getEmail() }
+                    ?.sortedByDescending { it.getScore() }
+                    ?: listOf()*/
             }.join()
         } catch (e: Exception) {
             Log.e("ScoresScreenViewModel", "ladUserGamesList: $e")

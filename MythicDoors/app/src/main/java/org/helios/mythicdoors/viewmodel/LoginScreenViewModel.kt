@@ -58,10 +58,13 @@ class LoginScreenViewModel(
                 ).let {result ->
                     result.data?.let { user ->
                         Log.e("LoginScreenViewModel", "login: ${user.name}")
-                        //user.let { store.updateActualUser(it) }
-                    .also {
-                        store.setAuthType(org.helios.mythicdoors.utils.AppConstants.AuthType.BASE)
-                        loginSuccessful.postValue(true) }
+                        val actualUser = dataController.getOneFSUser(user.email ?: throw Exception("Error getting email"))
+                        actualUser?.let {
+                            store.updateActualUser(it)
+                            store.setAuthType(org.helios.mythicdoors.utils.AppConstants.AuthType.BASE)
+                            loginSuccessful.postValue(true)
+                        } ?: Log.e("LoginScreenViewModel", "login: ${result.errorMessage}")
+                            .also { loginSuccessful.postValue(false) }
                 } ?: Log.e("LoginScreenViewModel", "login: ${result.errorMessage}")
                     .also { loginSuccessful.postValue(false) }
                 }

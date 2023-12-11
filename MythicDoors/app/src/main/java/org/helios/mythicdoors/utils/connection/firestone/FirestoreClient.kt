@@ -2,9 +2,11 @@ package org.helios.mythicdoors.utils.connection.firestone
 
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class FirestoreClient private constructor() {
-    private val firestone: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val firestoreClient: FirebaseFirestore = Firebase.firestore
 
     companion object {
         @Volatile
@@ -18,7 +20,7 @@ class FirestoreClient private constructor() {
     }
 
     fun getCollection(collectionName: FirestoreCollection): CollectionReference {
-        return getInstance().firestone.collection(collectionName.collectionName)
+        return firestoreClient.collection(collectionName.collectionName)
     }
 }
 
