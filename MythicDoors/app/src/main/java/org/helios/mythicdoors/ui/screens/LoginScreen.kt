@@ -22,7 +22,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
@@ -230,6 +232,16 @@ fun LoginScreen(navController: NavController) {
                                 scope.launch {
                                     try {
                                         controller.login(userEmail, password, scope, snackbarHostState)
+
+                                        withContext(Dispatchers.Main) {
+                                            if (!loginSuccessful) {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.login_failed),
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            }
+                                        }
                                     } catch (e: Exception) {
                                         Toast.makeText(
                                             context,

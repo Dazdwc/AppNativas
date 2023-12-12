@@ -57,7 +57,8 @@ class LoginScreenViewModel(
                     password = userPassword
                 ).let {result ->
                     result.data?.let { user ->
-                        Log.e("LoginScreenViewModel", "login: ${user.name}")
+                        Log.d("LoginScreenViewModel", "login: ${user.name}")
+
                         val actualUser = dataController.getOneFSUser(user.email ?: throw Exception("Error getting email"))
                         actualUser?.let {
                             store.updateActualUser(it)

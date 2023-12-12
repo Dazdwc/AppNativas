@@ -34,6 +34,7 @@ object AppConstants {
     }
 
     object Screens {
+        const val SPLASH_SCREEN = "splash_screen"
         const val OVERVIEW_SCREEN = "overview_screen"
         const val LOGIN_SCREEN = "login_screen"
         const val REGISTER_SCREEN = "register_screen"
