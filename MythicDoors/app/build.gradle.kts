@@ -108,31 +108,35 @@ dependencies {
 
     // Firebase -> Cloud services from Google
     // Coroutines for Firebase -> Threading management
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
     // -> BoM: With BoM (Bill of Materials) we can manage all the Firebase dependencies in one place and keep them up to date
-    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     // -> Core
     implementation("com.google.firebase:firebase-core:21.1.1")
+    //App Check -> Security
+    implementation("com.google.firebase:firebase-appcheck-ktx:17.1.1")
+    implementation("com.google.firebase:firebase-appcheck-playintegrity:17.1.1")
+    implementation("com.google.firebase:firebase-appcheck-debug:17.1.1")
     // -> Auth
-    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     // -> Analytics
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:18.6.0")
     // Crashlytics -> Native crash reporting
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:18.6.0")
     // -> Cloud Messaging
-    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
     // -> Database
-    implementation("com.google.firebase:firebase-database-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
+    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
     // -> In-App Messaging
-    implementation("com.google.firebase:firebase-inappmessaging-display-ktx")
+    implementation("com.google.firebase:firebase-inappmessaging-display-ktx:20.4.0")
     // -> Remote Config
-    implementation("com.google.firebase:firebase-config-ktx")
+    implementation("com.google.firebase:firebase-config-ktx:21.6.0")
     // -> Performance Monitoring
-    implementation("com.google.firebase:firebase-perf-ktx")
+    implementation("com.google.firebase:firebase-perf-ktx:20.5.1")
 }
 
 class Versions {

@@ -53,12 +53,12 @@ class RegisterScreenViewModel(
 
                 result.data?.run {
                     dataController.saveOneFSUser(User.create(
-                        name = name,
-                        email = email,
-                        password = password
+                        name = this.name ?: throw Exception("Error getting name"),
+                        email = this.email ?: throw Exception("Error getting email"),
+                        password = password,
                     ))
 
-                    store.updateActualUser(dataController.getLastUser() ?: throw Exception("Error getting last user"))
+                    store.updateActualUser(dataController.getLastFSUser() ?: return@launch)
                     store.setAuthType(AppConstants.AuthType.BASE)
 
                     registerSuccessful.postValue(true)
@@ -70,7 +70,9 @@ class RegisterScreenViewModel(
                 }
             }
         } catch (e: Exception) {
-            Log.e("RegisterScreenViewModel", "register: ${e.message}").also { registerSuccessful.postValue(false) }
+            Log.e("RegisterScreenViewModel", "register: ${e.message}").also {
+                registerSuccessful.postValue(false)
+            }
         }
     }
 

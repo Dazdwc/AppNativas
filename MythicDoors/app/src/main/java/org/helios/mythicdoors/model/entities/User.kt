@@ -1,48 +1,43 @@
 package org.helios.mythicdoors.model.entities
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class User(
-    private val id: Long?,
-    private val documentId: String?,
     private val name: String,
     private val email: String,
     private val password: String,
-    private var score: Int,
-    private var level: Int,
-    private var experience: Int,
-    private var coins: Int,
-    private var goldCoins: Int,
+    private var score: Long,
+    private var level: Long,
+    private var experience: Long,
+    private var coins: Long,
+    private var goldCoins: Long,
     private var isActive: Boolean,
-    private var createdAt: LocalDate
+    private var createdAt: LocalDateTime
 ) {
-    fun getId(): Long? { return id }
-    fun getDocumentId(): String? { return documentId }
     fun getName(): String { return name }
     fun getEmail(): String { return email }
     fun getPassword(): String { return password }
-    fun getScore(): Int { return score }
-    fun getLevel(): Int { return level }
-    fun getExperience(): Int { return experience }
-    fun getCoins(): Int { return coins }
-    fun getGoldCoins(): Int { return goldCoins }
+    fun getScore(): Long { return score }
+    fun getLevel(): Long { return level }
+    fun getExperience(): Long { return experience }
+    fun getCoins(): Long { return coins }
+    fun getGoldCoins(): Long { return goldCoins }
     fun getIsActive(): Boolean { return isActive }
-    fun getCreatedAt(): LocalDate { return createdAt }
+    fun getCreatedAt(): LocalDateTime { return createdAt }
 
-    fun setScore(score: Int) { this.score = score }
-    fun setLevel(level: Int) { this.level = level }
-    fun setExperience(experience: Int) { this.experience = experience }
-    fun setCoins(coins: Int) { this.coins = coins }
-    fun setGoldCoins(goldCoins: Int) { this.goldCoins = goldCoins }
+    fun setScore(score: Long) { this.score = score }
+    fun setLevel(level: Long) { this.level = level }
+    fun setExperience(experience: Long) { this.experience = experience }
+    fun setCoins(coins: Long) { this.coins = coins }
+    fun setGoldCoins(goldCoins: Long) { this.goldCoins = goldCoins }
     fun setIsActive(isActive: Boolean) { this.isActive = isActive }
-    fun setCreatedAt(createdAt: LocalDate) { this.createdAt = createdAt }
+    fun setCreatedAt(createdAt: LocalDateTime) { this.createdAt = createdAt }
 
     /* Implementación del patrón Fabric */
     companion object {
         fun createEmptyUser(): User {
             return User(
-                null,
-                null,
                 "",
                 "",
                 "",
@@ -52,18 +47,15 @@ data class User(
                 0,
                 0,
                 true,
-                createdAt = LocalDate.now())
+                createdAt = LocalDateTime.now())
         }
 
         fun create(
-            documentId: String? = null,
             name: String,
             email: String,
             password: String,
         ): User {
             return User(
-                null,
-                documentId,
                 name,
                 email,
                 password,
@@ -73,14 +65,12 @@ data class User(
                 200,
                 0,
                 true,
-                createdAt = LocalDate.now())
+                createdAt = LocalDateTime.now())
         }
 
         /* Testing function */
         fun createDummyUser(): User {
             return User(
-                9999999999,
-                null,
                 "Jane Doe",
                 "janedoe@dummy.com",
                 "1234",
@@ -90,14 +80,12 @@ data class User(
                 200,
                 0,
                 true,
-                createdAt = LocalDate.now()
+                createdAt = LocalDateTime.now()
             )
         }
     }
 
-    fun isEmpty(): Boolean { return this.id == null }
-
-    fun isFirestoreEmpty(): Boolean { return this.documentId == null }
+    fun isFirestoreEmpty(): Boolean { return this.email.isNotBlank() && this.password.isNotBlank() }
 
     fun isValid(): Boolean {
         return this.name.isNotEmpty()

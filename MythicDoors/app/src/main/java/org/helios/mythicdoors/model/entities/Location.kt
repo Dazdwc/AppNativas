@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 data class Location(
     private val id: Long? = null,
-    private val user: User,
+    private val userDocumentId: String?,
     private val latitude: Double,
     private val longitude: Double,
     private val createdAt: LocalDate
@@ -13,20 +13,20 @@ data class Location(
     val coordinate: Coordinates = Coordinates(latitude, longitude)
 
     fun getId(): Long? { return id }
-    fun getUser(): User { return user }
+    fun getUserDocumentId(): String? { return userDocumentId }
     fun getLatitude(): Double { return latitude }
     fun getLongitude(): Double { return longitude }
     fun getCreatedAt(): LocalDate { return createdAt }
 
     companion object {
         fun create(
-            user: User,
+            userDocumentId: String,
             latitude: Double,
             longitude: Double
         ): Location {
             return Location(
                 null,
-                user,
+                userDocumentId,
                 latitude,
                 longitude,
                 createdAt = LocalDate.now()
@@ -36,7 +36,7 @@ data class Location(
         fun createEmptyLocation(): Location {
             return Location(
                 null,
-                User.createEmptyUser(),
+                null,
                 0.0,
                 0.0,
                 createdAt = LocalDate.now()
@@ -47,7 +47,7 @@ data class Location(
     fun isEmpty(): Boolean { return this.id == null }
 
     fun isValid(): Boolean {
-        return  this.user.getId() != null
+        return  !this.userDocumentId.isNullOrEmpty()
                 && !this.latitude.isNaN()
                 && !this.longitude.isNaN()
     }

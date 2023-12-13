@@ -1,3 +1,4 @@
+/*
 package org.helios.mythicdoors.services
 
 import android.util.Log
@@ -41,7 +42,9 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         }
     }
 
-    /* El método save() decide por sí mismo si tiene que realizar una operación insert o una update. */
+    */
+/* El método save() decide por sí mismo si tiene que realizar una operación insert o una update. *//*
+
     override suspend fun saveUser(user: User): Boolean = withContext(Dispatchers.IO) {
         try {
             user.takeIf { it.isValid() }?.run {
@@ -80,4 +83,4 @@ class UserServiceImp(dbHelper: Connection): IUserService {
         }
         return@withContext false
     }
-}
+}*/

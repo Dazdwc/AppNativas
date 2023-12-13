@@ -3,6 +3,7 @@ package org.helios.mythicdoors.ui.screens
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -20,10 +21,16 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.launch
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.OVERVIEW_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL
+import org.helios.mythicdoors.utils.connection.firestone.FirestoreClient
+import org.helios.mythicdoors.utils.connection.firestone.FirestoreCollection
 import org.helios.mythicdoors.viewmodel.OverviewScreenViewModel
 import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
 

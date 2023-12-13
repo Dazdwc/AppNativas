@@ -1,3 +1,4 @@
+/*
 package org.helios.mythicdoors.model.repositories.sqlite
 
 import android.content.ContentValues
@@ -11,9 +12,11 @@ import org.helios.mythicdoors.utils.connection.Connection
 import org.helios.mythicdoors.utils.connection.Contracts
 import java.time.LocalDate
 
+*/
 /* Autoclasable permite que la conexión a la base de datos se cierre automáticamente sin tener que manejarlo manualmente y nos ahorra código además de que es más seguro
 y aumenta su rendimiento y legibilidad.
-*/
+*//*
+
 class UserRepositoryImp(dbHelper: Connection):
     IRepository<User>,
     AutoCloseable
@@ -181,4 +184,4 @@ class UserRepositoryImp(dbHelper: Connection):
             LocalDate.parse(cursor.getString(cursor.getColumnIndexOrThrow(Contracts.UserTableContract.COLUMN_NAME_CREATED_AT)))
         )
     }
-}
+}*/

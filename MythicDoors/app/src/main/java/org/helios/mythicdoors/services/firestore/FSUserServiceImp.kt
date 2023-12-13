@@ -30,7 +30,7 @@ class FSUserServiceImp(
 
     override suspend fun saveOne(item: User): Result<Boolean> = withContext(Dispatchers.IO) {
         return@withContext try {
-            item.takeIf { !it.isValid() }?.run {
+            item.takeIf { it.isValid() }?.run {
                 if (isFirestoreEmpty()) checkIfUserExists(this).takeIf { !it }?.let { userRepository.insertOne(this) } ?: success(false)
                 else userRepository.updateOne(this)
             } ?: success(false)
@@ -61,7 +61,7 @@ class FSUserServiceImp(
 
     override suspend fun getLast(): User? = withContext(Dispatchers.IO) {
         return@withContext try {
-            userRepository.getLast().takeIf { !it.isFirestoreEmpty() }
+            userRepository.getLast().getOrNull()
         } catch (e: Exception) {
             Log.e("FSUserServiceImp", "Error getting last user: ${e.message}")
             null

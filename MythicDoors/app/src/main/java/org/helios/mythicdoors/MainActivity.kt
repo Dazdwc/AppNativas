@@ -23,6 +23,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,8 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.ActivityCompat.recreate
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import com.google.firebase.Firebase
+import com.google.firebase.appcheck.appCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
+import com.google.firebase.initialize
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
@@ -45,6 +51,7 @@ import org.helios.mythicdoors.navigation.AppNavigation
 import org.helios.mythicdoors.services.location.LocationService
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.*
+import org.helios.mythicdoors.ui.screens.SplashScreen
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
 import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels
@@ -125,73 +132,92 @@ class MainActivity : ComponentActivity() {
 
         startLocationService()
 
-        setContent {
-            MythicDoorsTheme {
-                val dialogQueue = controller.visiblePermissionDialogQueue
+        lifecycleScope.launch {
+            Firebase.initialize(this@MainActivity)
+            Firebase.appCheck
+                .installAppCheckProviderFactory(
+                    PlayIntegrityAppCheckProviderFactory.getInstance()
+                )
+        }
 
-                val foregroundPermissionLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(),
-                    onResult = { isGranted ->
-                        controller.onPermissionResult(
-                            permission = Manifest.permission.FOREGROUND_SERVICE,
-                            isGranted = isGranted
-                        )
+        setContent {
+            val isSplashScreenVisible = remember { mutableStateOf(true) }
+            if (isSplashScreenVisible.value) {
+                SplashScreen(
+                    onTimeout = {
+                        isSplashScreenVisible.value = false
                     }
                 )
+            } else {
+                MythicDoorsTheme {
+                    val dialogQueue = controller.visiblePermissionDialogQueue
 
-                val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.RequestMultiplePermissions(),
-                    onResult = { permissions ->
-                        AppPermissionsRequests.appPermissionRequests.forEach { permission ->
-                            controller.onPermissionResult(
+                    val foregroundPermissionLauncher =
+                        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(),
+                            onResult = { isGranted ->
+                                controller.onPermissionResult(
+                                    permission = Manifest.permission.FOREGROUND_SERVICE,
+                                    isGranted = isGranted
+                                )
+                            }
+                        )
+
+                    val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.RequestMultiplePermissions(),
+                        onResult = { permissions ->
+                            AppPermissionsRequests.appPermissionRequests.forEach { permission ->
+                                controller.onPermissionResult(
+                                    permission = permission,
+                                    isGranted = permissions[permission] == true
+                                )
+                            }
+                        }
+                    )
+
+                    dialogQueue
+                        .reversed()
+                        .forEach { permission ->
+                            PermissionDialog(
                                 permission = permission,
-                                isGranted = permissions[permission] == true
+                                permissionTextProvider = choosePermissionTextProvider(permission) ?: return@forEach,
+                                isPermanentlyDecline = !shouldShowRequestPermissionRationale(permission),
+                                onDismiss = controller::dismissDialog,
+                                onOkClick = {
+                                    controller.dismissDialog()
+                                    multiplePermissionResultLauncher.launch(arrayOf(permission))
+                                },
+                                onSettingsClick = ::openAppSettings,
                             )
                         }
-                    }
-                )
 
-                dialogQueue
-                    .reversed()
-                    .forEach { permission ->
-                        PermissionDialog(
-                            permission = permission,
-                            permissionTextProvider = choosePermissionTextProvider(permission) ?: return@forEach,
-                            isPermanentlyDecline = !shouldShowRequestPermissionRationale(permission),
-                            onDismiss = controller::dismissDialog,
-                            onOkClick = {
-                                controller.dismissDialog()
-                                multiplePermissionResultLauncher.launch(arrayOf(permission))
-                            },
-                            onSettingsClick = ::openAppSettings,
-                        )
-                    }
-
-                Scaffold(topBar = {
-                    Row(modifier = Modifier
-                        .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        AudioPlayer()
-                        Spacer(modifier = Modifier.width(8.dp))
-                        LanguageManager(activity = activity, activityContext = activity.baseContext)
-                    }
-                },
-                    bottomBar = {
-                        MenuBar(navController)
+                    Scaffold(topBar = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            AudioPlayer()
+                            Spacer(modifier = Modifier.width(8.dp))
+                            LanguageManager(activity = activity, activityContext = activity.baseContext)
+                        }
                     },
-                    snackbarHost = {
-                        SnackbarHost(hostState = snackbarHostState)
-                    }
-                ) { innerPadding ->
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                    ) {
-                        foregroundPermissionLauncher.launch(Manifest.permission.FOREGROUND_SERVICE)
-                        multiplePermissionResultLauncher.launch(AppPermissionsRequests.appPermissionRequests)
-                        AppNavigation()
+                        bottomBar = {
+                            MenuBar(navController)
+                        },
+                        snackbarHost = {
+                            SnackbarHost(hostState = snackbarHostState)
+                        }
+                    ) { innerPadding ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding),
+                        ) {
+                            foregroundPermissionLauncher.launch(Manifest.permission.FOREGROUND_SERVICE)
+                            multiplePermissionResultLauncher.launch(AppPermissionsRequests.appPermissionRequests)
+                            AppNavigation()
+                        }
                     }
                 }
             }
@@ -228,16 +254,5 @@ private fun startLocationService() {
         }
     } catch (e: Exception) {
         Log.e("MainActivity", "startLocationService: ${e.message}")
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Preview(showBackground = true, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun GreetingPreview() {
-    MythicDoorsTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            AppNavigation()
-        }
     }
 }

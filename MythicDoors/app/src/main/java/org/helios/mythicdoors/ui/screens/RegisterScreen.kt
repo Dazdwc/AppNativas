@@ -19,6 +19,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
@@ -60,13 +63,8 @@ fun RegisterScreen(navController: NavController) {
                 Toast.LENGTH_LONG
             ).show()
             controller.navigateToGameOptsScreen(scope, snackbarHostState)
-        } else {
-            Toast.makeText(
-                context,
-                context.getString(R.string.register_error),
-                Toast.LENGTH_LONG
-            ).show()
         }
+
         controller.resetRegisterSuccessful()
     }
 
@@ -286,9 +284,25 @@ fun RegisterScreen(navController: NavController) {
                     Button(
                         onClick = {
                             try {
-                                controller.register(userName, userEmail, password, scope)
+                                scope.launch {
+                                    controller.register(userName, userEmail, password, scope)
+                                    withContext(Dispatchers.Main) {
+                                        if (!registerSuccessful) {
+                                            Toast.makeText(
+                                                context,
+                                                context.getString(R.string.register_error),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
+                                }
                             } catch (e: Exception) {
                                 Log.e("RegisterScreen", "register: ${e.message}")
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.register_error),
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         },
                         enabled = isEmailValid && isPasswordValid && password == retypedPassword,

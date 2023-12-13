@@ -27,8 +27,6 @@ class FirebaseBaseAuthClient(
         return try {
             val user = auth.createUserWithEmailAndPassword(email, password).await().user
 
-            // TODO: Create a node and save user name
-
             user?.run {
                 SignInResult.success(
                     UserData.create(

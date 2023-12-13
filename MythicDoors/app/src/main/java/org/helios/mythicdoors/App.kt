@@ -4,7 +4,12 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.util.Log
+import com.google.firebase.Firebase
+import com.google.firebase.appcheck.appCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.debug.internal.DebugAppCheckProvider
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
+import com.google.firebase.initialize
 import dagger.hilt.android.HiltAndroidApp
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.CALENDAR_NOTIFICATION_CHANNEL
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.GAMEWON_NOTIFICATION_CHANNEL
@@ -17,9 +22,14 @@ import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.LOCATION_N
 * Para ello, hay que anotar la clase con @AndroidEntryPoint.
 */
 @HiltAndroidApp
-class App(): Application() {
+class App: Application() {
     override fun onCreate() {
         super.onCreate()
+
+        Firebase.initialize(context = this)
+        Firebase.appCheck.installAppCheckProviderFactory(
+            PlayIntegrityAppCheckProviderFactory.getInstance(),
+        )
 
         val channelsList: List<String> = listOf(
             LOCATION_NOTIFICATION_CHANNEL,

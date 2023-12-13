@@ -117,7 +117,7 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
             storeManager.updateActualUser(updatedUser)
 
             scope.launch {
-                isUserSaved = dataController.saveUser(updatedUser)
+                isUserSaved = dataController.saveOneFSUser(updatedUser).getOrElse { false } // dataController.saveUser(updatedUser)
             }.join()
             return isUserSaved
         } catch (e: Exception) {
@@ -128,8 +128,6 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
 
     private fun getNewUserStaticsAfterBattle(): User {
         return User(
-            player.getId(),
-            player.getDocumentId(),
             player.getName(),
             player.getEmail(),
             player.getPassword(),
@@ -150,19 +148,19 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
     private fun generateCombat(): Boolean {
         return player.getLevel() >= (enemy.getLevel()) }
 
-    private fun generateEnemyLevel(): Int {
+    private fun generateEnemyLevel(): Long {
         val rangeValues = generateRangeValues()
         return generateRandomNumber(rangeValues.first, rangeValues.second)
     }
 
-    private fun generateRangeValues(): Pair<Int, Int> {
+    private fun generateRangeValues(): Pair<Long, Long> {
         val minimumEnemyRage = player.getLevel().plus(door.getMinEnemyRangeSetter().coerceAtLeast(0))
         val maximumEnemyRage = player.getLevel().plus(door.getMaxEnemyRangeSetter().coerceAtMost(10))
 
-        return if(minimumEnemyRage > maximumEnemyRage) Pair(0, 2) else Pair(minimumEnemyRage, maximumEnemyRage)
+        return if(minimumEnemyRage > maximumEnemyRage) Pair(0L, 2L) else Pair(minimumEnemyRage, maximumEnemyRage)
     }
 
-    private fun generateRandomNumber(min: Int, max: Int): Int { return (min..max).random().coerceIn(0..10) }
+    private fun generateRandomNumber(min: Long, max: Long): Long { return (min..max).random().coerceIn(0L..10L) }
 
     private fun combatUpdater(userHasWon: Boolean): Boolean {
         try {
@@ -193,23 +191,23 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
         }
     }
 
-    private fun getCoinReward(): Int { return door.getBonusRatio().let { it -> enemy.getCoinReward().times(it).let { bet.plus(it).toInt() } } }
+    private fun getCoinReward(): Long { return door.getBonusRatio().let { it -> enemy.getCoinReward().times(it).let { bet.plus(it) } }.toLong() }
 
-    private fun getXpReward(): Int {
-        return if (combatConfrontationResult) door.getBonusRatio().let { player.getLevel().minus(enemy.getLevel()).times(it).plus(enemy.getCoinReward()).times(getCoinReward()).toInt() }
+    private fun getXpReward(): Long {
+        return if (combatConfrontationResult) door.getBonusRatio().let { player.getLevel().minus(enemy.getLevel()).times(it).plus(enemy.getCoinReward()).times(getCoinReward()).toLong() }
             else 0
     }
 
-    private fun calculateScore(): Int {
-        val scoreIncrement: Int = player.getScore().plus(enemy.getCoinReward().times(door.getBonusRatio()).toInt())
-        return if (combatConfrontationResult) player.getScore().plus(scoreIncrement) else 0
+    private fun calculateScore(): Long {
+        val scoreIncrement: Long = player.getScore().plus(enemy.getCoinReward().times(door.getBonusRatio()).toLong())
+        return if (combatConfrontationResult) player.getScore().plus(scoreIncrement) else 0L
     }
 
-    private fun increaseCurrentLevelIfNeeded(): Int {
+    private fun increaseCurrentLevelIfNeeded(): Long {
         val experienceIncrement = 1000
         val newUserExperience = player.getExperience().plus(storeManager.getAppStore().combatResults.resultXpAmount)
 
-        newUserExperience.takeIf { it >= experienceIncrement && it % experienceIncrement == 0 }?.let { return player.getLevel().plus(1).coerceIn(1..9) }
+        newUserExperience.takeIf { it >= experienceIncrement && it % experienceIncrement == 0L }?.let { return player.getLevel().plus(1).coerceIn(1L..9L) }
             ?: return player.getLevel()
     }
 
@@ -246,7 +244,8 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
         try {
                 scope.launch {
                     val currentLocation = Location.create(
-                        player,
+//                        player,
+                        player.getEmail() ?: "" /*throw Exception("Player not found")*/,
                         location["latitude"] ?: 0.0,
                         location["longitude"] ?: 0.0
                     )
