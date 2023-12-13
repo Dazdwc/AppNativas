@@ -36,6 +36,8 @@ class RegisterScreenViewModel(
     private val passwordPattern: Regex = Regex("^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{6,}$")
 
     val registerSuccessful: MutableLiveData<Boolean> = MutableLiveData(false)
+    val loading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+
     fun resetRegisterSuccessful() { registerSuccessful.value = false }
 
     fun register(
@@ -44,6 +46,8 @@ class RegisterScreenViewModel(
         password: String,
         scope: CoroutineScope
     ) {
+        loading.value = true
+
         try {
             scope.launch {
                 val result: SignInResult = firebaseAuth.registerWithEmailAndPassword(
@@ -73,6 +77,8 @@ class RegisterScreenViewModel(
             Log.e("RegisterScreenViewModel", "register: ${e.message}").also {
                 registerSuccessful.postValue(false)
             }
+        } finally {
+            loading.value = false
         }
     }
 

@@ -11,6 +11,7 @@ import org.helios.mythicdoors.services.interfaces.IGameService
 import org.helios.mythicdoors.services.interfaces.ILocationService
 import org.helios.mythicdoors.services.interfaces.IUserService
 import org.helios.mythicdoors.utils.connection.Connection
+import org.helios.mythicdoors.utils.connection.firestone.FirestoreClient
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -16,6 +16,7 @@ object AppConstants {
     const val ENEY_WOLFIE = "Wolfie"
 
     const val INITIAL_COINS_AMOUNT = 200L
+    const val MINIMUN_COINS_AMMOUNT = 10L
 
     const val WEB_GUIDE_URl = "https://danielboj.github.io/mythic-doors-webguide/"
 
@@ -69,6 +70,7 @@ object AppConstants {
         const val DOUBLE_PADDING = 30
         const val BUTTON_WIDTH = 200
         const val MENU_HEIGHT = 100
+        const val BAG_SIZE = 50
     }
 
     object Languages {

@@ -2,6 +2,8 @@ package org.helios.mythicdoors.ui.fragments
 
 import android.app.Activity
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,6 +27,7 @@ import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.LANGUAGE_MANA
 import org.helios.mythicdoors.utils.typeclass.Language
 import org.helios.mythicdoors.viewmodel.tools.LanguageManagerViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun LanguageManager(
     activity: MainActivity,
@@ -79,7 +82,7 @@ fun CreateLanguageDialog(
 
     if (openDialog.value) {
         Dialog(
-            onDismissRequest = {  },
+            onDismissRequest = { openDialog.value = false },
             properties = DialogProperties(
                 dismissOnBackPress = true,
                 dismissOnClickOutside = true

@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -33,6 +34,7 @@ import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.entities.Game
 import org.helios.mythicdoors.ui.fragments.AudioPlayer
+import org.helios.mythicdoors.ui.fragments.LoadingIndicator
 import org.helios.mythicdoors.ui.fragments.MenuBar
 import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
@@ -54,6 +56,8 @@ fun ScoresScreen(navController: NavController) {
 
     val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel)
         .apply { loadSoundsIfNeeded() }
+
+    val isLoading by controller.loading.observeAsState(false)
 
     var singlePlayerGamesCollection by remember { mutableStateOf(emptyList<Game>()) }
     LaunchedEffect(controller) {
@@ -79,14 +83,15 @@ fun ScoresScreen(navController: NavController) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(Color.Transparent)
                     .zIndex(999f)
                     .padding(ScreenConstants.AVERAGE_PADDING.dp),
                 contentAlignment = Alignment.Center
             ) {
-                LoadingIndicator(controller)
+                LoadingIndicator(
+                    isLoading = isLoading,
+                )
             }
-
 
             Column {
                 Text(
@@ -244,26 +249,6 @@ fun ItemRow(item: Game?){
             modifier = Modifier
                 .weight(1f)
                 .padding(end = ScreenConstants.AVERAGE_PADDING.dp)
-        )
-    }
-}
-
-@Composable
-private fun LoadingIndicator(controller: ScoresScreenViewModel) {
-    val isLoading by controller.loading.observeAsState(false)
-
-    if (isLoading) {
-        CircularProgressIndicator(
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(ScreenConstants.AVERAGE_PADDING.dp),
-            color = MaterialTheme.colorScheme.secondary,
-        )
-        Text(text = stringResource(id = R.string.loading_indicator_msg),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier
-                .wrapContentSize()
         )
     }
 }

@@ -83,4 +83,14 @@
     <string name="register_successful">New user account created</string>
     <string name="login_successful">Login successful!</string>
     <string name="login_failed">Sorry, login failed!</string>
+    <string name="gold_coins_dialog_title">Buy Gold Coins To Play</string>
+    <string name="gold_coins_dialog_body">Choose a coins bag so you can start betting!</string>
+    <string name="gold_coins_dialog_cancel_button">Back</string>
+    <string name="gold_coins_dialog_ok_button">Play</string>
+    <string name="gold_coins_dialog_cancel_toast_message">You have choosen not to buy any coins</string>
+    <string name="gold_coins_dialog_ok_toast_message">You have selected the %1$d bag!</string>
+    <string name="gold_coins_dialog_great_bag_text">30$</string>
+    <string name="gold_coins_dialog_medium_bag_text">20$</string>
+    <string name="gold_coins_dialog_small_bag_text">10$</string>
+    <string name="game_opts_screen_game_start">Starting the game!</string>
 </resources>

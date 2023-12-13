@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -29,9 +30,10 @@ class GameOptsScreenViewModel(
     private val store: StoreManager by lazy { StoreManager.getInstance() }
 
     val isGameModeSelected: MutableLiveData<Boolean> = MutableLiveData(false)
+
     fun resetIsGameStarted() { isGameModeSelected.value = false }
 
-    fun startGame(gameMode: String) {
+    fun startSinglePlayerGame(gameMode: String) {
         try {
             updateGameModeInStore(gameMode)
             store.getAppStore().actualUser?.let { saveOriginalPlayerStats(it) }
@@ -43,6 +45,28 @@ class GameOptsScreenViewModel(
         }
     }
 
+    fun startMultiplayerGame(
+        gameMode: String,
+        goldCoins: Int? = null,
+    ) {
+        val startingCoins: Long = goldCoins?.times(AppConstants.INITIAL_COINS_AMOUNT)
+            ?: store.getAppStore().actualUser?.getCoins() ?: AppConstants.INITIAL_COINS_AMOUNT
+
+        viewModelScope.launch {
+            try {
+                updateGameModeInStore(gameMode)
+                loadMultiPlayerInitialCoins(startingCoins)
+                store.getAppStore().actualUser?.let { saveOriginalPlayerStats(it) }
+                clearCombatResultsInStore()
+                isGameModeSelected.value = true
+            } catch (e: Exception) {
+                Log.e("GameOptsScreenViewModel", "Error starting game: ${e.message}").also { isGameModeSelected.value = false }
+            }
+        }
+    }
+
+    fun checkIfUserHaveCoinsToPlay(): Boolean { return store.getAppStore().actualUser?.getCoins()?.let { it >= AppConstants.MINIMUN_COINS_AMMOUNT } ?: false }
+
     private fun updateGameModeInStore(gameMode: String) { store.updateGameMode(gameMode) }
 
     private fun saveOriginalPlayerStats(user: User?) { store.updateOriginalPlayerStats(user) }
@@ -50,6 +74,12 @@ class GameOptsScreenViewModel(
     private fun loadInitialCoins() {
         store.getAppStore().actualUser?.let {
             store.updatePlayerCoins(AppConstants.INITIAL_COINS_AMOUNT)
+        }
+    }
+
+    private fun loadMultiPlayerInitialCoins(startingCoins: Long) {
+        store.getAppStore().actualUser?.let {
+            store.updatePlayerCoins(startingCoins)
         }
     }
 

@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -18,12 +19,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.ui.fragments.LoadingIndicator
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.REGISTER_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.RegisterScreenViewModel
@@ -54,6 +57,8 @@ fun RegisterScreen(navController: NavController) {
         ImageVector.vectorResource(R.drawable.eye_off_500)
     }
 
+    val loading by controller.loading.observeAsState(false)
+
     val registerSuccessful by controller.registerSuccessful.observeAsState(false)
     LaunchedEffect(registerSuccessful) {
         if (registerSuccessful) {
@@ -79,6 +84,20 @@ fun RegisterScreen(navController: NavController) {
             contentAlignment = Alignment.Center
         ) {
             val maxWidth = this.maxWidth
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Transparent)
+                    .zIndex(999f)
+                    .padding(ScreenConstants.AVERAGE_PADDING.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                LoadingIndicator(
+                    isLoading = loading,
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .width(maxWidth.minus(maxWidth * 0.20f))
