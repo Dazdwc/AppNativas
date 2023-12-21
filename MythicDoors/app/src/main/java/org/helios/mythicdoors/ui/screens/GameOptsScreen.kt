@@ -367,7 +367,9 @@ private fun CreateGoldCoinsDialog(
                        )
                    }
                }
-                Spacer(modifier = Modifier.height(ScreenConstants.AVERAGE_PADDING.dp))
+
+               Spacer(modifier = Modifier.height(ScreenConstants.AVERAGE_PADDING.dp))
+
                Row(
                    modifier = Modifier
                        .fillMaxWidth(),

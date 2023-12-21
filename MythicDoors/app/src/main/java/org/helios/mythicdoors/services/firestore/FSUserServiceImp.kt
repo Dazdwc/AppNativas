@@ -10,6 +10,21 @@ import kotlin.Result.Companion.success
 class FSUserServiceImp(
     private val userRepository: FSUserRepositoryImp = FSUserRepositoryImp()
 ) : IDataService<User> {
+    companion object {
+        @Volatile
+        private var instance: FSUserServiceImp? = null
+
+        fun getInstance(): FSUserServiceImp {
+            return instance ?: synchronized(this) {
+                instance ?: buildFSUserServiceImp().also { instance = it }
+            }
+        }
+
+        private fun buildFSUserServiceImp(): FSUserServiceImp {
+            return FSUserServiceImp()
+        }
+    }
+
     override suspend fun getAll(): List<User>? = withContext(Dispatchers.IO){
         return@withContext try {
             userRepository.getAll().takeIf { it.isNotEmpty() }
@@ -31,11 +46,21 @@ class FSUserServiceImp(
     override suspend fun saveOne(item: User): Result<Boolean> = withContext(Dispatchers.IO) {
         return@withContext try {
             item.takeIf { it.isValid() }?.run {
-                if (isFirestoreEmpty()) checkIfUserExists(this).takeIf { !it }?.let { userRepository.insertOne(this) } ?: success(false)
-                else userRepository.updateOne(this)
+                if (isNotEmpty()) checkIfUserExists(this).takeIf { !it }?.let { userRepository.insertOne(this) } ?: success(false)
+                else success(false)
             } ?: success(false)
         } catch (e: Exception) {
             Log.e("FSUserServiceImp", "Error inserting user: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun updateOne(item: User): Result<Boolean> = withContext(Dispatchers.IO) {
+        return@withContext try {
+            if (checkIfUserExists(item)) userRepository.updateOne(item)
+            else success(false)
+        } catch (e: Exception) {
+            Log.e("FSUserServiceImp", "Error updating user: ${e.message}")
             Result.failure(e)
         }
     }

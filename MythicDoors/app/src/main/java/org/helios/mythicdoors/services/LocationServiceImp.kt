@@ -14,6 +14,21 @@ class LocationServiceImp(dbHelper: Connection): ILocationService {
 
     init { repository = LocationRepositoryImp(dbHelper) }
 
+    companion object {
+        @Volatile
+        private var instance: LocationServiceImp? = null
+
+        fun getInstance(dbHelper: Connection): LocationServiceImp {
+            return instance ?: synchronized(this) {
+                instance ?: buildLocationServiceImp(dbHelper).also { instance = it }
+            }
+        }
+
+        private fun buildLocationServiceImp(dbHelper: Connection): LocationServiceImp {
+            return LocationServiceImp(dbHelper)
+        }
+    }
+
     override suspend fun getLocations(): List<Location>? = withContext(Dispatchers.IO) {
         try {
             return@withContext repository.getAll().takeIf { it.isNotEmpty() }

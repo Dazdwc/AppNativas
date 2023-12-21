@@ -38,11 +38,9 @@ class GameActionScreenViewModel (
     val combatSuccessful: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>(false) }
     fun resetCombatSuccessful() { combatSuccessful.value = false }
 
-    fun initialLoad() {
-        player = loadPlayerData()
-    }
+    fun initialLoad() { player = loadPlayerData() }
 
-    fun loadPlayerData(): User? {
+    private fun loadPlayerData(): User? {
         return try {
             store.getAppStore().actualUser ?: null.also {throw Exception("User not found") }
         } catch (e: Exception) {
@@ -109,22 +107,9 @@ class GameActionScreenViewModel (
         }
     }
 
-    private fun updateUserFromStore() {
-        try {
-            updateStore()
-            player = loadPlayerData() ?: throw Exception("User not found")
-        } catch (e: Exception) {
-            Log.e("GameActionScreenViewModel", "updateUserInStore: $e")
-        }
-    }
-
     private fun updateStore() {
         try {
-            viewModelScope.launch {
-                store.updateActualUser(dataController.getOneFSUser(player?.getEmail() ?: throw Exception("User id not valid")) ?: throw Exception("User not found"))
-                // store.updateActualUser(dataController.getUser(player?.getId()?: throw Exception("User id not valid")) ?: throw Exception("User not found"))
-                player = loadPlayerData() ?: throw Exception("User not found")
-            }
+            viewModelScope.launch { player = store.getAppStore().actualUser ?: throw Exception("User not found") }
         } catch (e: Exception) {
             Log.e("GameActionScreenViewModel", "updateUserInStore: $e")
         }

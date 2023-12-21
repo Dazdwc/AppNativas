@@ -1,6 +1,6 @@
 package org.helios.mythicdoors.model.entities
 
-import java.time.LocalDateTime
+import com.google.firebase.Timestamp
 
 data class Game(
     private val user: User,
@@ -8,16 +8,16 @@ data class Game(
     private val level: Long,
     private val score: Long,
     private val maxEnemyLevel: Long,
-    private val gameDateTime: LocalDateTime,
+    private val gameDateTime: Timestamp,
 ) {
     fun getUser(): User { return user}
     fun getCoin(): Long { return coin}
     fun getLevel(): Long { return level}
     fun getScore(): Long { return score}
     fun getMaxEnemyLevel(): Long { return maxEnemyLevel}
-    fun getDateTime(): LocalDateTime { return gameDateTime}
+    fun getDateTime(): Timestamp { return gameDateTime}
 
-    fun setDateTime(gameDateTime: LocalDateTime) { this.gameDateTime }
+    fun setDateTime(gameDateTime: Timestamp) { this.gameDateTime }
 
     companion object {
         fun createEmptyGame(): Game {
@@ -27,7 +27,7 @@ data class Game(
                 -1,
                 -1,
                 -1,
-                gameDateTime = LocalDateTime.now())
+                gameDateTime = Timestamp.now())
         }
 
         fun create(
@@ -43,16 +43,14 @@ data class Game(
                 level,
                 score,
                 maxEnemyLevel,
-                gameDateTime = LocalDateTime.now())
+                gameDateTime = Timestamp.now())
         }
     }
 
-/*    fun isEmpty(): Boolean { return this.id == null }*/
-
-    fun isFirestoreEmpty(): Boolean { return this.user.isFirestoreEmpty() }
+    fun isNotEmpty(): Boolean { return this.user.isNotEmpty() }
 
     fun isValid(): Boolean {
-        return !this.user.isFirestoreEmpty()
+        return this.user.getEmail().isNotEmpty()
                 && this.coin >= 0
                 && this.level >= 0
                 && this.score >= 0

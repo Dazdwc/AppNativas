@@ -10,6 +10,21 @@ import kotlin.Result.Companion.success
 class FSGameServiceImp(
     private val gameRepository: FSGameRepositoryImp = FSGameRepositoryImp()
 ): IDataService<Game> {
+    companion object {
+        @Volatile
+        private var instance: FSGameServiceImp? = null
+
+        fun getInstance(): FSGameServiceImp {
+            return instance ?: synchronized(this) {
+                instance ?: buildFSGameServiceImp().also { instance = it }
+            }
+        }
+
+        private fun buildFSGameServiceImp(): FSGameServiceImp {
+            return FSGameServiceImp()
+        }
+    }
+
     override suspend fun getAll(): List<Game>? = withContext(Dispatchers.IO) {
         return@withContext try {
             gameRepository.getAll().takeIf { it.isNotEmpty() }
@@ -31,11 +46,22 @@ class FSGameServiceImp(
     override suspend fun saveOne(item: Game): Result<Boolean> = withContext(Dispatchers.IO) {
         return@withContext try {
             item.takeIf { it.isValid() }?.run {
-                if (isFirestoreEmpty()) checkIfGameExists(this).takeIf { !it }?.let { gameRepository.insertOne(this) } ?: success(false)
-                else gameRepository.updateOne(this)
+                Log.d("FSGameServiceImp", "Saving game: $item")
+                if (isNotEmpty()) checkIfGameExists(this).takeIf { !it }?.let { gameRepository.insertOne(this) } ?: success(false)
+                else success(false)
             } ?: success(false)
         } catch (e: Exception) {
             Log.e("FSGameServiceImp", "Error inserting game: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun updateOne(item: Game): Result<Boolean> = withContext(Dispatchers.IO) {
+        return@withContext try {
+            if (checkIfGameExists(item)) gameRepository.updateOne(item)
+            else success(false)
+        } catch (e: Exception) {
+            Log.e("FSGameServiceImp", "Error updating game: ${e.message}")
             Result.failure(e)
         }
     }

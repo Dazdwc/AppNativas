@@ -2,12 +2,10 @@ package org.helios.mythicdoors.viewmodel
 
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
@@ -40,6 +38,8 @@ class LoginScreenViewModel(
 
     val loading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
 
+    val isGoogleSignInRequested: MutableLiveData<Boolean> = MutableLiveData(false)
+
     suspend fun login(userEmail: String,
                       userPassword: String,
                       scope: CoroutineScope,
@@ -60,9 +60,15 @@ class LoginScreenViewModel(
                             store.setAuthType(org.helios.mythicdoors.utils.AppConstants.AuthType.BASE)
                             loginSuccessful.postValue(true)
                         } ?: Log.e("LoginScreenViewModel", "login: ${result.errorMessage}")
-                            .also { loginSuccessful.postValue(false) }
+                            .also {
+                                firebaseAuth.signOut()
+                                loginSuccessful.postValue(false)
+                            }
                 } ?: Log.e("LoginScreenViewModel", "login: ${result.errorMessage}")
-                    .also { loginSuccessful.postValue(false) }
+                    .also {
+                        firebaseAuth.signOut()
+                        loginSuccessful.postValue(false)
+                    }
                 }
             }.join()
         } catch (e: Exception) {
@@ -104,5 +110,13 @@ class LoginScreenViewModel(
 
     fun validatePassword(password: String): Boolean {
         return password.length >= 6 && password.contains(passwordPattern)
+    }
+
+    fun callForGoogleSignInRequest() {
+        MainActivityViewModel.GoogleSignInRequestSetter.requestGoogleSignIn()
+    }
+
+    fun resetGoogleSignInRequest() {
+        isGoogleSignInRequested.value = false
     }
 }

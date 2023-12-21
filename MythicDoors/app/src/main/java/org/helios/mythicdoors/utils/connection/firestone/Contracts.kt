@@ -24,6 +24,11 @@ class Contracts {
         const val FIELD_NAME_GAME_DATE_TIME = "gameDateTime"
     }
 
+    object JackpotsDocumentContract {
+        const val FIELD_NAME_POT = "pot"
+        const val FIELD_NAME_TIMESTAMP = "timestamp"
+    }
+
     object DateTimeFormatter {
         const val DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
     }

@@ -1,5 +1,7 @@
 package org.helios.mythicdoors.ui.fragments
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,6 +21,7 @@ import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.MENU_BAR_SCRE
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.viewmodel.MenuViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun MenuBar(navController: NavController) {
     val controller: MenuViewModel = (MainActivity.viewModelsMap[MENU_BAR_SCREEN_VIEWMODEL] as MenuViewModel).apply { setNavController(navController) }
@@ -63,7 +66,10 @@ fun MenuBar(navController: NavController) {
                         )
                     }
                     Button(
-                        onClick = { controller.closeApp() },
+                        onClick = { controller.closeApp(
+                            scope = scope,
+                            snackbarHostState = snackbarHostState
+                        ) },
                         elevation = ButtonDefaults.buttonElevation(2.dp),) {
                         Text(
                             text = stringResource(id = R.string.exit_btn),
@@ -73,7 +79,6 @@ fun MenuBar(navController: NavController) {
                     }
                 }
             }
-
         }
     }
 }

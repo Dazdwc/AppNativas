@@ -1,6 +1,8 @@
 package org.helios.mythicdoors.viewmodel
 
+import android.os.Build.VERSION_CODES.TIRAMISU
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +10,7 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.INavFunctions
@@ -17,7 +20,9 @@ import org.helios.mythicdoors.presentation.sign_in.IFirebaseBaseAuthClient
 import org.helios.mythicdoors.presentation.sign_in.SignInResult
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.utils.AppConstants
+import org.helios.mythicdoors.utils.encryption.KryptoClient
 
+@RequiresApi(TIRAMISU)
 class RegisterScreenViewModel(
     private val dataController: DataController
 ): ViewModel() {
@@ -37,6 +42,8 @@ class RegisterScreenViewModel(
 
     val registerSuccessful: MutableLiveData<Boolean> = MutableLiveData(false)
     val loading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+
+    private val crypto: KryptoClient = KryptoClient.getInstance(context = MainActivity.getContext())
 
     fun resetRegisterSuccessful() { registerSuccessful.value = false }
 
@@ -59,7 +66,7 @@ class RegisterScreenViewModel(
                     dataController.saveOneFSUser(User.create(
                         name = this.name ?: throw Exception("Error getting name"),
                         email = this.email ?: throw Exception("Error getting email"),
-                        password = password,
+                        password = encryptPassword(password),
                     ))
 
                     store.updateActualUser(dataController.getLastFSUser() ?: return@launch)
@@ -102,5 +109,12 @@ class RegisterScreenViewModel(
 
     fun validatePassword(password: String): Boolean {
         return password.length >= 6 && password.contains(passwordPattern)
+    }
+
+    private fun encryptPassword(password: String): String {
+        return crypto.encryptData(
+            data = password,
+            context = MainActivity.getContext()
+        )
     }
 }

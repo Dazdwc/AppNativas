@@ -6,8 +6,6 @@ import android.app.NotificationManager
 import android.content.Context
 import com.google.firebase.Firebase
 import com.google.firebase.appcheck.appCheck
-import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
-import com.google.firebase.appcheck.debug.internal.DebugAppCheckProvider
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.initialize
 import dagger.hilt.android.HiltAndroidApp
@@ -16,11 +14,11 @@ import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.GAMEWON_NO
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.IMAGES_NOTIFICATION_CHANNEL
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.LOCATION_NOTIFICATION_CHANNEL
 
-/* Esta clase permite la futura implementación de DI.
-* La anotación @HiltAndroidApp permite que Hilt genere un contenedor de dependencias para la app.
-* Este contenedor se puede usar en toda la app para inyectar dependencias.
-* Para ello, hay que anotar la clase con @AndroidEntryPoint.
-*/
+/* This class allows the future implementation of DI.
+* The @HiltAndroidApp annotation allows Hilt to generate a dependency container for the app.
+* This container can be used throughout the app to inject dependencies.
+* To do this, you have to annotate the class with @AndroidEntryPoint.
+ */
 @HiltAndroidApp
 class App: Application() {
     override fun onCreate() {

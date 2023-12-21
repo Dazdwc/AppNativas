@@ -4,41 +4,36 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.app.ActivityCompat.recreate
-import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.Firebase
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
@@ -48,6 +43,7 @@ import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.AppNavigation
+import org.helios.mythicdoors.presentation.sign_in.GoogleAuthUiClient
 import org.helios.mythicdoors.services.location.LocationService
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.ui.fragments.*
@@ -55,17 +51,11 @@ import org.helios.mythicdoors.ui.screens.SplashScreen
 import org.helios.mythicdoors.ui.theme.MythicDoorsTheme
 import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels
-import org.helios.mythicdoors.utils.permissions.AppPermissionsRequests
 import org.helios.mythicdoors.utils.connection.Connection
+import org.helios.mythicdoors.utils.permissions.AppPermissionsRequests
 import org.helios.mythicdoors.utils.permissions.PermissionsTextProviders
-import org.helios.mythicdoors.utils.screenshot.ScreenshotService
-import org.helios.mythicdoors.utils.typeclass.Language
 import org.helios.mythicdoors.viewmodel.*
-import org.helios.mythicdoors.viewmodel.tools.AudioPlayerViewModel
-import org.helios.mythicdoors.viewmodel.tools.GameMediaPlayer
-import org.helios.mythicdoors.viewmodel.tools.LanguageManagerViewModel
-import org.helios.mythicdoors.viewmodel.tools.SoundManagementViewModel
-import java.util.Locale
+import org.helios.mythicdoors.viewmodel.tools.*
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -78,8 +68,8 @@ class MainActivity : ComponentActivity() {
         private val snackbarHostState: SnackbarHostState by lazy { SnackbarHostState() }
         lateinit var dataController: DataController
 
-        /* DataController se iniciará con el patrón Singleton
-        * Hay que asegurarse que no se inicialice hasta que no se haya inicializado dataController
+        /* DataController will initialize as a Singleton, so it will be initialized only once
+        * and will be available for all the view models that need it
         */
         val viewModelsMap: Map<String, Any> by lazy {
             val map = mutableMapOf<String, Any>()
@@ -97,14 +87,11 @@ class MainActivity : ComponentActivity() {
                 map[ScreensViewModels.AUDIO_PLAYER_SCREEN_VIEWMODEL] = AudioPlayerViewModel.getInstance(it)
                 map[ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] = SoundManagementViewModel.getInstance()
                 map[ScreensViewModels.LANGUAGE_MANAGER_SCREEN_VIEWMODEL] = LanguageManagerViewModel.getInstance()
-                // ...otros view models que dependen de dataController
             }
             map.toMap()
         }
 
-        fun getContext(): Context {
-            return appContext
-        }
+        fun getContext(): Context = appContext
 
         fun setContext(context: Context) {
             appContext = context
@@ -121,6 +108,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private val activity = this
+
+    private val googleAuthClient: GoogleAuthUiClient by lazy {
+        GoogleAuthUiClient(
+            context = applicationContext,
+            oneTapClient = Identity.getSignInClient(applicationContext)
+        )
+    }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,6 +136,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val isSplashScreenVisible = remember { mutableStateOf(true) }
+            val isGoogleSignInRequested by  MainActivityViewModel.GoogleSignInRequestSetter.isGoogleSignInRequested.observeAsState(initial = false)
+
             if (isSplashScreenVisible.value) {
                 SplashScreen(
                     onTimeout = {
@@ -216,6 +212,86 @@ class MainActivity : ComponentActivity() {
                         ) {
                             foregroundPermissionLauncher.launch(Manifest.permission.FOREGROUND_SERVICE)
                             multiplePermissionResultLauncher.launch(AppPermissionsRequests.appPermissionRequests)
+
+                            val isLoading by controller.isLoading.observeAsState(initial = false)
+                            LoadingIndicator(
+                                isLoading = isLoading
+                            )
+
+                            if (isGoogleSignInRequested) {
+                                val viewModel = viewModel<SignInViewModel>()
+                                val state by viewModel.state.collectAsStateWithLifecycle()
+
+                                val launcher = rememberLauncherForActivityResult(
+                                    contract = ActivityResultContracts.StartIntentSenderForResult(),
+                                    onResult= {result ->
+                                        if (result.resultCode == RESULT_OK) {
+                                            lifecycleScope.launch {
+                                                val signInResult = googleAuthClient.signInWithIntent(
+                                                    intent = result.data ?: return@launch
+                                                )
+
+                                                viewModel.onSignInResult(signInResult)
+                                            }
+                                        }
+                                    }
+                                )
+
+                                LaunchedEffect(key1 = state.isSignInSuccessful) {
+                                    if (state.isSignInSuccessful) {
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "Sign in successful!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
+                                        controller.updateLogedUser(
+                                            googleAuthUiClient = googleAuthClient
+                                        )
+
+                                        isGoogleSignInRequested.let { MainActivityViewModel.GoogleSignInRequestSetter.isGoogleSignInRequested.value = false }
+                                    }
+                                }
+
+                                Dialog(
+                                    onDismissRequest = {
+                                        MainActivityViewModel.GoogleSignInRequestSetter.isGoogleSignInRequested.value = false
+                                        viewModel.resetSignInState()
+                                    },
+                                    properties = DialogProperties(
+                                        dismissOnBackPress = true,
+                                        dismissOnClickOutside = true,
+                                        usePlatformDefaultWidth = true,
+                                    )
+                                ) {
+                                    Box(modifier = Modifier
+                                        .height(R.dimen.dialog_height.dp)
+                                        .background(MaterialTheme.colorScheme.background)
+                                    ){
+                                        Column(modifier = Modifier
+                                            .fillMaxWidth(),
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            GoogleSignInScreen(
+                                                controller = controller,
+                                                state = state
+                                            ) {
+                                                lifecycleScope.launch {
+                                                    val signInIntentSender = googleAuthClient.signIn()
+                                                    launcher.launch(
+                                                        IntentSenderRequest.Builder(
+                                                            signInIntentSender ?: return@launch
+                                                        ).build()
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+
                             AppNavigation()
                         }
                     }

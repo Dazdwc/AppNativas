@@ -123,7 +123,7 @@ class StoreManager {
         appStore.playerInitialStats.score = user?.getScore() ?: 0
     }
 
-    fun updatePlayerCoins(coins: Long) { appStore.actualUser?.getCoins()?.takeIf { it < 100 }.let { appStore.actualUser?.setCoins(coins.toLong()) } }
+    fun updatePlayerCoins(coins: Long) = appStore.actualUser?.setCoins(coins)
 
     fun updateGameScore(score: Long) { appStore.gameScore = score }
 

@@ -40,7 +40,6 @@ fun ActionResultScreen(navController: NavController) {
     val scrollState = rememberScrollState()
     val context: Context = LocalContext.current
     val activity = context.findActivity() as MainActivity
-    val density = LocalDensity.current.density
 
     val soundManager: SoundManagementViewModel = (MainActivity.viewModelsMap[AppConstants.ScreensViewModels.SOUND_MANAGEMENT_SCREEN_VIEWMODEL] as SoundManagementViewModel)
         .apply { loadSoundsIfNeeded() }
@@ -294,6 +293,7 @@ private fun ScreenshotAlertDialog(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun Context.findActivity(): MainActivity? {
     var context = this
     while (context is ContextWrapper) {

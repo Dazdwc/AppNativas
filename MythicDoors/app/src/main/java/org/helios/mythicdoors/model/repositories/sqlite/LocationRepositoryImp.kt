@@ -140,14 +140,9 @@ class LocationRepositoryImp(dbHelper: Connection):
         return Location(
             cursor.getLong(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_ID)),
             cursor.getStringOrNull(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_ID_USER)),
-//            getUser(cursor.getLong(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_ID_USER))),
             cursor.getDouble(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_LATITUDE)),
             cursor.getDouble(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_LONGITUDE)),
             LocalDate.parse(cursor.getStringOrNull(cursor.getColumnIndex(Contracts.LocationTableContract.COLUMN_NAME_CREATED_AT)))
         )
     }
-
-//    private suspend fun getUser(id: Long): User {
-//        return userRepository.getOne(id)
-//    }
 }

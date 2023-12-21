@@ -92,7 +92,10 @@ class ActionResultScreenViewModel(
     fun returnToGameOptionsScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         try {
             scope.launch {
-                saveGameResults(scope).takeIf { it }
+                saveGameResults(scope)
+                    .takeIf { it }
+                    .run { dataController.updateOneFSUser(playerData?: return@launch) }
+                    .takeIf { result -> result.getOrNull() ?: false }
                     .run { navFunctions.navigateGameOptsScreen(scope, snackbarHostState) }
             }
             return
@@ -136,14 +139,9 @@ class ActionResultScreenViewModel(
             )
 
             scope.launch {
-                saveFlag = dataController.saveOneFSGame(actualGame).getOrElse { false } //dataController.saveGame(actualGame)
+                saveFlag = dataController.saveOneFSGame(actualGame).getOrElse { false }
             }.join()
-            playerData.let {
-                playerData?.setCoins(AppConstants.INITIAL_COINS_AMOUNT)
-                scope.launch {
-                    saveFlag = dataController.saveOneFSUser(it ?: throw Exception("User not found")).getOrElse { false } //dataController.saveUser(it ?: throw Exception("User not found"))
-                }.join()
-            }
+
             return saveFlag
         } catch (e: Exception) {
             Log.e("GameActionScreenViewModel", "saveGameResults: $e")

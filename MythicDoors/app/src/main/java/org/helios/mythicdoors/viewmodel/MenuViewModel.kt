@@ -12,11 +12,12 @@ import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
+import org.helios.mythicdoors.utils.AppConstants
 import kotlin.system.exitProcess
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class MenuViewModel(
-    private val dataController: DataController
+    dataController: DataController
 ): ViewModel() {
     private val navController: NavController
         get() {
@@ -25,6 +26,8 @@ class MenuViewModel(
     private val navFunctions: INavFunctions by lazy { NavFunctionsImp.getInstance(navController) }
 
     private lateinit var _navController: NavController
+
+    private val gameOptsScreenViewModel: GameOptsScreenViewModel = GameOptsScreenViewModel(dataController)
     fun setNavController(navController: NavController) {
         _navController = navController
     }
@@ -39,7 +42,15 @@ class MenuViewModel(
         }
     }
 
-    fun closeApp() {
+    fun closeApp(
+        scope: CoroutineScope,
+        snackbarHostState: SnackbarHostState
+    ) {
+        gameOptsScreenViewModel.logout(
+            scope = scope,
+            snackbarHostState = snackbarHostState
+        )
+
         MainActivity.setContext(MainActivity.getContext())
         exitProcess(0)
     }

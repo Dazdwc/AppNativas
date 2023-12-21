@@ -71,12 +71,17 @@ object AppConstants {
         const val BUTTON_WIDTH = 200
         const val MENU_HEIGHT = 100
         const val BAG_SIZE = 50
+        const val IMAGE_SIZE = 40
     }
 
     object Languages {
         const val ENGLISH = "English"
         const val SPANISH = "Español"
         const val CATALAN = "Català"
+    }
+
+    object RealtimeDatabase {
+        const val BASE_URL = "https://mythic-doors-default-rtdb.europe-west1.firebasedatabase.app/"
     }
 
     enum class GameMode {

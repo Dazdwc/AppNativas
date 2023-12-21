@@ -6,8 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.Game
@@ -33,7 +34,9 @@ class ScoresScreenViewModel(
     private val store: StoreManager by lazy { StoreManager.getInstance() }
     private val actualPlayer: User by lazy { chargePlayer() }
 
-    val userGamesList: MutableLiveData<List<Game>> by lazy { MutableLiveData<List<Game>>() }
+    val actualUserGamesList: MutableLiveData<List<Game>> by lazy { MutableLiveData<List<Game>>() }
+    val allUsersGameList: MutableLiveData<List<Game>> by lazy { MutableLiveData<List<Game>>() }
+
     val loading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
 
     private fun chargePlayer(): User { return store.getAppStore().actualUser ?: throw Exception("User not found") }
@@ -42,18 +45,32 @@ class ScoresScreenViewModel(
         loading.value = true
         try {
             viewModelScope.launch {
-                userGamesList.value = dataController.getAllFSGames()
+                actualUserGamesList.value = dataController.getAllFSGames()
                     ?.filter { it.getUser().getEmail() == actualPlayer.getEmail() }
                     ?.sortedByDescending { it.getScore() }
                     ?: listOf()
-                /*userGamesList.value = dataController.getAllGames()
-                    ?.filter { it.getUser().getEmail() == actualPlayer.getEmail() }
-                    ?.sortedByDescending { it.getScore() }
-                    ?: listOf()*/
             }.join()
         } catch (e: Exception) {
             Log.e("ScoresScreenViewModel", "ladUserGamesList: $e")
-            userGamesList.value = listOf()
+            actualUserGamesList.value = listOf()
+        } finally {
+            loading.value = false
+        }
+    }
+
+    suspend fun loadAllPlayersgameList() {
+        loading.value = true
+        try {
+            viewModelScope.launch {
+               allUsersGameList.value = getTenBestGameFromAllPlayers().also {topTen ->
+                   if (!checkIfActualPlayerIsOnTenBestScoresList(topTen)) {
+                       loadBestPlayerGame()?.let { topTen.plus(it) }
+                   }
+               }
+            }.join()
+        } catch (e: Exception) {
+            Log.e("ScoresScreenViewModel", "loadAllPlayersgameList: $e")
+            allUsersGameList.value = listOf()
         } finally {
             loading.value = false
         }
@@ -67,5 +84,36 @@ class ScoresScreenViewModel(
                 Log.e("ScoresScreenViewModel", "returnToGameOptionsScreen: $e")
             }
         }
+    }
+
+
+    private suspend fun loadBestPlayerGame(): Game? {
+        return try {
+            dataController.getAllFSGames()
+                ?.filter { it.getUser().getEmail() != actualPlayer.getEmail() }?.maxByOrNull { it.getScore() }
+        } catch (e: Exception) {
+            Log.e("ScoresScreenViewModel", "loadBestPlayerGame: $e")
+            null
+        }
+    }
+
+
+    private suspend fun getTenBestGameFromAllPlayers(): List<Game> {
+        return try {
+            val allGames = dataController.getAllFSGames()?.sortedByDescending { it.getScore() } ?: listOf()
+            if (allGames.size < 10) {
+                return allGames
+            }
+            allGames.subList(0, 10)
+        } catch (e: Exception) {
+            Log.e("ScoresScreenViewModel", "getTenBestGameFromAllPlayers: $e")
+            listOf()
+        }
+    }
+
+    private fun checkIfActualPlayerIsOnTenBestScoresList(
+        topTenList: List<Game>
+    ): Boolean {
+        return topTenList.any { it.getUser().getEmail() == actualPlayer.getEmail() }
     }
 }

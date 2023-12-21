@@ -1,7 +1,11 @@
 package org.helios.mythicdoors.model.repositories.firestore
 
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.QuerySnapshot
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapter
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -17,6 +21,11 @@ import kotlin.Result.Companion.success
 class FSGameRepositoryImp(): IRepository<Game> {
 
     private val gamesCollection = FirestoreClient.getInstance().getCollection(FirestoreCollection.GAMES)
+
+    private val moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+    private val adapter = moshi.adapter(Game::class.java)
 
     override suspend fun getAll(): List<Game> = withContext(Dispatchers.IO) {
         val gamesList: MutableList<Game> = mutableListOf()
@@ -39,7 +48,7 @@ class FSGameRepositoryImp(): IRepository<Game> {
         }
     }
 
-    override suspend fun getOne(key: String): Result<Game> = withContext(Dispatchers.IO) {
+    override suspend fun getOne(key: String): Result<Game?> = withContext(Dispatchers.IO) {
         return@withContext try {
             val snapshot = gamesCollection.whereEqualTo(GamesDocumentContract.FIELD_NAME_ID, key)
                 .get()
@@ -47,6 +56,9 @@ class FSGameRepositoryImp(): IRepository<Game> {
                     Log.d("FSGameRepositoryImp", "Cannot get the game: ${e.message}")
                 }
                 .await()
+
+            if (snapshot.documents.isEmpty()) return@withContext success(null)
+
             val game: Game = mapGame(snapshot.documents.first().data ?: throw GamesRepositoryException("Error getting game"))
             success(game)
         } catch (e: Exception) {
@@ -147,26 +159,14 @@ class FSGameRepositoryImp(): IRepository<Game> {
     }
 
     private fun buildGame(item: Game): Map<String, Any?> {
-        return hashMapOf(
-            GamesDocumentContract.FIELD_NAME_USER to item.getUser(),
-            GamesDocumentContract.FIELD_NAME_COIN to item.getCoin(),
-            GamesDocumentContract.FIELD_NAME_LEVEL to item.getLevel(),
-            GamesDocumentContract.FIELD_NAME_SCORE to item.getScore(),
-            GamesDocumentContract.FIELD_NAME_MAX_ENEMY_LEVEL to item.getMaxEnemyLevel(),
-            GamesDocumentContract.FIELD_NAME_GAME_DATE_TIME to item.getDateTime()
-        )
+        return adapter.toJson(item).let {
+            moshi.adapter<Map<String, Any?>>(Map::class.java).fromJson(it) ?: throw GamesRepositoryException("Error building game")
+        }
     }
 
     private fun mapGame(item: Map<String, Any?>): Game {
-        return Game.create(
-            user = item[GamesDocumentContract.FIELD_NAME_USER] as User,
-            coin = item[GamesDocumentContract.FIELD_NAME_COIN] as Long,
-            level = item[GamesDocumentContract.FIELD_NAME_LEVEL] as Long,
-            score = item[GamesDocumentContract.FIELD_NAME_SCORE] as Long,
-            maxEnemyLevel = item[GamesDocumentContract.FIELD_NAME_MAX_ENEMY_LEVEL] as Long
-        ).apply {
-            setDateTime(item[GamesDocumentContract.FIELD_NAME_GAME_DATE_TIME] as LocalDateTime)
-        }
+        return adapter.fromJson(moshi.adapter<Map<String, Any?>>(Map::class.java).toJson(item) ?: throw GamesRepositoryException("Error mapping game"))
+            ?: throw GamesRepositoryException("Error mapping game")
     }
 }
 

@@ -28,5 +28,6 @@ enum class FirestoreCollection(
     val collectionName: String
 ) {
     USERS("users"),
-    GAMES("games")
+    GAMES("games"),
+    JACKPOTS("jackpots")
 }

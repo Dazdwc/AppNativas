@@ -107,6 +107,8 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.1.0")
 
     // Firebase -> Cloud services from Google
+    // Play Services Base
+    implementation("com.google.android.gms:play-services-base:18.2.0")
     // Coroutines for Firebase -> Threading management
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
     // -> BoM: With BoM (Bill of Materials) we can manage all the Firebase dependencies in one place and keep them up to date
@@ -114,22 +116,24 @@ dependencies {
     // -> Core
     implementation("com.google.firebase:firebase-core:21.1.1")
     //App Check -> Security
-    implementation("com.google.firebase:firebase-appcheck-ktx:17.1.1")
-    implementation("com.google.firebase:firebase-appcheck-playintegrity:17.1.1")
-    implementation("com.google.firebase:firebase-appcheck-debug:17.1.1")
+    implementation("com.google.firebase:firebase-appcheck-ktx:${Versions.FIREBASE_APP_CHECK}")
+    implementation("com.google.firebase:firebase-appcheck-playintegrity:${Versions.FIREBASE_APP_CHECK}")
+    implementation("com.google.firebase:firebase-appcheck-debug:${Versions.FIREBASE_APP_CHECK}")
     // -> Auth
     implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     // -> Analytics
     implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
-    implementation("com.google.firebase:firebase-crashlytics-ktx:18.6.0")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:${Versions.FIREBASE_CRASH_ANALYTICS}")
     // Crashlytics -> Native crash reporting
-    implementation("com.google.firebase:firebase-crashlytics-ktx:18.6.0")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:${Versions.FIREBASE_CRASH_ANALYTICS}")
     // -> Cloud Messaging
     implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
-    // -> Database
-    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
-    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+    // -> Database: Realtime Database
+    implementation("com.google.firebase:firebase-database-ktx:${Versions.FIREBASE_DATABASE}")
+    // -> Database: Storage
+    implementation("com.google.firebase:firebase-storage-ktx:${Versions.FIREBASE_DATABASE}")
+    // -> Database: Firestore
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
     // -> In-App Messaging
     implementation("com.google.firebase:firebase-inappmessaging-display-ktx:20.4.0")
@@ -137,6 +141,24 @@ dependencies {
     implementation("com.google.firebase:firebase-config-ktx:21.6.0")
     // -> Performance Monitoring
     implementation("com.google.firebase:firebase-perf-ktx:20.5.1")
+
+    // Moshi -> JSON management
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
+
+    // Retrofit -> Type-safe HTTP client requests management
+    implementation("com.squareup.retrofit2:retrofit:${Versions.RETROFIT}")
+    // Moshi converter -> JSON converter for Retrofit
+    implementation("com.squareup.retrofit2:converter-moshi:${Versions.RETROFIT}")
+
+    // Kotlin Deserialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+
+    // Android Encryption -> Data encryption with security key
+    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
+
+    // Kotlin Flow Playground -> Flow management for collectAsStateWithLifecycle function
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
 }
 
 class Versions {
@@ -145,5 +167,9 @@ class Versions {
         const val COMPOSE_NAV_VERSION = "2.7.5"
         const val COROUTINES_VERSION = "1.7.1"
         const val COMPOSE_BOM_VERSION = "2023.03.00"
+        const val FIREBASE_APP_CHECK = "17.1.1"
+        const val FIREBASE_CRASH_ANALYTICS = "18.6.0"
+        const val FIREBASE_DATABASE = "20.3.0"
+        const val RETROFIT = "2.9.0"
     }
 }

@@ -8,13 +8,11 @@ import org.helios.mythicdoors.utils.AppConstants.ENEMY_REAPY
 import org.helios.mythicdoors.utils.AppConstants.ENEY_WOLFIE
 
 data class Enemy(
-    // private val id: Long?,
     private val name: String,
     private val level: Long,
     private val coinReward: Long,
     private var imageResourceId: Int?
 ) {
-    // fun getId(): Long? { return id }
     fun getName(): String { return name }
     fun getLevel(): Long { return level }
     fun getCoinReward(): Long { return coinReward }
@@ -22,9 +20,6 @@ data class Enemy(
 
     fun setImage(imageResourceId: Int?) { this.imageResourceId = imageResourceId }
 
-    /*
-    * Implementación del patrón Fabric
-    */
     companion object {
         fun create(
             level: Long,

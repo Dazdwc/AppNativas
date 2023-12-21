@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -18,6 +19,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.tasks.Tasks.await
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.singleOrNull
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
 import org.helios.mythicdoors.model.DataController
@@ -39,6 +44,7 @@ import kotlin.properties.Delegates
 class GameLogicViewModel(private val dataController: DataController): ViewModel() {
     private val scope = CoroutineScope(Dispatchers.IO)
     private val storeManager: StoreManager by lazy { StoreManager.getInstance() }
+    private val multiplayerController: MultiplayerGameLogicViewModel by lazy { MultiplayerGameLogicViewModel(dataController) }
 
     private lateinit var player: User
     private var chosenDoor: String = ""
@@ -47,6 +53,8 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
     private lateinit var door: Door
     private lateinit var enemy: Enemy
     private var combatConfrontationResult by Delegates.notNull<Boolean>()
+
+    private val gameMode = storeManager.getAppStore().gameMode
 
     private val locationService: LocationService
         get() = LocationService.instance
@@ -91,7 +99,7 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
 
         return try {
             combatConfrontationResult = generateCombat()
-            combatUpdater(combatConfrontationResult).let { scope.launch { updateUser() } }
+            combatUpdater(combatConfrontationResult).let {  updateUser() }
             clearEnemyAndDoor()
             true
         } catch (e: Exception) {
@@ -102,24 +110,21 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
 
     private fun loadPlayer(): User {
         return try {
-            runBlocking { storeManager.getAppStore().actualUser ?: User.createEmptyUser().also { throw Exception("User not found") } }
+            storeManager.getAppStore().actualUser ?: User.createEmptyUser().also { throw Exception("User not found") }
         } catch (e: Exception) {
             Log.e("GameLogicViewModel", "loadPlayer: $e")
             User.createEmptyUser()
         }
     }
 
-    private suspend fun updateUser(): Boolean {
+    private fun updateUser(): Boolean {
         return try {
-            var isUserSaved = false
+/*            var isUserSaved = false*/
             val updatedUser: User = getNewUserStaticsAfterBattle()
             Log.w("GameLogicViewModel", "updateUser: $updatedUser")
             storeManager.updateActualUser(updatedUser)
 
-            scope.launch {
-                isUserSaved = dataController.saveOneFSUser(updatedUser).getOrElse { false } // dataController.saveUser(updatedUser)
-            }.join()
-            return isUserSaved
+            true
         } catch (e: Exception) {
             Log.e("GameLogicViewModel", "updateUser: ${e.message}")
             false
@@ -164,27 +169,47 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
 
     private fun combatUpdater(userHasWon: Boolean): Boolean {
         try {
-            userHasWon.let { winner ->
-                if (winner) {
-                    storeManager.updateCombatResults(
-                        true,
-                        enemy,
-                        player.getCoins().plus(getCoinReward()).coerceAtLeast(0),
-                        player.getLevel().takeIf { it >= (enemy.getLevel()) }
-                            ?.let { player.getExperience().plus(getXpReward()) } ?: 0
-                    )
-                    storeManager.updateGameScore(storeManager.getAppStore().gameScore.plus(calculateScore()))
+                userHasWon.let { winner ->
+                    if (winner) {
+                        if (gameMode == AppConstants.GameMode.MULTI_PLAYER) {
+                            multiplayerController.getJackpotPot().let { jackpot ->
+                                if (jackpot > 0) {
+                                    multiplayerController.jackpotRandomizer { user ->
+                                        if (user.getEmail() == player.getEmail()) {
+                                            storeManager.updatePlayerCoins(player.getCoins().plus(jackpot).coerceAtLeast(0))
+                                            jackpotWinnerToast()
+                                        } else {
+                                            jackpotLooserToast()
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
-                    saveLocation()
-                } else {
-                    storeManager.updateCombatResults(
-                        false,
-                        enemy,
-                        player.getCoins().takeIf { it >= bet }?.minus(bet) ?: -1,
-                        player.getExperience().coerceAtLeast(0)
-                    )
+                        storeManager.updateCombatResults(
+                            true,
+                            enemy,
+                            player.getCoins().plus(getCoinReward()).coerceAtLeast(0),
+                            player.getLevel().takeIf { it >= (enemy.getLevel()) }
+                                ?.let { player.getExperience().plus(getXpReward()) } ?: 0
+                        )
+                        storeManager.updateGameScore(storeManager.getAppStore().gameScore.plus(calculateScore()))
+
+                        saveLocation()
+                    } else {
+                        if (gameMode == AppConstants.GameMode.MULTI_PLAYER) {
+                            multiplayerController.setJackpotPot(bet.toLong())
+                            potIncrementedToast()
+                        }
+
+                        storeManager.updateCombatResults(
+                            false,
+                            enemy,
+                            player.getCoins().takeIf { it >= bet }?.minus(bet) ?: -1,
+                            player.getExperience().coerceAtLeast(0)
+                        )
+                    }
                 }
-            }
             return true
         } catch (e: Exception) {
             Log.e("GameLogicViewModel", "combatUpdater: ${e.message}").also { return false }
@@ -244,8 +269,7 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
         try {
                 scope.launch {
                     val currentLocation = Location.create(
-//                        player,
-                        player.getEmail() ?: "" /*throw Exception("Player not found")*/,
+                        player.getEmail(),
                         location["latitude"] ?: 0.0,
                         location["longitude"] ?: 0.0
                     )
@@ -286,5 +310,32 @@ class GameLogicViewModel(private val dataController: DataController): ViewModel(
                 }
             }
         }
+    }
+
+    private fun jackpotWinnerToast() {
+        val context = storeManager.getContext()
+        Toast.makeText(
+            context,
+            context?.getString(R.string.jackpot_winner),
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun potIncrementedToast() {
+        val context = storeManager.getContext()
+        Toast.makeText(
+            context,
+            context?.getString(R.string.pot_incremented),
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun jackpotLooserToast() {
+        val context = storeManager.getContext()
+        Toast.makeText(
+            context,
+            context?.getString(R.string.jackpot_looser),
+            Toast.LENGTH_LONG
+        ).show()
     }
 }

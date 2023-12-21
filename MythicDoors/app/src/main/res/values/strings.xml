@@ -93,4 +93,15 @@
     <string name="gold_coins_dialog_medium_bag_text">20$</string>
     <string name="gold_coins_dialog_small_bag_text">10$</string>
     <string name="game_opts_screen_game_start">Starting the game!</string>
+    <string name="login_with_google">Google Sign-in</string>
+    <string name="gmail">Gmail Mail</string>
+    <string name="user_not_found">User not found</string>
+    <string name="default_password">You will receive a email with your default password.</string>
+    <string name="success_google_login">Google user found in our database</string>
+    <string name="default_user_name">Jack Reacher</string>
+    <string name="default_user_password">Hel1o$</string>
+    <string name="jackpot_winner">Congratulations!\nYou have just win our Jackpot!</string>
+    <string name="pot_incremented">Sorry!\nYour bet has run right into our Jackpot!</string>
+    <string name="multi_player_stats">Multiplayer Top Ten List</string>
+    <string name="jackpot_looser">Sorry!\nYou have not won our Jackpot, best luck next time!</string>
 </resources>

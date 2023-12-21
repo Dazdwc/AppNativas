@@ -1,7 +1,10 @@
 package org.helios.mythicdoors.model.repositories.firestore
 
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.QuerySnapshot
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -19,6 +22,11 @@ import kotlin.Result.Companion.failure
 class FSUserRepositoryImp(): IRepository<User> {
 
     private val usersCollection = FirestoreClient.getInstance().getCollection(FirestoreCollection.USERS)
+
+    private val moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+    private val adapter = moshi.adapter(User::class.java)
 
     override suspend fun getAll(): List<User> = withContext(Dispatchers.IO) {
         val usersList: MutableList<User> = mutableListOf()
@@ -41,7 +49,7 @@ class FSUserRepositoryImp(): IRepository<User> {
         }
     }
 
-    override suspend fun getOne(key: String): Result<User> = withContext(Dispatchers.IO) {
+    override suspend fun getOne(key: String): Result<User?> = withContext(Dispatchers.IO) {
         return@withContext try {
             val snapshot: QuerySnapshot = usersCollection
                 .whereEqualTo(UsersDocumentContract.FIELD_NAME_EMAIL, key)
@@ -50,6 +58,9 @@ class FSUserRepositoryImp(): IRepository<User> {
                     Log.d("FSUserRepositoryImp", "Cannot get the user: ${e.message}")
                 }
                 .await()
+
+            if (snapshot.documents.isEmpty()) return@withContext success(null)
+
             val user: User = mapUser(snapshot.documents.first().data ?: throw UsersRepositoryException("Error getting user"))
             success(user)
         } catch (e: Exception) {
@@ -153,37 +164,14 @@ class FSUserRepositoryImp(): IRepository<User> {
     }
 
     private fun buildUser(item: User): Map<String, Any> {
-        return hashMapOf(
-            UsersDocumentContract.FIELD_NAME_NAME to item.getName(),
-            UsersDocumentContract.FIELD_NAME_EMAIL to item.getEmail(),
-            UsersDocumentContract.FIELD_NAME_PASSWORD to item.getPassword(),
-            UsersDocumentContract.FIELD_NAME_SCORE to item.getScore(),
-            UsersDocumentContract.FIELD_NAME_LEVEL to item.getLevel(),
-            UsersDocumentContract.FIELD_NAME_EXPERIENCE to item.getExperience(),
-            UsersDocumentContract.FIELD_NAME_COINS to item.getCoins(),
-            UsersDocumentContract.FIELD_NAME_GOLD_COINS to item.getGoldCoins(),
-            UsersDocumentContract.FIELD_NAME_IS_ACTIVE to item.getIsActive(),
-            UsersDocumentContract.FIELD_NAME_CREATED_AT to item.getCreatedAt().toString()
-        )
+        return adapter.toJson(item).let {
+            moshi.adapter<Map<String, Any>>(Map::class.java).fromJson(it) ?: throw UsersRepositoryException("Error building user")
+        }
     }
 
     private fun mapUser(item: MutableMap<String, Any>): User {
-        val dateTimeFormatter = DateTimeFormatter.ofPattern(Contracts.DateTimeFormatter.DATE_TIME_FORMAT)
-
-        return User.create(
-            name =  item[UsersDocumentContract.FIELD_NAME_NAME] as String,
-            email =  item[UsersDocumentContract.FIELD_NAME_EMAIL] as String,
-            password =  item[UsersDocumentContract.FIELD_NAME_PASSWORD] as String,
-        )
-            .apply {
-                setScore(item[UsersDocumentContract.FIELD_NAME_SCORE] as Long)
-                setLevel(item[UsersDocumentContract.FIELD_NAME_LEVEL] as Long)
-                setExperience(item[UsersDocumentContract.FIELD_NAME_EXPERIENCE] as Long)
-                setCoins(item[UsersDocumentContract.FIELD_NAME_COINS] as Long)
-                setGoldCoins(item[UsersDocumentContract.FIELD_NAME_GOLD_COINS] as Long)
-                setIsActive(item[ UsersDocumentContract.FIELD_NAME_IS_ACTIVE] as Boolean)
-                setCreatedAt(LocalDateTime.parse(item[UsersDocumentContract.FIELD_NAME_CREATED_AT] as String, dateTimeFormatter))
-            }
+        return adapter.fromJson(moshi.adapter<Map<String, Any>>(Map::class.java).toJson(item) ?: throw UsersRepositoryException("Error mapping user"))
+            ?: throw UsersRepositoryException("Error mapping user")
     }
 }
 

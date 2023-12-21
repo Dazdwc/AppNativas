@@ -1,7 +1,6 @@
 package org.helios.mythicdoors.model.entities
 
-import java.time.LocalDate
-import java.time.LocalDateTime
+import com.google.firebase.Timestamp
 
 data class User(
     private val name: String,
@@ -13,7 +12,7 @@ data class User(
     private var coins: Long,
     private var goldCoins: Long,
     private var isActive: Boolean,
-    private var createdAt: LocalDateTime
+    private var createdAt: Timestamp
 ) {
     fun getName(): String { return name }
     fun getEmail(): String { return email }
@@ -24,7 +23,7 @@ data class User(
     fun getCoins(): Long { return coins }
     fun getGoldCoins(): Long { return goldCoins }
     fun getIsActive(): Boolean { return isActive }
-    fun getCreatedAt(): LocalDateTime { return createdAt }
+    fun getCreatedAt(): Timestamp { return createdAt }
 
     fun setScore(score: Long) { this.score = score }
     fun setLevel(level: Long) { this.level = level }
@@ -32,7 +31,7 @@ data class User(
     fun setCoins(coins: Long) { this.coins = coins }
     fun setGoldCoins(goldCoins: Long) { this.goldCoins = goldCoins }
     fun setIsActive(isActive: Boolean) { this.isActive = isActive }
-    fun setCreatedAt(createdAt: LocalDateTime) { this.createdAt = createdAt }
+    fun setCreatedAt(createdAt: Timestamp) { this.createdAt = createdAt }
 
     /* Implementación del patrón Fabric */
     companion object {
@@ -47,7 +46,7 @@ data class User(
                 0,
                 0,
                 true,
-                createdAt = LocalDateTime.now())
+                createdAt = Timestamp.now())
         }
 
         fun create(
@@ -65,7 +64,7 @@ data class User(
                 200,
                 0,
                 true,
-                createdAt = LocalDateTime.now())
+                createdAt = Timestamp.now())
         }
 
         /* Testing function */
@@ -80,12 +79,12 @@ data class User(
                 200,
                 0,
                 true,
-                createdAt = LocalDateTime.now()
+                createdAt = Timestamp.now()
             )
         }
     }
 
-    fun isFirestoreEmpty(): Boolean { return this.email.isNotBlank() && this.password.isNotBlank() }
+    fun isNotEmpty(): Boolean { return this.email.isNotBlank() && this.password.isNotBlank() }
 
     fun isValid(): Boolean {
         return this.name.isNotEmpty()

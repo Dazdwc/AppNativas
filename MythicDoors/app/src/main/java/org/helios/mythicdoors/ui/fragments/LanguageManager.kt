@@ -34,10 +34,7 @@ fun LanguageManager(
     activityContext: Context
 ) {
     val controller: LanguageManagerViewModel = (MainActivity.viewModelsMap[LANGUAGE_MANAGER_SCREEN_VIEWMODEL] as LanguageManagerViewModel)
-
     val languages: Map<String, Language> = remember { controller.languages }
-    val selectedLanguageFlag: Int = remember { controller.setLanguageFlag() }
-
     val openDialog = rememberSaveable { mutableStateOf(false) }
 
     Surface {

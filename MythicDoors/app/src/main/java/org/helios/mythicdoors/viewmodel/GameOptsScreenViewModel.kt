@@ -1,17 +1,25 @@
 package org.helios.mythicdoors.viewmodel
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.helios.mythicdoors.model.DataController
 import org.helios.mythicdoors.model.entities.User
 import org.helios.mythicdoors.navigation.INavFunctions
 import org.helios.mythicdoors.navigation.NavFunctionsImp
+import org.helios.mythicdoors.presentation.sign_in.FirebaseBaseAuthClient
+import org.helios.mythicdoors.presentation.sign_in.GoogleAuthUiClient
+import org.helios.mythicdoors.presentation.sign_in.IFirebaseBaseAuthClient
 import org.helios.mythicdoors.store.StoreManager
 import org.helios.mythicdoors.utils.AppConstants
 
@@ -28,6 +36,12 @@ class GameOptsScreenViewModel(
     }
 
     private val store: StoreManager by lazy { StoreManager.getInstance() }
+    private val context by lazy { store.getContext()}
+    private val googleAuthClient: GoogleAuthUiClient by lazy { GoogleAuthUiClient(
+        context = context ?: throw Exception("Error getting context"),
+        oneTapClient = Identity.getSignInClient(context ?: throw Exception("Error getting context"))
+    ) }
+    private val firebaseAuth: IFirebaseBaseAuthClient by lazy { FirebaseBaseAuthClient.getInstance(FirebaseAuth.getInstance()) }
 
     val isGameModeSelected: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -103,10 +117,14 @@ class GameOptsScreenViewModel(
 
     fun logout(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         try {
+            viewModelScope.launch {
+                googleAuthClient.signOut()
+                firebaseAuth.signOut()
+            }
             store.logout().also { navigateToLoginScreen(scope, snackbarHostState) }
         } catch (e: Exception) {
             Log.e("GameOptsScreenViewModel", "Error logging out: ${e.message}")
-            scope.launch { snackbarHostState.showSnackbar("Error logging out: ${e.message}") }
+            Toast.makeText(context, "Error logging out: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
