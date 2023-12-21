@@ -21,7 +21,6 @@ class CalendarClientImp(
         try {
             withContext(Dispatchers.IO) {
                 context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, contentValues)
-//                context.startActivity(intent)
             }
 
             return true

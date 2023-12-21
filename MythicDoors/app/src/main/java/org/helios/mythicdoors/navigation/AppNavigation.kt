@@ -43,3 +43,11 @@ fun NavController.navigateSingleTopTo(route: String) {
         restoreState = true
     }
 }
+
+fun NavController.navigatePopUpTo(route: String) {
+    this.navigate(route) {
+        popUpTo(route) {
+            inclusive = true
+        }
+    }
+}

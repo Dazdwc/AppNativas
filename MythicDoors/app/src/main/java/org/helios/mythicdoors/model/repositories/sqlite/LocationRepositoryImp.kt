@@ -1,4 +1,4 @@
-package org.helios.mythicdoors.model.repositories
+package org.helios.mythicdoors.model.repositories.sqlite
 
 import android.content.ContentValues
 import android.database.Cursor
@@ -19,7 +19,6 @@ class LocationRepositoryImp(dbHelper: Connection):
     private val dbWrite = dbHelper.writableDatabase
     private val dbRead = dbHelper.readableDatabase
     private val contentValues: ContentValues = ContentValues()
-    private val userRepository: IRepository<User> = UserRepositoryImp(dbHelper)
 
     override fun close() {
         if (dbWrite.isOpen) dbWrite.close()
@@ -130,7 +129,7 @@ class LocationRepositoryImp(dbHelper: Connection):
     private fun buildLocation(location: Location): ContentValues {
         return ContentValues().apply {
             if (location.getId() != null) put(Contracts.LocationTableContract.COLUMN_NAME_ID, location.getId())
-            put(Contracts.LocationTableContract.COLUMN_NAME_ID_USER, location.getUser().getId())
+            put(Contracts.LocationTableContract.COLUMN_NAME_ID_USER, location.getUserDocumentId() ?: "")
             put(Contracts.LocationTableContract.COLUMN_NAME_LATITUDE, location.getLatitude())
             put(Contracts.LocationTableContract.COLUMN_NAME_LONGITUDE, location.getLongitude())
             put(Contracts.LocationTableContract.COLUMN_NAME_CREATED_AT, location.getCreatedAt().toString())
@@ -140,14 +139,10 @@ class LocationRepositoryImp(dbHelper: Connection):
     private suspend fun mapLocation(cursor: Cursor): Location {
         return Location(
             cursor.getLong(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_ID)),
-            getUser(cursor.getLong(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_ID_USER))),
+            cursor.getStringOrNull(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_ID_USER)),
             cursor.getDouble(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_LATITUDE)),
             cursor.getDouble(cursor.getColumnIndexOrThrow(Contracts.LocationTableContract.COLUMN_NAME_LONGITUDE)),
             LocalDate.parse(cursor.getStringOrNull(cursor.getColumnIndex(Contracts.LocationTableContract.COLUMN_NAME_CREATED_AT)))
         )
-    }
-
-    private suspend fun getUser(id: Long): User {
-        return userRepository.getOne(id)
     }
 }

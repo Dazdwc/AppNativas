@@ -3,8 +3,10 @@ package org.helios.mythicdoors.services.location
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.LocationServices
@@ -19,6 +21,7 @@ import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.NotificationChannels.LOCATION_NOTIFICATION_CHANNEL
 import org.helios.mythicdoors.utils.notifications.NotificationFabric
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class LocationService(): Service() {
 
     companion object {
@@ -99,7 +102,7 @@ class LocationService(): Service() {
 
         serviceScope.launch {
             Location.create(
-                store.getAppStore().actualUser ?: return@launch,
+                store.getAppStore().actualUser?.getEmail() ?: return@launch,
                 locationCoordinates["latitude"] ?: 0.0,
                 locationCoordinates["longitude"] ?: 0.0
             ).also {

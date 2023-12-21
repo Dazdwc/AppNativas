@@ -72,7 +72,6 @@ fun GameActionScreen(navController: NavController) {
         }
     }
 
-    controller.initialLoad()
     soundManager.playSound(R.raw.wolf)
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fondogameaction) )
     val progress by animateLottieCompositionAsState(
@@ -86,7 +85,8 @@ fun GameActionScreen(navController: NavController) {
         color = MaterialTheme.colorScheme.background) {
         LottieAnimation(composition = composition, progress = {progress})
       BoxWithConstraints {
-          controller.loadPlayerData()
+          //controller.loadPlayerData()
+          controller.initialLoad()
           val maxWidth = constraints.maxWidth
 
           Column {

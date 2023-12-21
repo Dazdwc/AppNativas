@@ -8,8 +8,10 @@ import org.helios.mythicdoors.model.entities.Enemy
 import org.helios.mythicdoors.model.entities.Location
 import org.helios.mythicdoors.model.entities.Song
 import org.helios.mythicdoors.model.entities.User
+import org.helios.mythicdoors.utils.AppConstants
 import org.helios.mythicdoors.utils.AppConstants.Languages
 import org.helios.mythicdoors.utils.AppConstants.GameMode
+import org.helios.mythicdoors.utils.AppConstants.AuthType
 import org.helios.mythicdoors.utils.typeclass.Language
 import java.lang.ref.WeakReference
 
@@ -20,8 +22,9 @@ data class AppStore(
     var contextReference: WeakReference<Context>? = null,
     var actualUser: User? = null,
     var gameMode: GameMode = GameMode.SINGLE_PLAYER,
-    var gameScore: Int = 0,
+    var gameScore: Long = 0L,
     var userLocation: Location = Location.createEmptyLocation(),
+    var authType: AuthType = AuthType.DEFAULT,
     val gameSongsList: List<Song> = listOf(
         Song.create(R.raw.guardians_of_the_sword, "Guardians of The Sword", "Dark Fantasy Studio", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.guardians_of_the_sword)),
         Song.create(R.raw.the_girl_and_the_sword, "The Girl and The Sword", "Dark Fantasy Studio", Uri.parse("android.resource://org.helios.mythicdoors/" + R.raw.the_girl_and_the_sword)),
@@ -42,8 +45,8 @@ data class AppStore(
 data class CombatResults(
     var isPlayerWinner: Boolean = false,
     var enemy: Enemy? = null,
-    var resultCoinAmount: Int = 0,
-    var resultXpAmount: Int = 0
+    var resultCoinAmount: Long = 0,
+    var resultXpAmount: Long = 0
 )
 
 data class PlayerAction(
@@ -52,10 +55,10 @@ data class PlayerAction(
 )
 
 data class PlayerInitialStats(
-    var level: Int = 1,
-    var experience: Int = 0,
-    var coins: Int = 0,
-    var score: Int = 0
+    var level: Long = 1,
+    var experience: Long = 0,
+    var coins: Long = 0,
+    var score: Long = 0
 )
 
 object LanguagesMap: Map<String, Language> by mapOf(
@@ -95,8 +98,8 @@ class StoreManager {
     fun updateCombatResults(
         isPlayerWinner: Boolean,
         enemy: Enemy?,
-        resultCoinAmount: Int,
-        resultXpAmount: Int
+        resultCoinAmount: Long,
+        resultXpAmount: Long
     ) {
         appStore.combatResults.isPlayerWinner = isPlayerWinner
         appStore.combatResults.enemy = enemy
@@ -120,9 +123,9 @@ class StoreManager {
         appStore.playerInitialStats.score = user?.getScore() ?: 0
     }
 
-    fun updatePlayerCoins(coins: Int) { appStore.actualUser?.getCoins()?.takeIf { it < 100 }.let { appStore.actualUser?.setCoins(coins) } }
+    fun updatePlayerCoins(coins: Long) = appStore.actualUser?.setCoins(coins)
 
-    fun updateGameScore(score: Int) { appStore.gameScore = score }
+    fun updateGameScore(score: Long) { appStore.gameScore = score }
 
     fun clearCombatResults() {
         appStore.combatResults.isPlayerWinner = false
@@ -152,4 +155,7 @@ class StoreManager {
     fun getLanguage(languageName: String): Language? { return appStore.languages[languageName] }
 
     fun getLanguages(): Map<String, Language> { return appStore.languages }
+
+    fun getAuthType(): AuthType { return appStore.authType }
+    fun setAuthType(authType: AuthType) { appStore.authType = authType }
 }

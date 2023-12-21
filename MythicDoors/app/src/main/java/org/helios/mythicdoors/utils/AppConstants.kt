@@ -15,7 +15,8 @@ object AppConstants {
     const val ENEMY_REAPY = "The Reaper"
     const val ENEY_WOLFIE = "Wolfie"
 
-    const val INITIAL_COINS_AMOUNT = 200
+    const val INITIAL_COINS_AMOUNT = 200L
+    const val MINIMUN_COINS_AMMOUNT = 10L
 
     const val WEB_GUIDE_URl = "https://danielboj.github.io/mythic-doors-webguide/"
 
@@ -34,6 +35,7 @@ object AppConstants {
     }
 
     object Screens {
+        const val SPLASH_SCREEN = "splash_screen"
         const val OVERVIEW_SCREEN = "overview_screen"
         const val LOGIN_SCREEN = "login_screen"
         const val REGISTER_SCREEN = "register_screen"
@@ -60,11 +62,6 @@ object AppConstants {
         const val GAME_GUIDE_SCREEN_VIEWMODEL = "game-guide-screen-viewmodel"
     }
 
-    enum class GameMode {
-        SINGLE_PLAYER,
-        MULTI_PLAYER
-    }
-
     object ScreenConstants {
         const val IMAGE_HEIGHT = 90
         const val SMALL_IMAGE_HEIGHT = 90
@@ -73,11 +70,29 @@ object AppConstants {
         const val DOUBLE_PADDING = 30
         const val BUTTON_WIDTH = 200
         const val MENU_HEIGHT = 100
+        const val BAG_SIZE = 50
+        const val IMAGE_SIZE = 40
     }
 
     object Languages {
         const val ENGLISH = "English"
         const val SPANISH = "Español"
         const val CATALAN = "Català"
+    }
+
+    object RealtimeDatabase {
+        const val BASE_URL = "https://mythic-doors-default-rtdb.europe-west1.firebasedatabase.app/"
+    }
+
+    enum class GameMode {
+        SINGLE_PLAYER,
+        MULTI_PLAYER
+    }
+
+    enum class AuthType {
+        DEFAULT,
+        BASE,
+        GOOGLE,
+        GITHUB
     }
 }

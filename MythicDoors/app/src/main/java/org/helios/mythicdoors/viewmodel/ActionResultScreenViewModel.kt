@@ -92,7 +92,10 @@ class ActionResultScreenViewModel(
     fun returnToGameOptionsScreen(scope: CoroutineScope, snackbarHostState: SnackbarHostState) {
         try {
             scope.launch {
-                saveGameResults(scope).takeIf { it }
+                saveGameResults(scope)
+                    .takeIf { it }
+                    .run { dataController.updateOneFSUser(playerData?: return@launch) }
+                    .takeIf { result -> result.getOrNull() ?: false }
                     .run { navFunctions.navigateGameOptsScreen(scope, snackbarHostState) }
             }
             return
@@ -136,14 +139,9 @@ class ActionResultScreenViewModel(
             )
 
             scope.launch {
-                saveFlag = dataController.saveGame(actualGame)
+                saveFlag = dataController.saveOneFSGame(actualGame).getOrElse { false }
             }.join()
-            playerData.let {
-                playerData?.setCoins(AppConstants.INITIAL_COINS_AMOUNT)
-                scope.launch {
-                    saveFlag = dataController.saveUser(it ?: throw Exception("User not found"))
-                }.join()
-            }
+
             return saveFlag
         } catch (e: Exception) {
             Log.e("GameActionScreenViewModel", "saveGameResults: $e")
@@ -185,19 +183,19 @@ class ActionResultScreenViewModel(
 object GameResults {
     private var isPlayerWinner: Boolean = false
     private var enemy: Enemy? = null
-    private var resultCoinAmount: Int = 0
-    private var resultXpAmount: Int = 0
+    private var resultCoinAmount: Long = 0
+    private var resultXpAmount: Long = 0
 
     fun getIsPlayerWinner(): Boolean { return isPlayerWinner }
 
     fun getEnemy(): Enemy? { return enemy }
 
-    fun getResultCoinAmount(): Int { return resultCoinAmount }
+    fun getResultCoinAmount(): Long { return resultCoinAmount }
 
-    fun getResultXpAmount(): Int { return resultXpAmount }
+    fun getResultXpAmount(): Long { return resultXpAmount }
 
 
-    fun create(isPlayerWinner: Boolean, enemy: Enemy?, resultCoinAmount: Int, resultXpAmount: Int): GameResults {
+    fun create(isPlayerWinner: Boolean, enemy: Enemy?, resultCoinAmount: Long, resultXpAmount: Long): GameResults {
         return GameResults.apply {
             this.isPlayerWinner = isPlayerWinner
             this.enemy = enemy

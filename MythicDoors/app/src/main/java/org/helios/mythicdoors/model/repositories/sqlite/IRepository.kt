@@ -1,4 +1,4 @@
-package org.helios.mythicdoors.model.repositories
+package org.helios.mythicdoors.model.repositories.sqlite
 
 interface IRepository<T> {
     suspend fun getAll(): List<T>

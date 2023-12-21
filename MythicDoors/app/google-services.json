@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "336864039883",
+    "project_id": "mythic-doors",
+    "storage_bucket": "mythic-doors.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336864039883:android:71fd13740be873809c9c4e",
+        "android_client_info": {
+          "package_name": "org.helios.mythicdoors"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336864039883-q4kuinokouqcbb9kronubaunj60q3rss.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.helios.mythicdoors",
+            "certificate_hash": "043f820f0ad9fbc252bd5a560a0f12f3796bb3ae"
+          }
+        },
+        {
+          "client_id": "336864039883-ef1t6uq6mhb529cd7tq2svqo3u7aeidp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIo-bg8nxwxKXkCk3soLP_H0Dakrcq-Bo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336864039883-ef1t6uq6mhb529cd7tq2svqo3u7aeidp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

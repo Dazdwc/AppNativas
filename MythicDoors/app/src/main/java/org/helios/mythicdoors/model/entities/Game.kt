@@ -1,57 +1,56 @@
 package org.helios.mythicdoors.model.entities
 
-import java.time.LocalDateTime
+import com.google.firebase.Timestamp
 
 data class Game(
-    private val id: Long?,
     private val user: User,
-    private val coin: Int,
-    private val level: Int,
-    private val score: Int,
-    private val maxEnemyLevel: Int,
-    private val gameDateTime: LocalDateTime,
+    private val coin: Long,
+    private val level: Long,
+    private val score: Long,
+    private val maxEnemyLevel: Long,
+    private val gameDateTime: Timestamp,
 ) {
-    fun getId(): Long? { return id }
     fun getUser(): User { return user}
-    fun getCoin(): Int { return coin}
-    fun getLevel(): Int { return level}
-    fun getScore(): Int { return score}
-    fun getMaxEnemyLevel(): Int { return maxEnemyLevel}
-    fun getDateTime(): LocalDateTime { return gameDateTime}
+    fun getCoin(): Long { return coin}
+    fun getLevel(): Long { return level}
+    fun getScore(): Long { return score}
+    fun getMaxEnemyLevel(): Long { return maxEnemyLevel}
+    fun getDateTime(): Timestamp { return gameDateTime}
+
+    fun setDateTime(gameDateTime: Timestamp) { this.gameDateTime }
 
     companion object {
         fun createEmptyGame(): Game {
             return Game(
-                null,
                 User.createEmptyUser(),
                 -1,
                 -1,
                 -1,
                 -1,
-                gameDateTime = LocalDateTime.now())
+                gameDateTime = Timestamp.now())
         }
 
         fun create(
             user: User,
-            coin: Int,
-            level: Int,
-            score: Int,
-            maxEnemyLevel: Int,
+            coin: Long,
+            level: Long,
+            score: Long,
+            maxEnemyLevel: Long,
         ): Game {
             return Game(
-                null,
                 user,
                 coin,
                 level,
                 score,
                 maxEnemyLevel,
-                gameDateTime = LocalDateTime.now())
+                gameDateTime = Timestamp.now())
         }
     }
 
-    fun isEmpty(): Boolean { return this.id == null }
+    fun isNotEmpty(): Boolean { return this.user.isNotEmpty() }
+
     fun isValid(): Boolean {
-        return !this.user.isEmpty()
+        return this.user.getEmail().isNotEmpty()
                 && this.coin >= 0
                 && this.level >= 0
                 && this.score >= 0

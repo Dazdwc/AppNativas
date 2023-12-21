@@ -4,8 +4,8 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.model.entities.Location
-import org.helios.mythicdoors.model.repositories.IRepository
-import org.helios.mythicdoors.model.repositories.LocationRepositoryImp
+import org.helios.mythicdoors.model.repositories.sqlite.IRepository
+import org.helios.mythicdoors.model.repositories.sqlite.LocationRepositoryImp
 import org.helios.mythicdoors.services.interfaces.ILocationService
 import org.helios.mythicdoors.utils.connection.Connection
 
@@ -13,6 +13,21 @@ class LocationServiceImp(dbHelper: Connection): ILocationService {
     private val repository: IRepository<Location>
 
     init { repository = LocationRepositoryImp(dbHelper) }
+
+    companion object {
+        @Volatile
+        private var instance: LocationServiceImp? = null
+
+        fun getInstance(dbHelper: Connection): LocationServiceImp {
+            return instance ?: synchronized(this) {
+                instance ?: buildLocationServiceImp(dbHelper).also { instance = it }
+            }
+        }
+
+        private fun buildLocationServiceImp(dbHelper: Connection): LocationServiceImp {
+            return LocationServiceImp(dbHelper)
+        }
+    }
 
     override suspend fun getLocations(): List<Location>? = withContext(Dispatchers.IO) {
         try {

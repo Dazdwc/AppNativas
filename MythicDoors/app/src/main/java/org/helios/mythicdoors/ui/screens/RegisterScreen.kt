@@ -1,30 +1,32 @@
 package org.helios.mythicdoors.ui.screens
 
 import android.os.Build
+import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.helios.mythicdoors.MainActivity
 import org.helios.mythicdoors.R
+import org.helios.mythicdoors.ui.fragments.LoadingIndicator
 import org.helios.mythicdoors.utils.AppConstants.ScreenConstants
 import org.helios.mythicdoors.utils.AppConstants.ScreensViewModels.REGISTER_SCREEN_VIEWMODEL
 import org.helios.mythicdoors.viewmodel.RegisterScreenViewModel
@@ -32,10 +34,14 @@ import org.helios.mythicdoors.viewmodel.RegisterScreenViewModel
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun RegisterScreen(navController: NavController) {
-    val controller: RegisterScreenViewModel = (MainActivity.viewModelsMap[REGISTER_SCREEN_VIEWMODEL] as RegisterScreenViewModel).apply { setNavController(navController) }
+    val controller: RegisterScreenViewModel =
+        (MainActivity.viewModelsMap[REGISTER_SCREEN_VIEWMODEL] as RegisterScreenViewModel).apply {
+            setNavController(navController)
+        }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     var userName: String by remember { mutableStateOf("") }
     var userEmail: String by remember { mutableStateOf("") }
@@ -51,9 +57,19 @@ fun RegisterScreen(navController: NavController) {
         ImageVector.vectorResource(R.drawable.eye_off_500)
     }
 
+    val loading by controller.loading.observeAsState(false)
+
     val registerSuccessful by controller.registerSuccessful.observeAsState(false)
     LaunchedEffect(registerSuccessful) {
-        if (registerSuccessful) controller.navigateToGameOptsScreen(scope, snackbarHostState)
+        if (registerSuccessful) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.register_successful),
+                Toast.LENGTH_LONG
+            ).show()
+            controller.navigateToGameOptsScreen(scope, snackbarHostState)
+        }
+
         controller.resetRegisterSuccessful()
     }
 
@@ -68,10 +84,24 @@ fun RegisterScreen(navController: NavController) {
             contentAlignment = Alignment.Center
         ) {
             val maxWidth = this.maxWidth
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Transparent)
+                    .zIndex(999f)
+                    .padding(ScreenConstants.AVERAGE_PADDING.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                LoadingIndicator(
+                    isLoading = loading,
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .width(maxWidth.minus(maxWidth * 0.20f))
-                    .scrollable(scrollState, orientation = Orientation.Vertical)
+                    .verticalScroll(scrollState)
                     .padding(
                         top = ScreenConstants.DOUBLE_PADDING.dp,
                         bottom = ScreenConstants.AVERAGE_PADDING.dp
@@ -164,12 +194,14 @@ fun RegisterScreen(navController: NavController) {
                         isError = !isEmailValid,
                     )
                 }
-                isEmailValid.takeIf { !it }?.run { Text(
-                    text = stringResource(id = R.string.email_validator),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
-                ) }
+                isEmailValid.takeIf { !it }?.run {
+                    Text(
+                        text = stringResource(id = R.string.email_validator),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -209,12 +241,14 @@ fun RegisterScreen(navController: NavController) {
                         tint = MaterialTheme.colorScheme.secondary,
                     )
                 }
-                isPasswordValid.takeIf { !it }?.run { Text(
-                    text = stringResource(id = R.string.password_requirements).trimMargin(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
-                ) }
+                isPasswordValid.takeIf { !it }?.run {
+                    Text(
+                        text = stringResource(id = R.string.password_requirements).trimMargin(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -251,12 +285,14 @@ fun RegisterScreen(navController: NavController) {
                         tint = MaterialTheme.colorScheme.secondary,
                     )
                 }
-                isPasswordValid.takeIf { !it }?.run { Text(
-                    text = stringResource(id = R.string.password_retype_validator).trimMargin(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
-                ) }
+                (password == retypedPassword).takeIf { !it }?.run {
+                    Text(
+                        text = stringResource(id = R.string.password_retype_validator).trimMargin(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(bottom = ScreenConstants.AVERAGE_PADDING.dp)
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -266,8 +302,27 @@ fun RegisterScreen(navController: NavController) {
                 ) {
                     Button(
                         onClick = {
-                            controller.register(userName, userEmail, password, scope, snackbarHostState)
-                            if (registerSuccessful) controller.navigateToGameOptsScreen(scope, snackbarHostState)
+                            try {
+                                scope.launch {
+                                    controller.register(userName, userEmail, password, scope)
+                                    withContext(Dispatchers.Main) {
+                                        if (!registerSuccessful) {
+                                            Toast.makeText(
+                                                context,
+                                                context.getString(R.string.register_error),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Log.e("RegisterScreen", "register: ${e.message}")
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.register_error),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                         },
                         enabled = isEmailValid && isPasswordValid && password == retypedPassword,
                         elevation = ButtonDefaults.buttonElevation(2.dp),
