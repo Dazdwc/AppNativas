@@ -14,7 +14,10 @@ Equipo conformado por:
 + Marc Planas [📫](mplanasch@uoc.edu)
 
 ## Instalación &darr;
+Junto al archivo con el código fuene se encuentra la carpeta MythicDoorsGame donde hemos añadido los .sdk de la app.
 
 ## Uso &darr;
+Puede encontrarse una guía de uso del juego en el siguiente enlace: [WebGuide](https://danielboj.github.io/mythic-doors-webguide/)
 
 ## Licencia &darr;
+CC Zero
